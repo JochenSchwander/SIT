@@ -12,7 +12,7 @@ public interface Hasher {
 	 * 
 	 * @param password password to hash
 	 * @param salt salt for hashing
-	 * @return salted hash
+	 * @return salted 512Bit hash
 	 */
 	String calculateHash(String password, String salt);
 }
