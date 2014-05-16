@@ -1,3 +1,6 @@
+/.metadata
+/RemoteSystemsTempFiles
+/Servers
 /build
 *.class
 
