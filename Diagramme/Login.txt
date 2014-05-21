@@ -1,0 +1,36 @@
+title Login
+
+Desktop Client->Server: login\nrsa(A;p;g;username;dpw)
+
+alt desktop login fail
+
+    Server->Desktop Client: login\nfail;message
+
+else desktop login successful
+
+Server->Desktop Client: login\nsuccess;B
+Server->Server: encrypt stream\nwith AES(K)
+Desktop Client->Desktop Client: encrypt stream\nwith AES(K)
+
+Desktop Client-> Server: requestotp
+Server->Desktop Client: requestotp\notp;salt
+
+loop max 3 times
+
+Web Client-> Server: login with hashed credetials\n
+
+opt web login failed
+Server->Web Client: failmessage
+end
+end
+
+
+
+alt web 3x login failed
+Server->Web Client:failmessage
+Server->Desktop Client: weblogin\nfail;message
+
+else web login successful
+Server->Web Client:successmessage
+Server->Desktop Client: weblogin\nsuccess;message
+
