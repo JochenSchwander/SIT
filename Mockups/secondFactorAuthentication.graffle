@@ -289,7 +289,7 @@
 		</dict>
 		<dict>
 			<key>Bounds</key>
-			<string>{{122, 163}, {147, 42}}</string>
+			<string>{{184, 143}, {144.28298950195312, 23.613600000000002}}</string>
 			<key>Class</key>
 			<string>ShapedGraphic</string>
 			<key>FontInfo</key>
@@ -450,7 +450,7 @@
 	<key>MasterSheets</key>
 	<array/>
 	<key>ModificationDate</key>
-	<string>2014-05-21 12:12:03 +0000</string>
+	<string>2014-05-21 12:29:42 +0000</string>
 	<key>Modifier</key>
 	<string>Phil Kwiotek</string>
 	<key>NotesVisible</key>

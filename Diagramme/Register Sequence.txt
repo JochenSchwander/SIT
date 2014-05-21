@@ -1,0 +1,18 @@
+title Register Sequence
+
+
+Desktop Client->Desktop Client: choose \n(desktopPassword, webPassword)
+loop until success
+
+Desktop Client->Desktop Client: choose \n(username)
+Desktop Client->Desktop Client: encrypt\n(desktopPassword, webPassword)
+Desktop Client->Server: register\nencr(desktopPassword, webPassword,username)
+Server->Server: \ndecrypt(desktopPassword, webPassword,username)
+Server->Database: check username availability \n(username)
+alt username already exists
+    Database->Server: true
+    Server->Desktop Client: register\nfail
+else
+    Database->Server: false
+    Server->Desktop Client: register\nsuccess
+end
