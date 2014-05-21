@@ -1,47 +1,44 @@
 package de.hs_mannheim.sit.ss14;
 
-import java.util.Date;
 
 /**
  * Object to hold the required information for a user authentification.
- * 
+ *
  * @author Jochen Schwander
  */
 public class User {
-	
+
 	private String userName;
-	
-	private String email;
-	
-	private String password;
+
+	private String desktopPassword;
+
+	private String webPassword;
 
 	private String salt;
-	
-	private String oneTimePassword;
-	
-	private Date oneTimePasswordExpirationDate;
-	
+
+	private String oneTimeCode;
+
+
 	/**
-	 * Checks that the oneTimePassword is valid and not expired.
-	 * 
-	 * @param oneTimePassword the one time password to check;
-	 * @return true, if valid and not expired
+	 * Tests if the given desktop password is valid for this user.
+	 *
+	 * @param desktopPassword the desktop password to check
+	 * @return true, if the password is valid, false, if the password is invalid
 	 */
-	boolean isValidOneTimePassword(final String oneTimePassword) {
-		//TODO
-		return false;
+	public boolean checkDesktopPassword(final String desktopPassword) {
+		return desktopPassword.equals(this.desktopPassword);
 	}
-	
+
 	/**
-	 * Checks that the given password equals the saved one.
-	 * 
-	 * @param password password to check
- 	 * @return true, if the passwrods are equal, false otherwise
+	 * Tests if the given web password is valid for this user.
+	 *
+	 * @param webPassword the web password to check
+	 * @return true, if the password is valid, false, if the password is invalid
 	 */
-	boolean isValidPassword(final String password) {
-		//TODO
-		return false;
+	public boolean checkWebPassword(final String webPassword) {
+		return webPassword.equals(this.webPassword);
 	}
+
 
 	public String getUserName() {
 		return userName;
@@ -51,32 +48,36 @@ public class User {
 		this.userName = userName;
 	}
 
-	public String getEmail() {
-		return email;
+	public String getDesktopPassword() {
+		return desktopPassword;
 	}
 
-	public void setEmail(final String email) {
-		this.email = email;
+	public void setDesktopPassword(final String desktopPassword) {
+		this.desktopPassword = desktopPassword;
 	}
 
-	public void setPassword(final String password) {
-		this.password = password;
+	public String getWebPassword() {
+		return webPassword;
+	}
+
+	public void setWebPassword(final String webPassword) {
+		this.webPassword = webPassword;
+	}
+
+	public String getSalt() {
+		return salt;
 	}
 
 	public void setSalt(final String salt) {
 		this.salt = salt;
 	}
-	
-	public String getOneTimePassword() {
-		return oneTimePassword;
-	}
-	
-	public void setOneTimePassword(final String oneTimePassword) {
-		this.oneTimePassword = oneTimePassword;
+
+	public String getOneTimeCode() {
+		return oneTimeCode;
 	}
 
-	public void setOneTimePasswordExpirationDate(final Date oneTimePasswordExpirationDate) {
-		this.oneTimePasswordExpirationDate = oneTimePasswordExpirationDate;
+	public void setOneTimeCode(final String oneTimeCode) {
+		this.oneTimeCode = oneTimeCode;
 	}
-	
+
 }
