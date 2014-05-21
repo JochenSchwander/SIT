@@ -26,7 +26,8 @@ public class User {
 	 * @return true, if the password is valid, false, if the password is invalid
 	 */
 	public boolean checkDesktopPassword(final String desktopPassword) {
-		return desktopPassword.equals(this.desktopPassword);
+		//TODO hier hashen?
+		return this.desktopPassword.equals(desktopPassword);
 	}
 
 	/**
@@ -36,7 +37,8 @@ public class User {
 	 * @return true, if the password is valid, false, if the password is invalid
 	 */
 	public boolean checkWebPassword(final String webPassword) {
-		return webPassword.equals(this.webPassword);
+		//TODO hier hashen?
+		return this.webPassword.equals(webPassword);
 	}
 
 
