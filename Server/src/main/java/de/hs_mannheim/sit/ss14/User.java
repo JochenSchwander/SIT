@@ -1,5 +1,7 @@
 package de.hs_mannheim.sit.ss14;
 
+import java.math.BigInteger;
+
 
 /**
  * Object to hold the required information for a user authentification.
@@ -11,12 +13,14 @@ public class User {
 	private String userName;
 
 	private String salt;
-	
+
 	private String sessionKey;
 
 	private String oneTimeCode;
-	
+
 	private int failedLoginAttempts;
+
+	private BigInteger encryptionKey;
 
 	public String getUserName() {
 		return userName;
@@ -56,6 +60,14 @@ public class User {
 
 	public void setOneTimeCode(final String oneTimeCode) {
 		this.oneTimeCode = oneTimeCode;
+	}
+
+	public BigInteger getEncryptionKey() {
+		return encryptionKey;
+	}
+
+	public void setEncryptionKey(BigInteger encryptionKey) {
+		this.encryptionKey = encryptionKey;
 	}
 
 }
