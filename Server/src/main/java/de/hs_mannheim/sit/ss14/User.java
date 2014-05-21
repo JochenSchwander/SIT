@@ -4,43 +4,19 @@ package de.hs_mannheim.sit.ss14;
 /**
  * Object to hold the required information for a user authentification.
  *
- * @author Jochen Schwander
+ * @author Phil-Patrick Kai Kwiotek
  */
 public class User {
 
 	private String userName;
 
-	private String desktopPassword;
-
-	private String webPassword;
-
 	private String salt;
+	
+	private String sessionKey;
 
 	private String oneTimeCode;
-
-
-	/**
-	 * Tests if the given desktop password is valid for this user.
-	 *
-	 * @param desktopPassword the desktop password to check
-	 * @return true, if the password is valid, false, if the password is invalid
-	 */
-	public boolean checkDesktopPassword(final String desktopPassword) {
-		//TODO hier hashen?
-		return this.desktopPassword.equals(desktopPassword);
-	}
-
-	/**
-	 * Tests if the given web password is valid for this user.
-	 *
-	 * @param webPassword the web password to check
-	 * @return true, if the password is valid, false, if the password is invalid
-	 */
-	public boolean checkWebPassword(final String webPassword) {
-		//TODO hier hashen?
-		return this.webPassword.equals(webPassword);
-	}
-
+	
+	private int failedLoginAttempts;
 
 	public String getUserName() {
 		return userName;
@@ -48,22 +24,6 @@ public class User {
 
 	public void setUserName(final String userName) {
 		this.userName = userName;
-	}
-
-	public String getDesktopPassword() {
-		return desktopPassword;
-	}
-
-	public void setDesktopPassword(final String desktopPassword) {
-		this.desktopPassword = desktopPassword;
-	}
-
-	public String getWebPassword() {
-		return webPassword;
-	}
-
-	public void setWebPassword(final String webPassword) {
-		this.webPassword = webPassword;
 	}
 
 	public String getSalt() {
@@ -76,6 +36,22 @@ public class User {
 
 	public String getOneTimeCode() {
 		return oneTimeCode;
+	}
+
+	public String getSessionKey() {
+		return sessionKey;
+	}
+
+	public void setSessionKey(String sessionKey) {
+		this.sessionKey = sessionKey;
+	}
+
+	public int getFailedLoginAttempts() {
+		return failedLoginAttempts;
+	}
+
+	public void setFailedLoginAttempts(int failedLoginAttempts) {
+		this.failedLoginAttempts = failedLoginAttempts;
 	}
 
 	public void setOneTimeCode(final String oneTimeCode) {

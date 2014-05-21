@@ -1,9 +1,10 @@
 package de.hs_mannheim.sit.ss14;
 
+
 /**
  * Interface for Hasher.
  * 
- * @author Jochen Schwander
+ * @author Phil-Patrick Kai Kwiotek
  */
 public interface Hasher {
 	
@@ -14,5 +15,5 @@ public interface Hasher {
 	 * @param salt salt for hashing
 	 * @return salted 512Bit hash
 	 */
-	String calculateHash(String password, String salt);
+	String calculateHash(String password, String salt, int iterations);
 }
