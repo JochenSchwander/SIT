@@ -1,0 +1,76 @@
++ authenticateDesktop (username : String, desktopPassword : String): boolean
++ authenticateWeb (username : String, webPassword : String, user : User): boolean
++ createUser(username : String, desktopPassword : String, webPassword : String): boolean
+
+
+
+
+
+CLIENT + SERVER:
+- h(webpassword + sharedSalt + zz2)
+
+User
+
+- username : String
+- desktopPassword : String
+- webPassword : String
+- salt : String
+- oneTimePassword : String
+
+
++ calculateHash(password : String, salt : String, iterations : int) : String
+
+
+D-H über Restfull-RESTService
+
+
+REGSITRATION
+Client: PUB-Key(username, desktopPassword, webPassword) -> SERVER
+Server: alreadyExist(username), createTupelInDB() -> CLIENT (OK| NOCHMAL)
+
+
+ATHENTICATE desktopClient:
+Client: doD-H(), PUB-Key(desktopPassword, username, d-h{A, g, p}) -s> Server 
+Server: checkInDb(desktopPassword, username) -> doD-H(A, g, p) -> B, SessionKey -u> Client \\ Server hat K berechnet
+											|_-> if(check == false) -> ERROR -u> Client
+Client: doD-H(B, a), SessionKey -> K, AES(Socket(), K) -s> Server: AES(Socket(), K)
+Server: AES(OTP, salt) -> CLIENT
+
+
+
+ATHENTICATE webClient:
+Client: h(OTP, h(salt, webPassword)) -u> SERVER
+Server: h(OTP, checkInDb(webPassword, username)) =?= Clientmessage -> CLIENT (OK| NOCHMAL(3x))
+
+
+
+USER
+- 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
