@@ -47,6 +47,22 @@ Server: h(OTP, checkInDb(webPassword, username)) =?= Clientmessage -> CLIENT (OK
 USER
 - 
 
+___________
+
+Server
+
+- socketConnections : Map<sessionKey : String,Socket>
+
+- rsa : RSADecrypt
+
+- clientAuthenticated : Map<username : String,User>
+- athenticated : Map<username : String,User>
+
+ - - - - - - - - - - - - - - - - - - - -
+
++ createUser(): User
+
+// Socketverbindung
 
 
 
@@ -60,7 +76,13 @@ USER
 
 
 
+Java EE eclipse
+Tomcat
 
+
+jre
+
+jdk 1.7 suchen
 
 
 
