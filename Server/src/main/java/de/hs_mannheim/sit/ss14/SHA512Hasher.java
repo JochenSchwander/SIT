@@ -8,24 +8,28 @@ import java.security.NoSuchAlgorithmException;
 import sun.misc.BASE64Decoder;
 import sun.misc.BASE64Encoder;
 
-/**
- *
- * @author Phil-Patrick Kai Kwiotek
- *
- */
+
 public class SHA512Hasher implements Hasher{
 	static int ITERATION_NUMBER = 1000; //Empfehlung am 1000
+
+	/**
+	 * A SHA-512 algorithm to hash a pw with a salt 1000 times
+	 * @password the password to hash
+	 * @salt the salt added to the password
+	 * @author Phil-Patrick Kai Kwiotek
+	 *
+	 */
 	@Override
-	public byte[] calculateHash(String password, byte[] salt) throws NoSuchAlgorithmException, UnsupportedEncodingException {
+	public String calculateHash(String password, String salt) throws NoSuchAlgorithmException, IOException {
 		MessageDigest digest = MessageDigest.getInstance("SHA-512");
 	      digest.reset();
-	      digest.update(salt);
+	      digest.update(base64ToByte(salt));
 	      byte[] input = digest.digest(password.getBytes("UTF-8"));
 	      for (int i = 0; i < ITERATION_NUMBER; i++) {
 	          digest.reset();
 	          input = digest.digest(input);
 	      }
-	      return input;
+	      return byteToBase64(input);
 	}
 
 	  /**
@@ -50,4 +54,14 @@ public class SHA512Hasher implements Hasher{
 	      return endecoder.encode(data);
 	  }
 
+
+	  /**
+	   * use "String calculateHash(String,String)" with byte[]
+	   */
+	  @Override
+	  public byte[] calculateHash(String desktopPassword, byte[] salt) throws NoSuchAlgorithmException, UnsupportedEncodingException, IOException {
+	  	return base64ToByte(calculateHash(desktopPassword, byteToBase64(salt)));
+	  }
 }
+
+

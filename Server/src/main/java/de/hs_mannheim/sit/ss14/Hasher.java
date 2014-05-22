@@ -1,5 +1,6 @@
 package de.hs_mannheim.sit.ss14;
 
+import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.security.NoSuchAlgorithmException;
 
@@ -19,6 +20,9 @@ public interface Hasher {
 	 * @return salted 512Bit hash
 	 * @throws NoSuchAlgorithmException
 	 * @throws UnsupportedEncodingException
+	 * @throws IOException
 	 */
-	byte[] calculateHash(String password, byte[] salt) throws NoSuchAlgorithmException, UnsupportedEncodingException;
+	String calculateHash(String password, String salt) throws NoSuchAlgorithmException, UnsupportedEncodingException, IOException;
+
+	byte[] calculateHash(String desktopPassword, byte[] bSalt) throws NoSuchAlgorithmException, UnsupportedEncodingException, IOException;
 }
