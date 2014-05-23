@@ -53,6 +53,7 @@ public class StartView extends JFrame {
 	}
 	
 	public void setLoggedInView(){
+		getContentPane().removeAll();
 		getContentPane().setLayout(new GridLayout(1, 1));
 		
 		JPanel usernamePanel = new JPanel();
@@ -63,6 +64,7 @@ public class StartView extends JFrame {
 		usernamePanel.add(usernameTextfield);
 		
 		getContentPane().add(usernamePanel);
+		setVisible(true);
 	}
 
 }

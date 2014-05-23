@@ -2,7 +2,10 @@ package de.hs_mannheim.sit.ss14.gui.controllers;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.IOException;
+import java.net.UnknownHostException;
 
+import de.hs_mannheim.sit.ss14.ClientSocket;
 import de.hs_mannheim.sit.ss14.gui.models.LoginModel;
 
 public class LoginController {
@@ -38,15 +41,22 @@ public class LoginController {
 	}
 
 	private void startLoginProcess(LoginModel loginModel) {
-		//guiController.setLoggedInView();
-		boolean test=true;
-		while(test){
-			System.out.println("");
+		ClientSocket socket=new ClientSocket();
+		try {
+			socket.establishConnection();
+		} catch ( IOException e) {
+			loginModel.credentialsMessageTextarea.setText("Die Verbindung zum Server konnte nicht hergestellt werden.");
 		}
-		loginModel.credentialsMessageTextarea.setText("Username: "
-				+ loginModel.usernameTextfield.getText() + "\nPasswort: "
-				+ loginModel.passwordTextfield.getText());
+
 		
+		
+		
+		
+		
+//		loginModel.credentialsMessageTextarea.setText("Username: "
+//				+ loginModel.usernameTextfield.getText() + "\nPasswort: "
+//				+ loginModel.passwordTextfield.getText());
+//		
 		
 		
 		
