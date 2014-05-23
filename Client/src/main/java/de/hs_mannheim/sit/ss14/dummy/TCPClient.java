@@ -1,4 +1,4 @@
-package de.hs_mannheim.sit.ss14;
+package de.hs_mannheim.sit.ss14.dummy;
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
