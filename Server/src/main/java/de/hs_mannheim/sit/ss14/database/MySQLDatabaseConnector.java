@@ -1,4 +1,4 @@
-package de.hs_mannheim.sit.ss14;
+package de.hs_mannheim.sit.ss14.database;
 ///TODO: decide wicht of the two below !!
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
@@ -13,6 +13,9 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 
+import de.hs_mannheim.sit.ss14.User;
+import de.hs_mannheim.sit.ss14.hash.Hasher;
+import de.hs_mannheim.sit.ss14.hash.SHA512Hasher;
 import sun.misc.BASE64Decoder;
 import sun.misc.BASE64Encoder;
 
