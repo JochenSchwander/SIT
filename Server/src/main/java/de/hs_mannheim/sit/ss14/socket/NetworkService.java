@@ -8,11 +8,22 @@ import java.util.concurrent.TimeUnit;
 import de.hs_mannheim.sit.ss14.DatabaseConnector;
 import de.hs_mannheim.sit.ss14.MySQLDatabaseConnector;
 
+/**
+ * Service Thread, that accepts incomming socket connections.
+ *
+ * @author Jochen Schwander
+ */
 class NetworkService implements Runnable {
 	private final ServerSocket serverSocket;
 	private final ExecutorService pool;
 	private final DatabaseConnector dbcon;
 
+	/**
+	 * Constructor.
+	 *
+	 * @param pool the ExecutorService that is used to launch the connection specific threads
+	 * @param serverSocket the ServerSocket, on which the connections are coming in
+	 */
 	public NetworkService(ExecutorService pool, ServerSocket serverSocket) {
 		this.serverSocket = serverSocket;
 		this.pool = pool;

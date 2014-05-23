@@ -5,9 +5,22 @@ import java.net.ServerSocket;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
-public class SocketServer {
+import javax.servlet.ServletConfig;
+import javax.servlet.ServletException;
+import javax.servlet.http.HttpServlet;
 
-	public static void main(String[] args) throws IOException {
+/**
+ * Class for starting the Socket Network Service.
+ *
+ * @author Jochen Schwander
+ */
+@SuppressWarnings("serial")
+public class SocketServer extends HttpServlet {
+
+	@Override
+	public void init(ServletConfig config) throws ServletException {
+		super.init(config);
+
 		final ExecutorService pool;
 		final ServerSocket serverSocket;
 		int port = 31337;
@@ -16,10 +29,15 @@ public class SocketServer {
 		// werden. Vorrangig werden jedoch vorhandene freie Threads benutzt.
 		pool = Executors.newCachedThreadPool();
 
-		serverSocket = new ServerSocket(port);
+		try {
+			serverSocket = new ServerSocket(port);
 
-		// Thread zur Behandlung der Client-Server-Kommunikation
-		Thread t1 = new Thread(new NetworkService(pool, serverSocket));
-		t1.start();
+			// Thread zur Behandlung der Client-Server-Kommunikation
+			Thread daemon = new Thread(new NetworkService(pool, serverSocket));
+			daemon.start();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
 	}
+
 }
