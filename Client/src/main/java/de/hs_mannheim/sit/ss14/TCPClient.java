@@ -1,5 +1,8 @@
 package de.hs_mannheim.sit.ss14;
-import java.io.*;
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
+import java.io.OutputStreamWriter;
+import java.io.PrintWriter;
 import java.net.ConnectException;
 import java.net.Socket;
 
@@ -10,11 +13,12 @@ class TCPClient {
 		String modifiedSentence;
 		try {
 			clientSocket = new Socket("localhost", 31337);
-			DataOutputStream outToServer = new DataOutputStream(clientSocket.getOutputStream());
+			PrintWriter outToServer = new PrintWriter(new OutputStreamWriter(clientSocket.getOutputStream()));
 			BufferedReader inFromServer = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
 			sentence = "echo\n HAllo server";
 			// sentence = inFromUser.readLine();
-			outToServer.writeBytes(sentence + '\n');
+			outToServer.println(sentence);
+			outToServer.flush();
 			modifiedSentence = inFromServer.readLine();
 			System.out.println("FROM SERVER: " + modifiedSentence);
 			clientSocket.close();

@@ -45,6 +45,7 @@ class Handler implements Runnable {
 			break;
 		case "echo":
 			out.println("Echo: " + in.readLine());
+			out.flush();
 			break;
 		case "logout":
 			break;
