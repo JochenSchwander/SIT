@@ -65,8 +65,8 @@ public class MySQLDatabaseConnector implements DatabaseConnector{
 	              byte[] bDesktopPasswordHash = hasher.calculateHash(desktopPassword, bSalt);
 	              String desktopPasswordHash = byteToBase64(bDesktopPasswordHash);
 
-	              byte[] bWebPasswordHash = hasher.calculateHash(desktopPassword, bSalt);
-	              String webPasswordHash = byteToBase64(bDesktopPasswordHash);
+	              byte[] bWebPasswordHash = hasher.calculateHash(webPassword, bSalt);
+	              String webPasswordHash = byteToBase64(bWebPasswordHash);
 
 	              //make binary salt to String
 	              String salt = byteToBase64(bSalt);
