@@ -1,5 +1,8 @@
+<!doctype html>
 <html>
 <head>
+	<title>WebClient</title>
+	<meta charset="iso-8859-1">
 	<script type="text/javascript" src="jquery.js"></script>
 	<script type="text/javascript" src="jsSHA-1.5.0/src/sha.js"></script>
 	<script type="text/javascript" src="jsSHA-1.5.0/src/sha512.js"></script>
@@ -9,7 +12,7 @@
 	<input type="text" size="75" name="username" id="username">
 	<br>
 	<label for="webPassword">Web Passwort: </label>
-	<input type="text" size="75" name="webPassword" id="webPassword">
+	<input type="password" size="75" name="webPassword" id="webPassword">
 	<br>
 	<label for="otp">One Time Password: </label>
 	<input type="text" size="75" name="otp" id="otp">
@@ -26,19 +29,39 @@
 
 
 	<SCRIPT TYPE="text/javascript">
-			$( "#calcHash" ).click(function() {
+		function getCookie(cname){
+			var name = cname + "=";
+			var ca = document.cookie.split(';');
+			for(var i=0; i<ca.length; i++) 
+			  {
+			  var c = ca[i].trim();
+			  if (c.indexOf(name)==0) return c.substring(name.length,c.length);
+			  }
+			return "";
+		}
+		function setCookie(cname,cvalue,exdays){
+			var d = new Date();
+			d.setTime(d.getTime()+(exdays*24*60*60*1000));
+			var expires = "expires="+d.toGMTString();
+			document.cookie = cname + "=" + cvalue + "; " + expires;
+		}
 
-				var input = $( "#webPassword" ).val() + $("#otp").val() +$( "#salt" ).val();
+		if(getCookie("salt") != ""){
+			$( "#salt" ).val(getCookie("salt"));
+		}
 
-			  	var shaObj = new jsSHA(input, "TEXT"); //"HEX" OR "TEXT"
+		$( "#calcHash" ).click(function() {
 
-				var hash = shaObj.getHash("SHA-512", "HEX", "1000"); //third param is number of rounds
-				var hmac = shaObj.getHMAC("SecretKey", "TEXT", "SHA-512", "HEX");
-				
-				$( "#hashOutput" ).val(hash);
+			var input = $( "#webPassword" ).val() + $("#otp").val() +$( "#salt" ).val();
 
+		  	var shaObj = new jsSHA(input, "TEXT"); //"HEX" OR "TEXT"
 
-			});
+			var hash = shaObj.getHash("SHA-512", "HEX", "1000"); //third param is number of rounds
+			var hmac = shaObj.getHMAC("SecretKey", "TEXT", "SHA-512", "HEX");
+			
+			$( "#hashOutput" ).val(hash);
+			setCookie("salt",$( "#salt" ).val(),365); //Set Cookie for Salt
+		});
 	</SCRIPT>
 
 
