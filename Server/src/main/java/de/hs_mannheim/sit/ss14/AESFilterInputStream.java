@@ -11,7 +11,7 @@ import java.io.InputStream;
  */
 public class AESFilterInputStream extends FilterInputStream{
 
-	protected AESFilterInputStream(InputStream in) {
+	public AESFilterInputStream(InputStream in) {
 		super(in);
 		// TODO Auto-generated constructor stub
 	}
