@@ -51,7 +51,7 @@ class Handler implements Runnable {
 		} catch (IOException e) {
 			e.printStackTrace();
 		} finally {
-
+			//TODO session cleanup!
 		}
 	}
 
@@ -87,10 +87,7 @@ class Handler implements Runnable {
 				out.flush();
 				break;
 			case "logout":
-				//TODO
-				break;
-			case "requestotp":
-				//TODO
+				closeSocketConnection();
 				break;
 			}
 		} else {
@@ -101,10 +98,18 @@ class Handler implements Runnable {
 			case "login":
 				login();
 				break;
+			case "requestotp":
+				requestotp();
+				break;
 			}
 		}
 	}
 
+	/**
+	 * Register a new User.
+	 *
+	 * @throws IOException
+	 */
 	private void register() throws IOException {
 		String userdata = in.readLine();
 
@@ -129,6 +134,11 @@ class Handler implements Runnable {
 		}
 	}
 
+	/**
+	 * Try to login an existing user.
+	 *
+	 * @throws IOException
+	 */
 	private void login() throws IOException {
 		String userdata = in.readLine();
 
@@ -137,6 +147,7 @@ class Handler implements Runnable {
 		String[] userdataArray = userdata.split(";");
 		user = dbcon.checkDesktopPassword(userdataArray[4], userdataArray[3]);
 
+		//TODO check if allready loged in
 		if (user == null) {
 			out.println("login");
 			out.println("fail;Password/Username wrong or entered wrong too many times.");
@@ -154,6 +165,24 @@ class Handler implements Runnable {
 		}
 	}
 
+	/**
+	 * Send the otp from the loged in user to the client.
+	 */
+	private void requestotp() {
+		out.println("requestotp");
+
+		if (user == null) {
+			out.println(" ; ");
+		} else {
+			out.println(user.getOneTimeCode() + ";" + user.getSalt());
+		}
+
+		out.flush();
+	}
+
+	/**
+	 * Close the connection to the client.
+	 */
 	private void closeSocketConnection() {
 		try {
 			Thread.sleep(4000);
