@@ -6,8 +6,8 @@ import java.sql.SQLException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.TimeUnit;
 
-import de.hs_mannheim.sit.ss14.DatabaseConnector;
-import de.hs_mannheim.sit.ss14.MySQLDatabaseConnector;
+import de.hs_mannheim.sit.ss14.database.DatabaseConnector;
+import de.hs_mannheim.sit.ss14.database.MySQLDatabaseConnector;
 
 /**
  * Service Thread, that accepts incomming socket connections.

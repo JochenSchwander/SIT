@@ -1,9 +1,11 @@
-package de.hs_mannheim.sit.ss14;
+package de.hs_mannheim.sit.ss14.database;
 
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.security.NoSuchAlgorithmException;
 import java.sql.SQLException;
+
+import de.hs_mannheim.sit.ss14.User;
 
 /**
  *

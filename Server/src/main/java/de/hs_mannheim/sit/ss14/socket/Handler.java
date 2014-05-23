@@ -5,13 +5,12 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
-import java.math.BigInteger;
 import java.net.Socket;
 import java.security.NoSuchAlgorithmException;
 import java.sql.SQLException;
 
-import de.hs_mannheim.sit.ss14.DatabaseConnector;
 import de.hs_mannheim.sit.ss14.User;
+import de.hs_mannheim.sit.ss14.database.DatabaseConnector;
 
 /**
  * Handles a single socket Connection.
@@ -145,9 +144,9 @@ class Handler implements Runnable {
 		//TODO decrypt!
 
 		String[] userdataArray = userdata.split(";");
-		user = dbcon.checkDesktopPassword(userdataArray[4], userdataArray[3]);
+		user = dbcon.checkDesktopPassword(userdataArray[2], userdataArray[1]);
 
-		//TODO check if allready loged in
+		//TODO check if already logged in
 		if (user == null) {
 			out.println("login");
 			out.println("fail;Password/Username wrong or entered wrong too many times.");
@@ -155,10 +154,10 @@ class Handler implements Runnable {
 			closeSocketConnection();
 		} else {
 			//TODO calulate D-H
-			BigInteger B = new BigInteger("1");
+			String B = "TODO";
 
 			out.println("login");
-			out.println("success;" + B.toString());
+			out.println("success;" + B);
 			out.flush();
 
 			//TODO encrypt stream
@@ -166,7 +165,7 @@ class Handler implements Runnable {
 	}
 
 	/**
-	 * Send the otp from the loged in user to the client.
+	 * Send the otp from the logged in user to the client.
 	 */
 	private void requestotp() {
 		out.println("requestotp");
@@ -192,7 +191,7 @@ class Handler implements Runnable {
 			try {
 				client.close();
 			} catch (IOException e) {
-				//only happens when allready closed -> dont care
+				//only happens when already closed -> dont care
 			}
 		}
 	}

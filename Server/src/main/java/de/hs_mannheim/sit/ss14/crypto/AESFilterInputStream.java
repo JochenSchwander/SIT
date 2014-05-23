@@ -1,4 +1,4 @@
-package de.hs_mannheim.sit.ss14;
+package de.hs_mannheim.sit.ss14.crypto;
 
 import java.io.FilterInputStream;
 import java.io.InputStream;

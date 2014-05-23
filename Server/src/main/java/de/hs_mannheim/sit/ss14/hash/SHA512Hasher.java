@@ -1,4 +1,4 @@
-package de.hs_mannheim.sit.ss14;
+package de.hs_mannheim.sit.ss14.hash;
 
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
