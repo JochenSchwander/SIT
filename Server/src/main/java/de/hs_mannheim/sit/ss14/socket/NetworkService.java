@@ -25,8 +25,8 @@ class NetworkService implements Runnable {
 			while (true) {
 				pool.execute(new Handler(serverSocket.accept(), dbcon));
 			}
-		} catch (IOException ex) {
-
+		} catch (IOException e) {
+			e.printStackTrace();
 		} finally {
 			pool.shutdown(); // keine Annahme von neuen Anforderungen
 			try {
@@ -36,9 +36,9 @@ class NetworkService implements Runnable {
 					serverSocket.close();
 				}
 			} catch (IOException e) {
-
-			} catch (InterruptedException ei) {
-
+				e.printStackTrace();
+			} catch (InterruptedException e) {
+				e.printStackTrace();
 			}
 		}
 	}

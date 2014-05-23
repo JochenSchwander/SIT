@@ -27,10 +27,11 @@ class Handler implements Runnable {
 		try {
 			String command;
 			while((command = in.readLine()) != null) {
+				System.out.println(command);
 				handleCommand(command);
 			}
 		} catch (IOException e) {
-
+			e.printStackTrace();
 		} finally {
 
 		}
