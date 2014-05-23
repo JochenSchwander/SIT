@@ -10,6 +10,7 @@ import java.security.NoSuchAlgorithmException;
 import java.sql.SQLException;
 
 import de.hs_mannheim.sit.ss14.User;
+import de.hs_mannheim.sit.ss14.crypto.DiffieHellman;
 import de.hs_mannheim.sit.ss14.database.DatabaseConnector;
 
 /**
@@ -153,8 +154,16 @@ class Handler implements Runnable {
 			out.flush();
 			closeSocketConnection();
 		} else {
-			//TODO calulate D-H
-			String B = "TODO";
+			DiffieHellman dh = new DiffieHellman();
+			String B = "";
+			String K;
+			try {
+				B = dh.calculatePublicKey(userdataArray[0]);
+				K = dh.calculateSharedSecret();
+			} catch (Exception e) {
+				//TODO was machen?
+				e.printStackTrace();
+			}
 
 			out.println("login");
 			out.println("success;" + B);

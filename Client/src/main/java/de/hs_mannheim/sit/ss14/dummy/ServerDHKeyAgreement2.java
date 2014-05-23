@@ -1,7 +1,4 @@
 package de.hs_mannheim.sit.ss14.dummy;
-import java.math.BigInteger;
-import java.security.AlgorithmParameterGenerator;
-import java.security.InvalidKeyException;
 import java.security.KeyFactory;
 import java.security.KeyPair;
 import java.security.KeyPairGenerator;
@@ -90,7 +87,7 @@ public class ServerDHKeyAgreement2 {
 		}
 		return buf.toString();
 	}
-	
+
 	private byte[] hexStringToByteArray(String s) {
 	    int len = s.length();
 	    byte[] data = new byte[len / 2];
