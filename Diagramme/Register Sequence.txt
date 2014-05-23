@@ -14,5 +14,7 @@ alt username already exists
     Server->Desktop Client: register\nfail
 else
     Database->Server: false
-    Server->Desktop Client: register\nsuccess
+    Server->Server: generate "salt" for user
+    Server->Database: create user \n(desktopPassword, webPassword,username, salt)
+    Server->Desktop Client: register\nsuccess;salt
 end
