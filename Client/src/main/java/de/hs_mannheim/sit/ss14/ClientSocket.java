@@ -9,6 +9,11 @@ import java.io.PrintWriter;
 import java.net.Socket;
 import java.net.UnknownHostException;
 
+/**
+ * 
+ * @author DS
+ *
+ */
 public class ClientSocket {
 	
 	private String address="localhost";

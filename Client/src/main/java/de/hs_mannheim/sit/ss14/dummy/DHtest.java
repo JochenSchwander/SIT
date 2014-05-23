@@ -3,16 +3,16 @@ package de.hs_mannheim.sit.ss14.dummy;
 public class DHtest {
 
 	public static void main(String[] args) throws Exception {
-		BobDHKeyAgreement2 bob=new BobDHKeyAgreement2();
+		ServerDHKeyAgreement2 bob=new ServerDHKeyAgreement2();
 		
-		AliceDHKeyAgreement2 alice=new AliceDHKeyAgreement2();
+		ClientDHKeyAgreement2 alice=new ClientDHKeyAgreement2();
 		
 		
-		byte[] alicePubKeyEnc = alice.AlicePubKeyEnc();
-		byte[] bobPubKeyEnc = bob.bobPubKeyEnc(alicePubKeyEnc);
+		byte[] alicePubKeyEnc = alice.clientPubKeyEnc();
+		byte[] bobPubKeyEnc = bob.serverPubKeyEnc(alicePubKeyEnc);
 		
-		System.out.println("AUSGABE:BOB:   "+bob.bobSharedSecret());
-		System.out.println("AUSGABE:Alice: "+alice.aliceSharedSecret(bobPubKeyEnc));
+		System.out.println("AUSGABE:BOB:   "+bob.serverSharedSecret());
+		System.out.println("AUSGABE:Alice: "+alice.clientSharedSecret(bobPubKeyEnc));
 		
 
 	}

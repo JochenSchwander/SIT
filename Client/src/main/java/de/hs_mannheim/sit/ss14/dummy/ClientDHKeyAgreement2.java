@@ -12,11 +12,11 @@ import javax.crypto.KeyAgreement;
 import javax.crypto.interfaces.DHPublicKey;
 import javax.crypto.spec.DHParameterSpec;
 
-public class AliceDHKeyAgreement2 {
+public class ClientDHKeyAgreement2 {
 
-	private KeyAgreement aliceKeyAgree;
+	private KeyAgreement clientKeyAgree;
 
-	public byte[] AlicePubKeyEnc() throws Exception {
+	public byte[] clientPubKeyEnc() throws Exception {
 		DHParameterSpec dhSkipParamSpec;
 
 		// Some central authority creates new DH parameters
@@ -27,42 +27,39 @@ public class AliceDHKeyAgreement2 {
 				.getParameterSpec(DHParameterSpec.class);
 
 		/*
-		 * Alice creates her own DH key pair, using the DH parameters from above
+		 * Client creates her own DH key pair, using the DH parameters from above
 		 */
-		System.out.println("ALICE: Generate DH keypair ...");
-		KeyPairGenerator aliceKpairGen = KeyPairGenerator.getInstance("DH");
-		aliceKpairGen.initialize(dhSkipParamSpec);
-		KeyPair aliceKpair = aliceKpairGen.generateKeyPair();
+		KeyPairGenerator clientKpairGen = KeyPairGenerator.getInstance("DH");
+		clientKpairGen.initialize(dhSkipParamSpec);
+		KeyPair clientKpair = clientKpairGen.generateKeyPair();
 
-		// Alice creates and initializes her DH KeyAgreement object
-		System.out.println("ALICE: Initialization ...");
-		aliceKeyAgree = KeyAgreement.getInstance("DH");
-		aliceKeyAgree.init(aliceKpair.getPrivate());
+		// Client creates and initializes her DH KeyAgreement object
+		clientKeyAgree = KeyAgreement.getInstance("DH");
+		clientKeyAgree.init(clientKpair.getPrivate());
 
-		// Alice encodes her public key, and sends it over to Bob.
-		byte[] alicePubKeyEnc = aliceKpair.getPublic().getEncoded();
+		// Client encodes her public key, and sends it over to Server.
+		byte[] clientPubKeyEnc = clientKpair.getPublic().getEncoded();
 
-		return alicePubKeyEnc;
+		return clientPubKeyEnc;
 	}
 
-	public String aliceSharedSecret(byte[] bobPubKeyEnc) throws Exception {
+	public String clientSharedSecret(byte[] serverPubKeyEnc) throws Exception {
 		/*
-		 * Alice uses Bob's public key for the first (and only) phase of her
+		 * Client uses Server's public key for the first (and only) phase of her
 		 * version of the DH protocol. Before she can do so, she has to
-		 * instantiate a DH public key from Bob's encoded key material.
+		 * instantiate a DH public key from Server's encoded key material.
 		 */
-		KeyFactory aliceKeyFac = KeyFactory.getInstance("DH");
-		X509EncodedKeySpec x509KeySpec = new X509EncodedKeySpec(bobPubKeyEnc);
-		PublicKey bobPubKey = aliceKeyFac.generatePublic(x509KeySpec);
-		System.out.println("ALICE: Execute PHASE1 ...");
-		aliceKeyAgree.doPhase(bobPubKey, true);
+		KeyFactory clientKeyFac = KeyFactory.getInstance("DH");
+		X509EncodedKeySpec x509KeySpec = new X509EncodedKeySpec(serverPubKeyEnc);
+		PublicKey serverPubKey = clientKeyFac.generatePublic(x509KeySpec);
+		clientKeyAgree.doPhase(serverPubKey, true);
 
 		/*
-		 * At this stage, both Alice and Bob have completed the DH key agreement
+		 * At this stage, both Client and Server have completed the DH key agreement
 		 * protocol. Both generate the (same) shared secret.
 		 */
-		byte[] aliceSharedSecret = aliceKeyAgree.generateSecret();
-		return toHexString(aliceSharedSecret);
+		byte[] clientSharedSecret = clientKeyAgree.generateSecret();
+		return toHexString(clientSharedSecret);
 
 	}
 

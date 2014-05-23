@@ -12,59 +12,56 @@ import javax.crypto.KeyAgreement;
 import javax.crypto.interfaces.DHPublicKey;
 import javax.crypto.spec.DHParameterSpec;
 
-public class BobDHKeyAgreement2 {
+public class ServerDHKeyAgreement2 {
 
-	private KeyAgreement bobKeyAgree;
-	private PublicKey alicePubKey;
+	private KeyAgreement serverKeyAgree;
+	private PublicKey clientPubKey;
 
-	public byte[] bobPubKeyEnc(byte[] alicePubKeyEnc) throws Exception {
+	public byte[] serverPubKeyEnc(byte[] clientPubKeyEnc) throws Exception {
 
 		/*
-		 * Let's turn over to Bob. Bob has received Alice's public key in
+		 * Let's turn over to Server. Server has received Client's public key in
 		 * encoded format. He instantiates a DH public key from the encoded key
 		 * material.
 		 */
-		KeyFactory bobKeyFac = KeyFactory.getInstance("DH");
-		X509EncodedKeySpec x509KeySpec = new X509EncodedKeySpec(alicePubKeyEnc);
-		alicePubKey = bobKeyFac.generatePublic(x509KeySpec);
+		KeyFactory serverKeyFac = KeyFactory.getInstance("DH");
+		X509EncodedKeySpec x509KeySpec = new X509EncodedKeySpec(clientPubKeyEnc);
+		clientPubKey = serverKeyFac.generatePublic(x509KeySpec);
 
 		/*
-		 * Bob gets the DH parameters associated with Alice's public key. He
+		 * Server gets the DH parameters associated with Client's public key. He
 		 * must use the same parameters when he generates his own key pair.
 		 */
-		DHParameterSpec dhParamSpec = ((DHPublicKey) alicePubKey).getParams();
+		DHParameterSpec dhParamSpec = ((DHPublicKey) clientPubKey).getParams();
 
-		// Bob creates his own DH key pair
-		System.out.println("BOB: Generate DH keypair ...");
-		KeyPairGenerator bobKpairGen = KeyPairGenerator.getInstance("DH");
-		bobKpairGen.initialize(dhParamSpec);
-		KeyPair bobKpair = bobKpairGen.generateKeyPair();
+		// Server creates his own DH key pair
+		KeyPairGenerator serverKpairGen = KeyPairGenerator.getInstance("DH");
+		serverKpairGen.initialize(dhParamSpec);
+		KeyPair serverKpair = serverKpairGen.generateKeyPair();
 
-		// Bob creates and initializes his DH KeyAgreement object
-		System.out.println("BOB: Initialization ...");
-		bobKeyAgree = KeyAgreement.getInstance("DH");
-		bobKeyAgree.init(bobKpair.getPrivate());
+		// Server creates and initializes his DH KeyAgreement object
+		serverKeyAgree = KeyAgreement.getInstance("DH");
+		serverKeyAgree.init(serverKpair.getPrivate());
 
-		// Bob encodes his public key, and sends it over to Alice.
-		byte[] bobPubKeyEnc = bobKpair.getPublic().getEncoded();
-		return bobPubKeyEnc;
+		// Server encodes his public key, and sends it over to Client.
+		byte[] serverPubKeyEnc = serverKpair.getPublic().getEncoded();
+		return serverPubKeyEnc;
 
 	}
 
-	public String bobSharedSecret() throws Exception {
+	public String serverSharedSecret() throws Exception {
 		/*
-		 * Bob uses Alice's public key for the first (and only) phase of his
+		 * Server uses Client's public key for the first (and only) phase of his
 		 * version of the DH protocol.
 		 */
-		System.out.println("BOB: Execute PHASE1 ...");
-		bobKeyAgree.doPhase(alicePubKey, true);
+		serverKeyAgree.doPhase(clientPubKey, true);
 
 		/*
 		 * generate the (same) shared secret.
 		 */
 
-		byte[] bobSharedSecret = bobKeyAgree.generateSecret();
-		return toHexString(bobSharedSecret);
+		byte[] serverSharedSecret = serverKeyAgree.generateSecret();
+		return toHexString(serverSharedSecret);
 
 	}
 
