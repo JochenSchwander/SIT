@@ -5,13 +5,14 @@ import java.awt.*;
 import javax.swing.*;
 import javax.swing.border.*;
 
+import de.hs_mannheim.sit.ss14.gui.controllers.RegisterController;
 import de.hs_mannheim.sit.ss14.gui.models.RegisterModel;
 
 public class RegisterTab extends JPanel {
 
 	private static final long serialVersionUID = 1L;
 
-	RegisterTab(RegisterModel registerModel) {
+	RegisterTab(RegisterModel registerModel,RegisterController registerController) {
 		// this element settings
 		setLayout(new GridLayout(2, 1));
 
