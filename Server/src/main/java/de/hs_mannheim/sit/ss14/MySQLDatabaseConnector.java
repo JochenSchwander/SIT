@@ -17,16 +17,16 @@ import sun.misc.BASE64Decoder;
 import sun.misc.BASE64Encoder;
 
 
-public class MySQLDatabaseConnector implements DatabaseConnector{
+public class MySQLDatabaseConnector implements DatabaseConnector {
 
 	private Connection connection;
 	private Hasher hasher;
 
 
 	@Override
-	public void DatabaseConnectior() throws ClassNotFoundException, SQLException {
+	public void connect() throws ClassNotFoundException, SQLException {
 		Class.forName( "com.mysql.jdbc.Driver" );
-		connection = DriverManager.getConnection( "jdbc:mysql://localhost:8889/sit", "root", "gargelkarx" );
+		connection = DriverManager.getConnection( "jdbc:mysql://localhost:3306/sit", "root", "gargelkarx" );
 		hasher = new SHA512Hasher();
 	}
 

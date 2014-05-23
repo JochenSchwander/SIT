@@ -9,7 +9,7 @@ public class Main {
 
 	public static void main(String[] args) throws ClassNotFoundException, SQLException, NoSuchAlgorithmException, UnsupportedEncodingException, IOException {
 		MySQLDatabaseConnector dbCon = new MySQLDatabaseConnector();
-		dbCon.DatabaseConnectior();
+		dbCon.connect();
 		//dbCon.deleteTableStructure();
 		//dbCon.createTableStructure();
 		//dbCon.createUser("phil", "wasIstMartin", "marinIstEinBob");

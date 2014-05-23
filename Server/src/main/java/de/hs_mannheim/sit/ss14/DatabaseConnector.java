@@ -12,7 +12,7 @@ import java.sql.SQLException;
  */
 public interface DatabaseConnector {
 
-	public void DatabaseConnectior() throws ClassNotFoundException, SQLException; // init connection here
+	public void connect() throws ClassNotFoundException, SQLException; // init connection here
 
 	public boolean checkWebPassword(User user, String hashedOneTimewebPassword);
 

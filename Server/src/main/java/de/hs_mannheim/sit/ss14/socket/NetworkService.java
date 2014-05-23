@@ -2,6 +2,7 @@ package de.hs_mannheim.sit.ss14.socket;
 
 import java.io.IOException;
 import java.net.ServerSocket;
+import java.sql.SQLException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.TimeUnit;
 
@@ -28,6 +29,14 @@ class NetworkService implements Runnable {
 		this.serverSocket = serverSocket;
 		this.pool = pool;
 		this.dbcon = new MySQLDatabaseConnector();
+
+		try {
+			dbcon.connect();
+		} catch (ClassNotFoundException e) {
+			e.printStackTrace();
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
 	}
 
 	@Override

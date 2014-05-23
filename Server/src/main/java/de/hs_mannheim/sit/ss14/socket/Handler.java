@@ -5,11 +5,13 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
+import java.math.BigInteger;
 import java.net.Socket;
+import java.security.NoSuchAlgorithmException;
+import java.sql.SQLException;
 
 import de.hs_mannheim.sit.ss14.DatabaseConnector;
-import de.hs_mannheim.sit.ss14.Hasher;
-import de.hs_mannheim.sit.ss14.SHA512Hasher;
+import de.hs_mannheim.sit.ss14.User;
 
 /**
  * Handles a single socket Connection.
@@ -21,8 +23,8 @@ class Handler implements Runnable {
 	private DatabaseConnector dbcon;
 	private BufferedReader in;
 	private PrintWriter out;
-	private Hasher hasher;
 	private boolean isAuthorized;
+	private User user;
 
 	/**
 	 * Constructor.
@@ -36,7 +38,6 @@ class Handler implements Runnable {
 		this.dbcon = dbcon;
 		in = new BufferedReader(new InputStreamReader(client.getInputStream()));
 		out = new PrintWriter(new OutputStreamWriter(client.getOutputStream()));
-		hasher = new SHA512Hasher();
 		isAuthorized = false;
 	}
 
@@ -51,6 +52,24 @@ class Handler implements Runnable {
 			e.printStackTrace();
 		} finally {
 
+		}
+	}
+
+	/**
+	 * Fully authorizes the client or closes the connection.
+	 *
+	 * @param success if true, client gets authorized, if false, client connection will be closed
+	 */
+	public void webloginResult(final boolean success) {
+		out.println("weblogin");
+		if (success) {
+			isAuthorized = true;
+			out.println("success;Welcome");
+			out.flush();
+		} else {
+			out.println("fail;Web authentification failed");
+			out.flush();
+			closeSocketConnection();
 		}
 	}
 
@@ -77,39 +96,74 @@ class Handler implements Runnable {
 		} else {
 			switch(command) {
 			case "register":
-				//TODO
+				register();
 				break;
 			case "login":
-				//TODO
+				login();
 				break;
 			}
 		}
 	}
 
-	/**
-	 * Fully authorizes the client or closes the connection.
-	 *
-	 * @param success if true, client gets authorized, if false, client connection will be closed
-	 */
-	public void webloginResult(final boolean success) {
-		out.println("weblogin");
-		if (success) {
-			isAuthorized = true;
-			out.println("success;Welcome");
+	private void register() throws IOException {
+		String userdata = in.readLine();
+
+		//TODO decrypt!
+
+		String[] userdataArray = userdata.split(";");
+		try {
+			if (dbcon.createUser(userdataArray[0], userdataArray[1], userdataArray[2])) {
+				out.println("register");
+				out.println("success");
+			} else {
+				out.println("register");
+				out.println("fail");
+			}
+		} catch (NoSuchAlgorithmException | SQLException | IndexOutOfBoundsException e) {
+			e.printStackTrace();
+			out.println("register");
+			out.println("fail");
+		} finally {
 			out.flush();
+			closeSocketConnection();
+		}
+	}
+
+	private void login() throws IOException {
+		String userdata = in.readLine();
+
+		//TODO decrypt!
+
+		String[] userdataArray = userdata.split(";");
+		user = dbcon.checkDesktopPassword(userdataArray[4], userdataArray[3]);
+
+		if (user == null) {
+			out.println("login");
+			out.println("fail;Password/Username wrong or entered wrong too many times.");
+			out.flush();
+			closeSocketConnection();
 		} else {
-			out.println("fail;Web authentification failed");
+			//TODO calulate D-H
+			BigInteger B = new BigInteger("1");
+
+			out.println("login");
+			out.println("success;" + B.toString());
 			out.flush();
+
+			//TODO encrypt stream
+		}
+	}
+
+	private void closeSocketConnection() {
+		try {
+			Thread.sleep(4000);
+		} catch (InterruptedException e) {
+			e.printStackTrace();
+		} finally {
 			try {
-				Thread.sleep(4000);
-			} catch (InterruptedException e) {
-				e.printStackTrace();
-			} finally {
-				try {
-					client.close();
-				} catch (IOException e) {
-					//only happens when allready closed -> dont care
-				}
+				client.close();
+			} catch (IOException e) {
+				//only happens when allready closed -> dont care
 			}
 		}
 	}
