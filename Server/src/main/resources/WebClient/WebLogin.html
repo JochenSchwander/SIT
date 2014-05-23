@@ -1,0 +1,33 @@
+<html>
+<head>
+	<script type="text/javascript" src="jquery.js"></script>
+	<script type="text/javascript" src="jsSHA-1.5.0/src/sha.js"></script>
+	<script type="text/javascript" src="jsSHA-1.5.0/src/sha512.js"></script>
+</head>
+<body>
+	<label for="hashInputText">Web Passwort: </label>
+	<input type="text" size="75" name="hashInputText" id="hashInputText">
+
+
+	<br>
+	<button id="calcHash">Calculate SHA512 Hash with 1000 rounds: </button>
+	<br>
+	<label for="hashOutput">SHA512 Hash:</label>
+	<input type="text" size="75" name="hashOutput" id="hashOutput">
+
+
+	<SCRIPT TYPE="text/javascript">
+			$( "#calcHash" ).click(function() {
+			  	var shaObj = new jsSHA($( "#hashInputText" ).val(), "TEXT"); //"HEX" OR "TEXT"
+
+				var hash = shaObj.getHash("SHA-512", "HEX", "1000");
+				var hmac = shaObj.getHMAC("SecretKey", "TEXT", "SHA-512", "HEX");
+				
+				$( "#hashOutput" ).val(hash);
+			});
+	</SCRIPT>
+
+
+</body>
+
+</html>
