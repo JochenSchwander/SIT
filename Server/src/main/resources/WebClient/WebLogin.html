@@ -5,8 +5,17 @@
 	<script type="text/javascript" src="jsSHA-1.5.0/src/sha512.js"></script>
 </head>
 <body>
-	<label for="hashInputText">Web Passwort: </label>
-	<input type="text" size="75" name="hashInputText" id="hashInputText">
+	<label for="username">Username: </label>
+	<input type="text" size="75" name="username" id="username">
+	<br>
+	<label for="webPassword">Web Passwort: </label>
+	<input type="text" size="75" name="webPassword" id="webPassword">
+	<br>
+	<label for="otp">One Time Password: </label>
+	<input type="text" size="75" name="otp" id="otp">
+	<br>
+	<label for="salt">Salt: </label>
+	<input type="text" size="75" name="salt" id="salt">
 
 
 	<br>
@@ -18,12 +27,17 @@
 
 	<SCRIPT TYPE="text/javascript">
 			$( "#calcHash" ).click(function() {
-			  	var shaObj = new jsSHA($( "#hashInputText" ).val(), "TEXT"); //"HEX" OR "TEXT"
 
-				var hash = shaObj.getHash("SHA-512", "HEX", "1000");
+				var input = $( "#webPassword" ).val() + $("#otp").val() +$( "#salt" ).val();
+
+			  	var shaObj = new jsSHA(input, "TEXT"); //"HEX" OR "TEXT"
+
+				var hash = shaObj.getHash("SHA-512", "HEX", "1000"); //third param is number of rounds
 				var hmac = shaObj.getHMAC("SecretKey", "TEXT", "SHA-512", "HEX");
 				
 				$( "#hashOutput" ).val(hash);
+
+
 			});
 	</SCRIPT>
 
