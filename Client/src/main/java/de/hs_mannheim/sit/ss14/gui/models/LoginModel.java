@@ -1,6 +1,5 @@
 package de.hs_mannheim.sit.ss14.gui.models;
 
-import javax.swing.JLabel;
 import javax.swing.JPasswordField;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;

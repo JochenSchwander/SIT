@@ -12,11 +12,10 @@ public class LoginTab extends JPanel {
 
 	private static final long serialVersionUID = 1L;;
 
-	LoginTab(LoginModel loginModel) {
+	LoginTab(LoginModel loginModel,LoginController loginController ) {
 		
 		// this element settings
 		setLayout(new GridLayout(2, 1));
-		LoginController loginController = new LoginController();
 
 		// upper row
 		JPanel upperPanel = new JPanel();
@@ -54,6 +53,7 @@ public class LoginTab extends JPanel {
 
 		JTextField passwordTextfield =	loginModel.passwordTextfield;
 		passwordPanel.add(passwordTextfield);
+		passwordTextfield.addActionListener(loginController.getBtnLoginAL(loginModel));
 
 
 		// lower row right side panel
@@ -65,6 +65,7 @@ public class LoginTab extends JPanel {
 		JPanel credentialsMessagePanel = new JPanel();
 		lowerRightSplittedPanel.add(credentialsMessagePanel);
 		credentialsMessagePanel.setLayout(new GridLayout(1, 0, 0, 0));
+		credentialsMessagePanel.setBorder(new EmptyBorder(15, 10, 15, 10));
 
 		JTextArea credentialsMessageTextarea =	loginModel.credentialsMessageTextarea;
 		credentialsMessageTextarea.setEditable(false);
@@ -84,5 +85,4 @@ public class LoginTab extends JPanel {
 		btnLogin.addActionListener(loginController.getBtnLoginAL(loginModel));
 
 	}
-
 }
