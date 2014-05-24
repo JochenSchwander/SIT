@@ -6,6 +6,7 @@ import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
 import java.net.Socket;
+import java.security.InvalidAlgorithmParameterException;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
 import java.sql.SQLException;
@@ -14,6 +15,7 @@ import javax.crypto.Cipher;
 import javax.crypto.CipherInputStream;
 import javax.crypto.CipherOutputStream;
 import javax.crypto.NoSuchPaddingException;
+import javax.crypto.spec.IvParameterSpec;
 import javax.crypto.spec.SecretKeySpec;
 
 import de.hs_mannheim.sit.ss14.User;
@@ -177,14 +179,20 @@ class Handler implements Runnable {
 			out.flush();
 
 			//TODO encrypt stream
+			//TODO close streams?
 			try {
-				Cipher aes = Cipher.getInstance("AES/CBC");
-				aes.init(Cipher.DECRYPT_MODE, new SecretKeySpec(hexStringToByteArray(K), "AES"));
+				byte[] iv = { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 };
+		        IvParameterSpec ivspec = new IvParameterSpec(iv);
 
-				out = new PrintWriter(new OutputStreamWriter(new CipherOutputStream(client.getOutputStream(), aes)));
-				in = new BufferedReader(new InputStreamReader(new CipherInputStream(client.getInputStream(), aes)));
+				Cipher aesDec = Cipher.getInstance("AES/CBC/PKCS5Padding");
+				aesDec.init(Cipher.DECRYPT_MODE, new SecretKeySpec(hexStringToByteArray(K), "AES"), ivspec);
+				in = new BufferedReader(new InputStreamReader(new CipherInputStream(client.getInputStream(), aesDec)));
 
-			} catch (NoSuchAlgorithmException | NoSuchPaddingException | InvalidKeyException e) {
+				Cipher aesEnc = Cipher.getInstance("AES/CBC/PKCS5Padding");
+				aesEnc.init(Cipher.ENCRYPT_MODE, new SecretKeySpec(hexStringToByteArray(K), "AES"), ivspec);
+				out = new PrintWriter(new OutputStreamWriter(new CipherOutputStream(client.getOutputStream(), aesEnc)));
+
+			} catch (NoSuchAlgorithmException | NoSuchPaddingException | InvalidKeyException | InvalidAlgorithmParameterException e) {
 				// TODO was machen?
 				e.printStackTrace();
 			}
