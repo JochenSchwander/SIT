@@ -23,6 +23,7 @@ public class InfoTab extends JPanel {
 		upperPanel.setLayout(new GridLayout(1, 0, 0, 0));
 		
 		JLabel lblSit = new JLabel("SIT");
+		lblSit.setHorizontalAlignment(SwingConstants.CENTER);
 		upperPanel.add(lblSit);
 
 		// lower row
@@ -44,6 +45,7 @@ public class InfoTab extends JPanel {
 		usernamePanel.setBorder(new TitledBorder(new EmptyBorder(10, 10, 10, 10), "Benutzername", TitledBorder.LEADING, TitledBorder.TOP, null, null) );
 		
 		JTextField usernameTextfield = new JTextField(10);
+		usernameTextfield.setEnabled(false);
 		usernamePanel.add(usernameTextfield);
 		
 		// lower row left side lower panel
@@ -53,6 +55,7 @@ public class InfoTab extends JPanel {
 		passwordPanel.setBorder(new TitledBorder(new EmptyBorder(10, 10, 10, 10), "Passwort", TitledBorder.LEADING, TitledBorder.TOP, null, null) );
 
 		JTextField passwordTextfield = new JPasswordField(10);
+		passwordTextfield.setEnabled(false);
 		//passwordTextfield.setActionCommand(OK);
 		//passwordTextfield.addActionListener(passwordTextfield);
 		passwordPanel.add(passwordTextfield);
@@ -68,9 +71,14 @@ public class InfoTab extends JPanel {
 		lowerRightSplittedPanel.add(credentialsMessagePanel);
 		credentialsMessagePanel.setLayout(new GridLayout(1, 0, 0, 0));
 		
-		JLabel lblMessage = new JLabel("MESSAGE");
-		lblMessage.setHorizontalAlignment(SwingConstants.CENTER);
-		credentialsMessagePanel.add(lblMessage);
+		JTextArea textArea = new JTextArea();
+		credentialsMessagePanel.add(textArea);
+		textArea.setText("Geben Sie ihr erstes Sicherheitskriterium ein.");
+		textArea.setEditable(false);
+		textArea.setLineWrap(true);
+		textArea.setWrapStyleWord(true);
+		textArea.setBackground(SystemColor.control);
+
 		
 		// lower row right side lower panel
 		JPanel okButtonPanel = new JPanel();

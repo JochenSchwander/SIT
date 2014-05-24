@@ -10,11 +10,8 @@ import de.hs_mannheim.sit.ss14.gui.view.*;
  * 
  */
 public class GuiController {
-	private StartView startView;
+	public StartView startView;
 
-	public static void main(String args[]) {
-		new GuiController();
-	}
 
 	GuiController() {
 		startView();
@@ -25,9 +22,7 @@ public class GuiController {
 				new RegisterModel(), new RegisterController());
 	}
 
-	public void setLoggedInView() {
-		startView.displayLoggedInView();
-
+	public static void main(String args[]) {
+		new GuiController();
 	}
-
 }

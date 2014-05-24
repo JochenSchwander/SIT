@@ -62,9 +62,8 @@ public class LoginController {
 	 * @param loginModel
 	 */
 	private void startLoginProcess(LoginModel loginModel) {
-		socket = new ClientSocket();
 		try {
-			socket.establishConnection();
+			socket = new ClientSocket();
 		} catch (IOException e) {
 			loginModel.credentialsMessageTextarea
 					.setText("Die Verbindung zum Server konnte nicht hergestellt werden.");
@@ -85,6 +84,10 @@ public class LoginController {
 	 * @param loginModel
 	 */
 	private void requestOtp(LoginModel loginModel) {
+		String otpString="otp string";		
+		loginModel.infoTextarea.setText("Um ihr zweites Sicherheitskriterium eingeben zu können benötigen Sie dieses OneTimePasswort:\n\n"+otpString);
+		loginModel.credentialsMessageTextarea.setText("Ihre Anmeldedaten waren korrekt.");
+		guiController.startView.loginTab.displayOtp(loginModel);
 
 	}
 

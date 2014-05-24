@@ -9,11 +9,13 @@ public class LoginModel {
 	public JTextField usernameTextfield;
 	public JTextField passwordTextfield;
 	public JTextArea credentialsMessageTextarea;
+	public JTextArea infoTextarea;
 	
 	public LoginModel(){
 		usernameTextfield = new JTextField();
 		passwordTextfield = new JPasswordField();
 		credentialsMessageTextarea = new JTextArea();
+		infoTextarea= new JTextArea();
 	}
 
 }

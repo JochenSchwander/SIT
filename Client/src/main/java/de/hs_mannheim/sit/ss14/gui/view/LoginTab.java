@@ -8,8 +8,15 @@ import javax.swing.border.*;
 import de.hs_mannheim.sit.ss14.gui.controllers.LoginController;
 import de.hs_mannheim.sit.ss14.gui.models.LoginModel;
 
+/**
+ * Beim Erstellen durch ViewStart wird die Ansicht für das erste Sicherheitskriterium gezeigt, und mit showOtp() wird dann das OTP angezeigt,
+ * welches im Web eingegeben werden muss.
+ * @author DS
+ *
+ */
 public class LoginTab extends JPanel {
 
+	private JButton btnLogin;
 	private static final long serialVersionUID = 1L;;
 
 	LoginTab(LoginModel loginModel,LoginController loginController ) {
@@ -21,9 +28,15 @@ public class LoginTab extends JPanel {
 		JPanel upperPanel = new JPanel();
 		add(upperPanel);
 		upperPanel.setLayout(new GridLayout(1, 0, 0, 0));
+		upperPanel.setBorder(new EmptyBorder(15, 10, 15, 10));
 		
-		JLabel text=new JLabel("Geben Sie ihr erstes Sicherheitskriterium ein.");
-		upperPanel.add(text);
+		JTextArea infoTextarea=loginModel.infoTextarea;
+		upperPanel.add(loginModel.infoTextarea);
+		infoTextarea.setText("Willkommen im Loginbereich. \n\nGeben Sie ihr erstes Sicherheitskriterium ein.");
+		infoTextarea.setEditable(false);
+		infoTextarea.setLineWrap(true);
+		infoTextarea.setWrapStyleWord(true);
+		infoTextarea.setBackground(SystemColor.control);
 		
 		// lower row
 		JPanel lowerSplittedPanel = new JPanel();
@@ -79,13 +92,20 @@ public class LoginTab extends JPanel {
 
 		// lower row right side lower panel
 		JPanel LoginButtonPanel = new JPanel();
-		LoginButtonPanel.setBorder(new EmptyBorder(15, 10, 15, 10));
 		lowerRightSplittedPanel.add(LoginButtonPanel);
+		LoginButtonPanel.setBorder(new EmptyBorder(15, 10, 15, 10));
 		LoginButtonPanel.setLayout(new GridLayout(1, 0, 0, 0));
 
-		JButton btnLogin = new JButton("Login");
+		btnLogin = new JButton("Login");
 		LoginButtonPanel.add(btnLogin);
 		btnLogin.addActionListener(loginController.getBtnLoginAL(loginModel));
 
+	}
+	
+	public void displayOtp(LoginModel loginModel){
+		loginModel.usernameTextfield.setEnabled(false);
+		loginModel.passwordTextfield.setEnabled(false);
+		btnLogin.setEnabled(false);
+		
 	}
 }
