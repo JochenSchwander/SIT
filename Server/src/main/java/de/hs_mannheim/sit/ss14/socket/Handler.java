@@ -178,7 +178,6 @@ class Handler implements Runnable {
 			out.println("success;" + B);
 			out.flush();
 
-			//TODO encrypt stream
 			//TODO close streams?
 			try {
 				byte[] iv = { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 };
@@ -231,6 +230,12 @@ class Handler implements Runnable {
 		}
 	}
 
+	/**
+	 * Convert the D-H key to a byte array.
+	 *
+	 * @param s D-H key
+	 * @return D-H key as byte array
+	 */
 	private byte[] hexStringToByteArray(final String s) {
 	    int len = s.length();
 	    byte[] data = new byte[len / 2];
