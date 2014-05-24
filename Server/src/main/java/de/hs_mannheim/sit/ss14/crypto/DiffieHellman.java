@@ -76,7 +76,7 @@ public class DiffieHellman {
 	/*
 	 * Converts a byte to hex digit and writes to the supplied buffer
 	 */
-	private void byte2hex(byte b, StringBuffer buf) {
+	private void byte2hex(byte b, StringBuilder buf) {
 		char[] hexChars = { '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'A', 'B', 'C', 'D', 'E', 'F' };
 		int high = ((b & 0xf0) >> 4);
 		int low = (b & 0x0f);
@@ -88,7 +88,7 @@ public class DiffieHellman {
 	 * Converts a byte array to hex string
 	 */
 	private String toHexString(byte[] block) {
-		StringBuffer buf = new StringBuffer();
+		StringBuilder buf = new StringBuilder();
 
 		int len = block.length;
 

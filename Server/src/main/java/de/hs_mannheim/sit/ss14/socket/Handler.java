@@ -6,8 +6,15 @@ import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
 import java.net.Socket;
+import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
 import java.sql.SQLException;
+
+import javax.crypto.Cipher;
+import javax.crypto.CipherInputStream;
+import javax.crypto.CipherOutputStream;
+import javax.crypto.NoSuchPaddingException;
+import javax.crypto.spec.SecretKeySpec;
 
 import de.hs_mannheim.sit.ss14.User;
 import de.hs_mannheim.sit.ss14.crypto.DiffieHellman;
@@ -156,7 +163,7 @@ class Handler implements Runnable {
 		} else {
 			DiffieHellman dh = new DiffieHellman();
 			String B = "";
-			String K;
+			String K = null;
 			try {
 				B = dh.calculatePublicKey(userdataArray[0]);
 				K = dh.calculateSharedSecret();
@@ -170,6 +177,17 @@ class Handler implements Runnable {
 			out.flush();
 
 			//TODO encrypt stream
+			try {
+				Cipher aes = Cipher.getInstance("AES/CBC");
+				aes.init(Cipher.DECRYPT_MODE, new SecretKeySpec(hexStringToByteArray(K), "AES"));
+
+				out = new PrintWriter(new OutputStreamWriter(new CipherOutputStream(client.getOutputStream(), aes)));
+				in = new BufferedReader(new InputStreamReader(new CipherInputStream(client.getInputStream(), aes)));
+
+			} catch (NoSuchAlgorithmException | NoSuchPaddingException | InvalidKeyException e) {
+				// TODO was machen?
+				e.printStackTrace();
+			}
 		}
 	}
 
@@ -203,6 +221,15 @@ class Handler implements Runnable {
 				//only happens when already closed -> dont care
 			}
 		}
+	}
+
+	private byte[] hexStringToByteArray(final String s) {
+	    int len = s.length();
+	    byte[] data = new byte[len / 2];
+	    for (int i = 0; i < len; i += 2) {
+	        data[i / 2] = (byte) ((Character.digit(s.charAt(i), 16) << 4) + Character.digit(s.charAt(i+1), 16));
+	    }
+	    return data;
 	}
 
 }
