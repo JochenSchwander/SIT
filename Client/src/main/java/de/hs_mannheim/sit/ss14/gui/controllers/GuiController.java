@@ -26,7 +26,7 @@ public class GuiController {
 	}
 
 	public void setLoggedInView() {
-		startView.setLoggedInView();
+		startView.displayLoggedInView();
 
 	}
 

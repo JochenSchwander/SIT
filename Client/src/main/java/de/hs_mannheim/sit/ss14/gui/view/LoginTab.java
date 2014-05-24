@@ -21,7 +21,10 @@ public class LoginTab extends JPanel {
 		JPanel upperPanel = new JPanel();
 		add(upperPanel);
 		upperPanel.setLayout(new GridLayout(1, 0, 0, 0));
-
+		
+		JLabel text=new JLabel("Geben Sie ihr erstes Sicherheitskriterium ein.");
+		upperPanel.add(text);
+		
 		// lower row
 		JPanel lowerSplittedPanel = new JPanel();
 		add(lowerSplittedPanel);

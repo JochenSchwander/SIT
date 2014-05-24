@@ -13,68 +13,36 @@ public class RegisterTab extends JPanel {
 	private static final long serialVersionUID = 1L;
 
 	RegisterTab(RegisterModel registerModel,RegisterController registerController) {
-		// this element settings
-		setLayout(new GridLayout(2, 1));
+		GridBagLayout gridBagLayout = new GridBagLayout();
+		gridBagLayout.columnWidths = new int[]{0, 0};
+		gridBagLayout.rowHeights = new int[]{0, 0, 0, 0, 0, 0, 0};
+		gridBagLayout.columnWeights = new double[]{1.0, Double.MIN_VALUE};
+		gridBagLayout.rowWeights = new double[]{1.0, 0.0, 0.0, 0.0, 0.0, 1.0, Double.MIN_VALUE};
+		setLayout(gridBagLayout);
+		
+		JPanel panel_1 = new JPanel();
+		GridBagConstraints gbc_panel_1 = new GridBagConstraints();
+		gbc_panel_1.insets = new Insets(0, 0, 5, 0);
+		gbc_panel_1.fill = GridBagConstraints.BOTH;
+		gbc_panel_1.gridx = 0;
+		gbc_panel_1.gridy = 0;
+		add(panel_1, gbc_panel_1);
+		
+		JButton btnNewButton_1 = new JButton("New button");
+		panel_1.add(btnNewButton_1);
+		
+		JPanel panel = new JPanel();
+		GridBagConstraints gbc_panel = new GridBagConstraints();
+		gbc_panel.gridheight = 5;
+		gbc_panel.fill = GridBagConstraints.BOTH;
+		gbc_panel.gridx = 0;
+		gbc_panel.gridy = 1;
+		add(panel, gbc_panel);
+		panel.setLayout(new GridLayout(0, 1, 0, 0));
+		
+		JButton btnNewButton = new JButton("New button");
+		panel.add(btnNewButton);
 
-		// upper row
-		JPanel upperPanel = new JPanel();
-		add(upperPanel);
-		upperPanel.setLayout(new GridLayout(1, 0, 0, 0));
-
-		// lower row
-		JPanel lowerSplittedPanel = new JPanel();
-		add(lowerSplittedPanel);
-		lowerSplittedPanel.setLayout( new GridLayout(1, 2));
-
-
-		
-		// lower row left side panel
-		JPanel lowerLeftSplittedPanel = new JPanel();
-		lowerSplittedPanel.add(lowerLeftSplittedPanel);
-		lowerLeftSplittedPanel.setLayout(new GridLayout(2, 1, 0, 0));
-		
-		// lower row left side upper panel
-		JPanel usernamePanel = new JPanel();
-		lowerLeftSplittedPanel.add(usernamePanel);
-		usernamePanel.setLayout(new GridLayout(1, 0, 0, 0));
-		usernamePanel.setBorder(new TitledBorder(new EmptyBorder(10, 10, 10, 10), "Benutzername", TitledBorder.LEADING, TitledBorder.TOP, null, null) );
-		
-		JTextField usernameTextfield = new JTextField(10);
-		usernamePanel.add(usernameTextfield);
-		
-		// lower row left side lower panel
-		JPanel passwordPanel = new JPanel();
-		lowerLeftSplittedPanel.add(passwordPanel);
-		passwordPanel.setLayout(new GridLayout(1, 0, 0, 0));
-		passwordPanel.setBorder(new TitledBorder(new EmptyBorder(10, 10, 10, 10), "Passwort", TitledBorder.LEADING, TitledBorder.TOP, null, null) );
-
-		JTextField passwordTextfield = new JPasswordField(10);
-		//passwordTextfield.setActionCommand(OK);
-		//passwordTextfield.addActionListener(passwordTextfield);
-		passwordPanel.add(passwordTextfield);
-		
-		
-		// lower row right side panel
-		JPanel lowerRightSplittedPanel = new JPanel();
-		lowerSplittedPanel.add(lowerRightSplittedPanel);
-		lowerRightSplittedPanel.setLayout(new GridLayout(2, 1, 0, 0));
-		
-		// lower row right side upper panel
-		JPanel credentialsMessagePanel = new JPanel();
-		lowerRightSplittedPanel.add(credentialsMessagePanel);
-		credentialsMessagePanel.setLayout(new GridLayout(1, 0, 0, 0));
-		
-		JLabel lblMessage = new JLabel("MESSAGE");
-		lblMessage.setHorizontalAlignment(SwingConstants.CENTER);
-		credentialsMessagePanel.add(lblMessage);
-		
-		// lower row right side lower panel
-		JPanel okButtonPanel = new JPanel();
-		lowerRightSplittedPanel.add(okButtonPanel);
-		okButtonPanel.setLayout(new GridLayout(1, 0, 0, 0));
-		
-		JButton btnRegister = new JButton("Registrieren");
-		okButtonPanel.add(btnRegister);
 
 	}
 
