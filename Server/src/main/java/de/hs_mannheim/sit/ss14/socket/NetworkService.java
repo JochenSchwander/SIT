@@ -32,9 +32,8 @@ class NetworkService implements Runnable {
 
 		try {
 			dbcon.connect();
-		} catch (ClassNotFoundException e) {
-			e.printStackTrace();
-		} catch (SQLException e) {
+		} catch (ClassNotFoundException | SQLException e) {
+			//TODO was machen?
 			e.printStackTrace();
 		}
 	}

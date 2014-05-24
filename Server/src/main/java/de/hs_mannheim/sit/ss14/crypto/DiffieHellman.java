@@ -23,7 +23,7 @@ public class DiffieHellman {
 	 * Calculates the public key with the given other sides public key.
 	 *
 	 * @param clientPubKeyEncString client public key
-	 * @return
+	 * @return server public key
 	 * @throws Exception
 	 */
 	public String calculatePublicKey(final String clientPubKeyEncString) throws Exception {
@@ -58,6 +58,12 @@ public class DiffieHellman {
 
 	}
 
+	/**
+	 * Calculates the shared secret between client and server.
+	 *
+	 * @return shared secret
+	 * @throws Exception
+	 */
 	public String calculateSharedSecret() throws Exception {
 		/*
 		 * Server uses Client's public key for the first (and only) phase of his
@@ -98,6 +104,9 @@ public class DiffieHellman {
 		return buf.toString();
 	}
 
+	/*
+	 * Converts a hex string  to byte array
+	 */
 	private byte[] hexStringToByteArray(String s) {
 	    int len = s.length();
 	    byte[] data = new byte[len / 2];

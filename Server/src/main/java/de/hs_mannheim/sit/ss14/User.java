@@ -1,6 +1,5 @@
 package de.hs_mannheim.sit.ss14;
 
-import java.math.BigInteger;
 
 
 /**
@@ -14,13 +13,9 @@ public class User {
 
 	private String salt;
 
-	private String sessionKey;
-
 	private String oneTimeCode;
 
 	private int failedLoginAttempts;
-
-	private BigInteger encryptionKey;
 
 	public String getUserName() {
 		return userName;
@@ -42,14 +37,6 @@ public class User {
 		return oneTimeCode;
 	}
 
-	public String getSessionKey() {
-		return sessionKey;
-	}
-
-	public void setSessionKey(String sessionKey) {
-		this.sessionKey = sessionKey;
-	}
-
 	public int getFailedLoginAttempts() {
 		return failedLoginAttempts;
 	}
@@ -60,14 +47,6 @@ public class User {
 
 	public void setOneTimeCode(final String oneTimeCode) {
 		this.oneTimeCode = oneTimeCode;
-	}
-
-	public BigInteger getEncryptionKey() {
-		return encryptionKey;
-	}
-
-	public void setEncryptionKey(BigInteger encryptionKey) {
-		this.encryptionKey = encryptionKey;
 	}
 
 }
