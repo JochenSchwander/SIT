@@ -21,6 +21,7 @@ import javax.crypto.spec.SecretKeySpec;
 
 import de.hs_mannheim.sit.ss14.crypto.DiffieHellman;
 import de.hs_mannheim.sit.ss14.database.DatabaseConnector;
+import de.hs_mannheim.sit.ss14.sync.ConnectedUsers;
 import de.hs_mannheim.sit.ss14.sync.User;
 
 /**
@@ -73,7 +74,13 @@ public class Handler implements Runnable {
 		} catch (IOException e) {
 			e.printStackTrace();
 		} finally {
-			// TODO session cleanup!
+			if (user != null) {
+				if (status == Status.AUTHORIZED) {
+					ConnectedUsers.removeAuthorizedUser(user);
+				} else if (status == Status.PENDING) {
+					ConnectedUsers.dropPendingUser(user);
+				}
+			}
 		}
 	}
 
@@ -84,6 +91,7 @@ public class Handler implements Runnable {
 		out.println("weblogin");
 		out.println("fail;Web authentification failed");
 		out.flush();
+		user = null;
 		closeSocketConnection();
 	}
 
@@ -181,10 +189,9 @@ public class Handler implements Runnable {
 		String[] userdataArray = userdata.split(";");
 		user = dbcon.checkDesktopPassword(userdataArray[2], userdataArray[1]);
 
-		// TODO check if already logged in
-		if (user == null) {
+		if (user == null || ConnectedUsers.isAlreadyAuthorized(user)) {
 			out.println("login");
-			out.println("fail;Password/Username wrong or entered wrong too many times.");
+			out.println("fail;Password/Username wrong, entered wrong too many times or already logged in.");
 			out.flush();
 			closeSocketConnection();
 		} else {

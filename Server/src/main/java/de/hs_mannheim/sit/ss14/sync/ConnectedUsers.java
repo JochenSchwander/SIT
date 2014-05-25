@@ -30,11 +30,20 @@ public final class ConnectedUsers {
 	/**
 	 * Removes a pending user and closes its socket connection.
 	 *
-	 * @param username the users usernames
+	 * @param username the users username
 	 */
 	public static void removePendingUser(final String username) {
 		pending.get(username).getHandler().webloginFail();
 		pending.remove(username);
+	}
+
+	/**
+	 * Removes a pending user without closing it's socket connection.
+	 *
+	 * @param user the user to remove
+	 */
+	public static void dropPendingUser(final User user) {
+		pending.remove(user.getUserName());
 	}
 
 	/**
