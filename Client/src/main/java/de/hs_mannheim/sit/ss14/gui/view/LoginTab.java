@@ -58,6 +58,7 @@ public class LoginTab extends JPanel {
 
 		JTextField usernameTextfield =	loginModel.usernameTextfield;
 		usernamePanel.add(usernameTextfield);
+		usernameTextfield.setFont(new Font("Tahoma", Font.PLAIN, 16));
 		//((AbstractDocument) usernameTextfield.getDocument()).setDocumentFilter(new DocumentSizeFilter(20));
 
 		// lower row left side lower panel
@@ -71,6 +72,7 @@ public class LoginTab extends JPanel {
 		JTextField passwordTextfield =	loginModel.passwordTextfield;
 		passwordPanel.add(passwordTextfield);
 		//((AbstractDocument) passwordTextfield.getDocument()).setDocumentFilter(new DocumentSizeFilter(50));
+		passwordTextfield.setFont(new Font("Tahoma", Font.PLAIN, 16));
 		passwordTextfield.addActionListener(loginModel.submitLoginAL);
 
 
