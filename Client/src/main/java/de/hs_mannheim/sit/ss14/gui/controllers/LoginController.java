@@ -48,19 +48,16 @@ public class LoginController {
 
 
 	/**
-	 * Für den Loginablauf zuständige Funktion. 1.Verbindungsaufbau zum Server.
-	 * 2. Schlüsseltausch über Diffie-Hellmann, der mit RSA verschlüsselt ist.
-	 * ab dann, Verbindung verschlüsselt mit AES 3. delegieren des
-	 * Onetimepasswort-requests and die Funktion.
+	 * Für den Loginablauf zuständige Funktion. 
+	 * 1.Verbindungsaufbau zum Server.
+	 * 2. Schlüsseltausch über Diffie-Hellmann, der mit RSA verschlüsselt ist. ab dann, Verbindung verschlüsselt mit AES 
+	 * 3. delegieren des Onetimepasswort-requests an die Funktion requestOtp();
 	 * 
-	 * @param loginModel
 	 */
 	private void startLoginProcess() {	
-		System.out.println("depp: "+loginModel.usernameTextfield.getText().length());
-		if(loginModel.usernameTextfield.getText().length()==0||loginModel.passwordTextfield.getText().length()==0){
-		System.out.println("depp");
-			
-		}
+		if(loginModel.usernameTextfield.getText().length()==0||loginModel.passwordTextfield.getPassword().length==0){
+			loginModel.credentialsMessageTextarea.setText("Die Felder dürfen nicht leer sein.");
+		}else{
 		try {
 			socket = new ClientSocket();
 			//requestOtp(loginModel);
@@ -74,7 +71,7 @@ public class LoginController {
 		// + loginModel.usernameTextfield.getText() + "\nPasswort: "
 		// + loginModel.passwordTextfield.getText());
 		//
-		requestOtp(loginModel);
+		requestOtp(loginModel);}
 	}
 
 
@@ -83,6 +80,8 @@ public class LoginController {
 	 * @param loginModel
 	 */
 	private void requestOtp(LoginModel loginModel) {
+		
+		//Ausgabe des empfangenen OTPs
 		String otpString="otp string";		
 		loginModel.infoTextarea.setText("Um ihr zweites Sicherheitskriterium eingeben zu können benötigen Sie dieses OneTimePasswort:\n\n"+otpString);
 		loginModel.credentialsMessageTextarea.setText("Ihre Anmeldedaten waren korrekt.");

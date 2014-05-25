@@ -4,7 +4,7 @@ import de.hs_mannheim.sit.ss14.gui.models.*;
 import de.hs_mannheim.sit.ss14.gui.view.*;
 
 /**
- * Hier wird die View gestarted und die Models erstellt.
+ * Hier wird die View gestarted und die Models und Controller erstellt.
  * 
  * @author DS
  * 
@@ -21,7 +21,7 @@ public class GuiController {
 		LoginController loginController = new LoginController(this, loginModel);
 
 		RegisterModel registerModel = new RegisterModel();
-		RegisterController registerController = new RegisterController();
+		RegisterController registerController = new RegisterController(registerModel);
 		
 		startView = new StartView(loginModel, registerModel);
 	}
