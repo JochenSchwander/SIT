@@ -6,7 +6,6 @@ import javax.swing.*;
 import javax.swing.border.*;
 import javax.swing.text.AbstractDocument;
 
-import de.hs_mannheim.sit.ss14.gui.controllers.LoginController;
 import de.hs_mannheim.sit.ss14.gui.models.LoginModel;
 
 /**
@@ -59,7 +58,7 @@ public class LoginTab extends JPanel {
 
 		JTextField usernameTextfield =	loginModel.usernameTextfield;
 		usernamePanel.add(usernameTextfield);
-		((AbstractDocument) usernameTextfield.getDocument()).setDocumentFilter(new DocumentSizeFilter(2, "[A-Za-z]+"));
+		//((AbstractDocument) usernameTextfield.getDocument()).setDocumentFilter(new DocumentSizeFilter(20));
 
 		// lower row left side lower panel
 		JPanel passwordPanel = new JPanel();
@@ -71,7 +70,7 @@ public class LoginTab extends JPanel {
 
 		JTextField passwordTextfield =	loginModel.passwordTextfield;
 		passwordPanel.add(passwordTextfield);
-		((AbstractDocument) passwordTextfield.getDocument()).setDocumentFilter(new DocumentSizeFilter(8, "[A-Za-z]+"));
+		//((AbstractDocument) passwordTextfield.getDocument()).setDocumentFilter(new DocumentSizeFilter(50));
 		passwordTextfield.addActionListener(loginModel.submitLoginAL);
 
 

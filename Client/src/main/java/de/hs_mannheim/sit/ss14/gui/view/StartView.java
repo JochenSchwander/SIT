@@ -2,8 +2,6 @@ package de.hs_mannheim.sit.ss14.gui.view;
 
 import javax.swing.*;
 
-import de.hs_mannheim.sit.ss14.gui.controllers.LoginController;
-import de.hs_mannheim.sit.ss14.gui.controllers.RegisterController;
 import de.hs_mannheim.sit.ss14.gui.models.*;
 
 import java.awt.*;
@@ -11,6 +9,7 @@ import java.awt.event.KeyEvent;
 
 public class StartView extends JFrame {
 
+	private static final long serialVersionUID = -1317809154386180027L;
 	public LoginTab loginTab;
 	public RegisterTab registerTab;
 	public InfoTab infoTab;
@@ -22,7 +21,7 @@ public class StartView extends JFrame {
 	 * @param loginController
 	 */
 	public StartView(LoginModel loginModel,	RegisterModel registerModel) {
-		setSize(450, 325);
+		setSize(647, 400);
 		setTitle("SIT Projekt");
 		setLocationRelativeTo(null);
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
