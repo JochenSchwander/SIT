@@ -1,10 +1,9 @@
 package de.hs_mannheim.sit.ss14.webclient;
 
 import java.io.IOException;
-import java.io.PrintWriter;
 
+import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
-import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -12,7 +11,7 @@ import javax.servlet.http.HttpServletResponse;
 /**
  * Servlet implementation class WebClient
  */
-@WebServlet("/WebClient")
+
 public class WebClient extends HttpServlet {
 	private static final long serialVersionUID = 1L;
        
@@ -28,16 +27,9 @@ public class WebClient extends HttpServlet {
 	 * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse response)
 	 */
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		PrintWriter writer = response.getWriter();
-		
-		writer.println("<html>");
-		writer.println("<head><title>Hello World Servlet</title></head>");
-		writer.println("<body>");
-		writer.println("<h1>Hello World from a Sevlet!</h1>");
-		writer.println("<body>");
-		writer.println("</html>");
-			
-		writer.close();			
+        RequestDispatcher view = request.getRequestDispatcher("WebLogin.html");
+
+        view.forward(request, response);
 	}
 
 	/**
@@ -45,6 +37,17 @@ public class WebClient extends HttpServlet {
 	 */
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		
+		String hash = request.getParameter("hashOutput");
+		
+		//TODO: hash ueberpruefen
+		
+		if(true){
+			RequestDispatcher view = request.getRequestDispatcher("Success.html");
+			view.forward(request, response);
+		}else{
+			RequestDispatcher view = request.getRequestDispatcher("WebLogin.html");
+	        view.forward(request, response);
+		}
 	}
 
 }

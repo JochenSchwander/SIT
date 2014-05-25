@@ -11,27 +11,31 @@
 <body>
 	<div class="container" style="max-width: 960px">
 		<h1>Web Login</h1>
-		<div class="form-group">
-			<label for="username">Username: </label>
-			<input type="text" size="75" name="username" id="username" class="form-control">
-		</div>
-		<div class="form-group">
-			<label for="webPassword" class=".col-md-4">Web Passwort: </label>
-			<input type="password" size="75" name="webPassword" id="webPassword" class="form-control">
-		</div>
-		<div class="form-group">
-			<label for="otp">One Time Password: </label>
-			<input type="text" size="75" name="otp" id="otp" class="form-control">
-		</div>
-		<div class="form-group">
-			<label for="salt">Salt: </label>
-			<input type="text" size="75" name="salt" id="salt" class="form-control">
-		</div>
-		<button id="calcHash" class="btn btn-primary">Login</button>
-
-		<div class="form-group">
-			<input type="hidden" name="hashOutput" id="hashOutput" class="form-control">
-		</div>
+		<form action="WebClient" method="post">
+			<div class="form-group">
+				<label for="username">Username: </label>
+				<input type="text" size="75" name="username" id="username" class="form-control">
+			</div>
+			
+			<div class="form-group">
+				<label for="webPassword" class=".col-md-4">Web Passwort: </label>
+				<input type="password" size="75" name="webPassword" id="webPassword" class="form-control">
+			</div>
+			<div class="form-group">
+				<label for="otp">One Time Password: </label>
+				<input type="text" size="75" name="otp" id="otp" class="form-control">
+			</div>
+			<div class="form-group">
+				<label for="salt">Salt: </label>
+				<input type="text" size="75" name="salt" id="salt" class="form-control">
+			</div>
+			
+	
+			<div class="form-group">
+				<input type="hidden" name="hashOutput" id="hashOutput" class="form-control">
+			</div>
+			<input type="submit" value="Login" id="calcHash" class="btn btn-primary">
+		</form>
 	</div>
 
 	<SCRIPT TYPE="text/javascript">
