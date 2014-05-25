@@ -12,14 +12,18 @@ import de.hs_mannheim.sit.ss14.gui.view.*;
 public class GuiController {
 	public StartView startView;
 
-
 	GuiController() {
 		startView();
 	}
 
 	public void startView() {
-		startView = new StartView(new LoginModel(), new LoginController(this),
-				new RegisterModel(), new RegisterController());
+		LoginModel loginModel = new LoginModel();
+		LoginController loginController = new LoginController(this, loginModel);
+
+		RegisterModel registerModel = new RegisterModel();
+		RegisterController registerController = new RegisterController();
+		
+		startView = new StartView(loginModel, registerModel);
 	}
 
 	public static void main(String args[]) {

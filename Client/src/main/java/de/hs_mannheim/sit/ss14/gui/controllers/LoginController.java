@@ -4,6 +4,10 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.IOException;
 
+import javax.swing.JPasswordField;
+import javax.swing.JTextArea;
+import javax.swing.JTextField;
+
 import de.hs_mannheim.sit.ss14.ClientSocket;
 import de.hs_mannheim.sit.ss14.gui.models.LoginModel;
 
@@ -17,41 +21,31 @@ public class LoginController {
 
 	private GuiController guiController;
 	private ClientSocket socket;
+	private LoginModel loginModel;
 
-	LoginController(GuiController guiController) {
+	LoginController(GuiController guiController,LoginModel loginModel) {
 		this.guiController = guiController;
+		this.loginModel=loginModel;
+		
+		initModel();
+		
+		
 	}
 
-	/**
-	 * ActionListener der reagiert sobald der Loginbutton gedrückt wird.
-	 * 
-	 * @param loginModel
-	 * @return
-	 */
-	public ActionListener getBtnLoginAL(final LoginModel loginModel) {
-		return new ActionListener() {
+	private void initModel() {
+		loginModel.usernameTextfield = new JTextField();
+		loginModel.passwordTextfield = new JPasswordField();
+		loginModel.credentialsMessageTextarea = new JTextArea();
+		loginModel.infoTextarea= new JTextArea();
+		loginModel.submitLoginAL=new ActionListener() {
 			@Override
-			public void actionPerformed(ActionEvent e) {
-				startLoginProcess(loginModel);
+			public void actionPerformed(ActionEvent e) {			
+				startLoginProcess();
 			}
 		};
+		
 	}
 
-	/**
-	 * * ActionListener der reagiert sobald "Enter" im Passwordfeld gedrückt
-	 * wurde.
-	 * 
-	 * @param loginModel
-	 * @return
-	 */
-	public ActionListener getPasswordTextfieldAL(final LoginModel loginModel) {
-		return new ActionListener() {
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				startLoginProcess(loginModel);
-			}
-		};
-	}
 
 	/**
 	 * Für den Loginablauf zuständige Funktion. 1.Verbindungsaufbau zum Server.
@@ -61,15 +55,20 @@ public class LoginController {
 	 * 
 	 * @param loginModel
 	 */
-	private void startLoginProcess(LoginModel loginModel) {
+	private void startLoginProcess() {	
+		System.out.println("depp: "+loginModel.usernameTextfield.getText().length());
+		if(loginModel.usernameTextfield.getText().length()==0||loginModel.passwordTextfield.getText().length()==0){
+		System.out.println("depp");
+			
+		}
 		try {
 			socket = new ClientSocket();
+			//requestOtp(loginModel);
 		} catch (IOException e) {
-			loginModel.credentialsMessageTextarea
-					.setText("Die Verbindung zum Server konnte nicht hergestellt werden.");
+			loginModel.credentialsMessageTextarea.setText("Die Verbindung zum Server konnte nicht hergestellt werden.");
 		}
 
-		// guiController.setLoggedInView();
+		//guiController.startView.displayLoggedInView();
 
 		// loginModel.credentialsMessageTextarea.setText("Username: "
 		// + loginModel.usernameTextfield.getText() + "\nPasswort: "

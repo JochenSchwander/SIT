@@ -12,7 +12,7 @@ public class RegisterTab extends JPanel {
 
 	private static final long serialVersionUID = 1L;
 
-	RegisterTab(RegisterModel registerModel,RegisterController registerController) {
+	RegisterTab(RegisterModel registerModel) {
 		GridBagLayout gridBagLayout = new GridBagLayout();
 		gridBagLayout.columnWidths = new int[]{0, 0};
 		gridBagLayout.rowHeights = new int[]{0, 0, 0, 0, 0, 0, 0};

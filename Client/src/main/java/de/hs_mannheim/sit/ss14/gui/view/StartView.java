@@ -21,8 +21,7 @@ public class StartView extends JFrame {
 	 * @param registerController
 	 * @param loginController
 	 */
-	public StartView(LoginModel loginModel, LoginController loginController,
-			RegisterModel registerModel, RegisterController registerController) {
+	public StartView(LoginModel loginModel,	RegisterModel registerModel) {
 		setSize(450, 325);
 		setTitle("SIT Projekt");
 		setLocationRelativeTo(null);
@@ -39,11 +38,11 @@ public class StartView extends JFrame {
 
 		JTabbedPane tabbedPane = new JTabbedPane();
 
-		loginTab = new LoginTab(loginModel, loginController);
+		loginTab = new LoginTab(loginModel);
 		tabbedPane.addTab("Login", null, loginTab, "Loggen Sie sich ein.");
 		tabbedPane.setMnemonicAt(0, KeyEvent.VK_1);
 
-		registerTab = new RegisterTab(registerModel, registerController);
+		registerTab = new RegisterTab(registerModel);
 		tabbedPane.addTab("Register", null, registerTab,
 				"Registrieren Sie sich für die Nutzung des Programms.");
 		tabbedPane.setMnemonicAt(1, KeyEvent.VK_2);
