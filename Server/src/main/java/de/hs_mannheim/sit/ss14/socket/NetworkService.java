@@ -14,7 +14,7 @@ import de.hs_mannheim.sit.ss14.database.MySQLDatabaseConnector;
  *
  * @author Jochen Schwander
  */
-class NetworkService implements Runnable {
+public class NetworkService implements Runnable {
 	private final ServerSocket serverSocket;
 	private final ExecutorService pool;
 	private final DatabaseConnector dbcon;
@@ -25,7 +25,7 @@ class NetworkService implements Runnable {
 	 * @param pool the ExecutorService that is used to launch the connection specific threads
 	 * @param serverSocket the ServerSocket, on which the connections are coming in
 	 */
-	public NetworkService(ExecutorService pool, ServerSocket serverSocket) {
+	public NetworkService(final ExecutorService pool, final ServerSocket serverSocket) {
 		this.serverSocket = serverSocket;
 		this.pool = pool;
 		this.dbcon = new MySQLDatabaseConnector();
