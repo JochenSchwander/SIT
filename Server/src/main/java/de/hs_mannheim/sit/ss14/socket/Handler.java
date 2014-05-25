@@ -5,6 +5,7 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
+import java.math.BigInteger;
 import java.net.Socket;
 import java.security.InvalidAlgorithmParameterException;
 import java.security.InvalidKeyException;
@@ -18,79 +19,97 @@ import javax.crypto.NoSuchPaddingException;
 import javax.crypto.spec.IvParameterSpec;
 import javax.crypto.spec.SecretKeySpec;
 
-import de.hs_mannheim.sit.ss14.User;
 import de.hs_mannheim.sit.ss14.crypto.DiffieHellman;
 import de.hs_mannheim.sit.ss14.database.DatabaseConnector;
+import de.hs_mannheim.sit.ss14.sync.User;
 
 /**
  * Handles a single socket Connection.
  *
  * @author Jochen Schwander
  */
-class Handler implements Runnable {
+public class Handler implements Runnable {
 	private Socket client;
 	private DatabaseConnector dbcon;
 	private BufferedReader in;
 	private PrintWriter out;
-	private boolean isAuthorized;
+	private Status status;
 	private User user;
+
+	/**
+	 * Represents the status of the connected User.
+	 *
+	 * @author Jochen Schwander
+	 */
+	private enum Status {
+		AUTHORIZED, PENDING, UNAUTHORIZED;
+	}
 
 	/**
 	 * Constructor.
 	 *
-	 * @param client socket on which the client is connected
-	 * @param dbcon database connection, which should be used for login checks
-	 * @throws IOException in case something goes wrong with in-/output streams
+	 * @param client
+	 *            socket on which the client is connected
+	 * @param dbcon
+	 *            database connection, which should be used for login checks
+	 * @throws IOException
+	 *             in case something goes wrong with in-/output streams
 	 */
 	Handler(final Socket client, final DatabaseConnector dbcon) throws IOException {
 		this.client = client;
 		this.dbcon = dbcon;
 		in = new BufferedReader(new InputStreamReader(client.getInputStream()));
 		out = new PrintWriter(new OutputStreamWriter(client.getOutputStream()));
-		isAuthorized = false;
+		status = Status.UNAUTHORIZED;
 	}
 
 	@Override
 	public void run() {
 		try {
 			String command;
-			while((command = in.readLine()) != null) {
+			while ((command = in.readLine()) != null) {
 				handleCommand(command);
 			}
 		} catch (IOException e) {
 			e.printStackTrace();
 		} finally {
-			//TODO session cleanup!
+			// TODO session cleanup!
 		}
 	}
 
 	/**
-	 * Fully authorizes the client or closes the connection.
-	 *
-	 * @param success if true, client gets authorized, if false, client connection will be closed
+	 * Closes the clients connection.
 	 */
-	public void webloginResult(final boolean success) {
+	public void webloginFail() {
 		out.println("weblogin");
-		if (success) {
-			isAuthorized = true;
-			out.println("success;Welcome");
-			out.flush();
-		} else {
-			out.println("fail;Web authentification failed");
-			out.flush();
-			closeSocketConnection();
-		}
+		out.println("fail;Web authentification failed");
+		out.flush();
+		closeSocketConnection();
+	}
+
+
+	/**
+	 * Fully authorizes the client.
+	 */
+	public void webloginSuccess() {
+		out.println("weblogin");
+		status = Status.AUTHORIZED;
+		out.println("success;Welcome " + user.getUserName());
+		out.flush();
 	}
 
 	/**
 	 * Handles the commands that come over the socket connection.
 	 *
-	 * @param command the command to handle
-	 * @throws IOException in case something goes wrong with in-/output streams
+	 * @param command
+	 *            the command to handle
+	 * @throws IOException
+	 *             in case something goes wrong with in-/output streams
 	 */
-	private void handleCommand(String command) throws IOException {
-		if (isAuthorized) {
-			switch(command) {
+	private void handleCommand(final String command) throws IOException {
+		switch (status) {
+		case AUTHORIZED:
+			switch (command) {
 			case "echo":
 				out.println("Echo: " + in.readLine());
 				out.flush();
@@ -99,18 +118,24 @@ class Handler implements Runnable {
 				closeSocketConnection();
 				break;
 			}
-		} else {
-			switch(command) {
+			break;
+		case PENDING:
+			switch (command) {
+			case "requestotp":
+				requestotp();
+				break;
+			}
+			break;
+		case UNAUTHORIZED:
+			switch (command) {
 			case "register":
 				register();
 				break;
 			case "login":
 				login();
 				break;
-			case "requestotp":
-				requestotp();
-				break;
 			}
+			break;
 		}
 	}
 
@@ -122,7 +147,7 @@ class Handler implements Runnable {
 	private void register() throws IOException {
 		String userdata = in.readLine();
 
-		//TODO decrypt!
+		// TODO decrypt!
 
 		String[] userdataArray = userdata.split(";");
 		try {
@@ -151,12 +176,12 @@ class Handler implements Runnable {
 	private void login() throws IOException {
 		String userdata = in.readLine();
 
-		//TODO decrypt!
+		// TODO decrypt!
 
 		String[] userdataArray = userdata.split(";");
 		user = dbcon.checkDesktopPassword(userdataArray[2], userdataArray[1]);
 
-		//TODO check if already logged in
+		// TODO check if already logged in
 		if (user == null) {
 			out.println("login");
 			out.println("fail;Password/Username wrong or entered wrong too many times.");
@@ -170,7 +195,7 @@ class Handler implements Runnable {
 				B = dh.calculatePublicKey(userdataArray[0]);
 				K = dh.calculateSharedSecret();
 			} catch (Exception e) {
-				//TODO was machen?
+				// TODO was machen?
 				e.printStackTrace();
 			}
 
@@ -178,10 +203,10 @@ class Handler implements Runnable {
 			out.println("success;" + B);
 			out.flush();
 
-			//TODO close streams?
+			// TODO close streams?
 			try {
 				byte[] iv = { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 };
-		        IvParameterSpec ivspec = new IvParameterSpec(iv);
+				IvParameterSpec ivspec = new IvParameterSpec(iv);
 
 				Cipher aesDec = Cipher.getInstance("AES/CBC/PKCS5Padding");
 				aesDec.init(Cipher.DECRYPT_MODE, new SecretKeySpec(hexStringToByteArray(K), "AES"), ivspec);
@@ -203,13 +228,7 @@ class Handler implements Runnable {
 	 */
 	private void requestotp() {
 		out.println("requestotp");
-
-		if (user == null) {
-			out.println(" ; ");
-		} else {
-			out.println(user.getOneTimeCode() + ";" + user.getSalt());
-		}
-
+		out.println(user.getOneTimeCode() + ";" + user.getSalt());
 		out.flush();
 	}
 
@@ -225,7 +244,7 @@ class Handler implements Runnable {
 			try {
 				client.close();
 			} catch (IOException e) {
-				//only happens when already closed -> dont care
+				// only happens when already closed -> dont care
 			}
 		}
 	}
@@ -233,16 +252,12 @@ class Handler implements Runnable {
 	/**
 	 * Convert the D-H key to a byte array.
 	 *
-	 * @param s D-H key
+	 * @param s
+	 *            D-H key
 	 * @return D-H key as byte array
 	 */
-	private byte[] hexStringToByteArray(final String s) {
-	    int len = s.length();
-	    byte[] data = new byte[len / 2];
-	    for (int i = 0; i < len; i += 2) {
-	        data[i / 2] = (byte) ((Character.digit(s.charAt(i), 16) << 4) + Character.digit(s.charAt(i+1), 16));
-	    }
-	    return data;
+	private static byte[] hexStringToByteArray(final String hexString) {
+		return (new BigInteger(hexString, 16)).toByteArray();
 	}
 
 }

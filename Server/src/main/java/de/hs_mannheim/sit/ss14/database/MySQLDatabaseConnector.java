@@ -13,9 +13,9 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 
-import de.hs_mannheim.sit.ss14.User;
 import de.hs_mannheim.sit.ss14.hash.Hasher;
 import de.hs_mannheim.sit.ss14.hash.SHA512Hasher;
+import de.hs_mannheim.sit.ss14.sync.User;
 import sun.misc.BASE64Decoder;
 import sun.misc.BASE64Encoder;
 

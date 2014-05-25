@@ -5,7 +5,7 @@ import java.io.UnsupportedEncodingException;
 import java.security.NoSuchAlgorithmException;
 import java.sql.SQLException;
 
-import de.hs_mannheim.sit.ss14.User;
+import de.hs_mannheim.sit.ss14.sync.User;
 
 /**
  *
