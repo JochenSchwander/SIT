@@ -16,9 +16,9 @@ public interface DatabaseConnector {
 
 	public void connect() throws ClassNotFoundException, SQLException; // init connection here
 
-	public boolean checkWebPassword(User user, String hashedOneTimewebPassword);
+	public boolean checkWebPassword(User user, String hashedOneTimeWebPassword) throws IOException;
 
-	public User checkDesktopPassword(String password, String username);
+	public User checkDesktopPassword(String password, String username) throws NoSuchAlgorithmException;
 
 	public boolean createUser(String username, String desktopPassword, String webPassword) throws NoSuchAlgorithmException, UnsupportedEncodingException, IOException, SQLException;
 

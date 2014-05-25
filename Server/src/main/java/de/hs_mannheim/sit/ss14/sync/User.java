@@ -10,6 +10,10 @@ import de.hs_mannheim.sit.ss14.socket.Handler;
  */
 public class User {
 
+	public User(){
+		this.failedLoginAttempts = 0;
+	}
+
 	private String userName;
 
 	private String salt;

@@ -12,12 +12,13 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.Arrays;
 
+import sun.misc.BASE64Decoder;
+import sun.misc.BASE64Encoder;
 import de.hs_mannheim.sit.ss14.hash.Hasher;
 import de.hs_mannheim.sit.ss14.hash.SHA512Hasher;
 import de.hs_mannheim.sit.ss14.sync.User;
-import sun.misc.BASE64Decoder;
-import sun.misc.BASE64Encoder;
 
 
 public class MySQLDatabaseConnector implements DatabaseConnector {
@@ -34,18 +35,137 @@ public class MySQLDatabaseConnector implements DatabaseConnector {
 	}
 
 	@Override
-	public boolean checkWebPassword(User user, String hashedOneTimewebPassword) {
-		// TODO Auto-generated method stub
+	public boolean checkWebPassword(User user, String hashedOneTimewebPassword) throws IOException {
+		if(user.getFailedLoginAttempts() < 3){
+			if (user!=null||hashedOneTimewebPassword!=null){ //TODO: übedenken
+				if(Arrays.equals(base64ToByte(user.getOneTimeCode()),base64ToByte(hashedOneTimewebPassword))){
+					return true;
+				}
+				else{
+					  user.setFailedLoginAttempts(user.getFailedLoginAttempts() +1); //TODO: increaseFailed login ??
+				}
+			}
+		}
+		else {
+			///TODO: return false, ERROR(Passwort 3 mal falsch eingebgen)
+		}
 		return false;
 	}
 
+//	/**
+//	 * Returns a User object of a user in the desktopAutenticated  List<User> if he exists there.
+//	 * @param username the username for searching
+//	 * @return User obj. if it exists in desktopAuthenticated List<User>
+//	 */
+//	private User getUserByUsername(String username) {
+//		User user = new User();///TODO: ersetzen mit der suche nach dem richtigen user
+//		return user;
+//	}
+
 	@Override
-	public User checkDesktopPassword(String password, String username) {
-		// TODO Auto-generated method stub
+	public User checkDesktopPassword(String password, String username) throws NoSuchAlgorithmException {
+		User user;
+		user = new User(); ///TODO: check if already exists in LIST !!
+		PreparedStatement ps = null;
+	    ResultSet rs = null;
+
+
+	    if(user.getFailedLoginAttempts() < 3){ //TODO: richtige stelle ?
+			if (password==null||username==null){ //TODO: übedenken
+				user.setUserName("");
+				user.setFailedLoginAttempts(user.getFailedLoginAttempts() + 1); //TODO: increaseFailed login ??
+				user.setOneTimeCode("");
+				user.setSalt("");
+				return null;
+			} else
+			{
+				//TODO: Zeitlich begrenztes otp einbauen. vllt gleich in der datenbank!
+				try {
+					ps = connection.prepareStatement("SELECT username, desktopPassword, webPassword, salt FROM CREDENTIAL WHERE username = ?");
+					ps.setString(1, username);
+			          rs = ps.executeQuery();
+			          String desktopPassword, webPassword, salt, oneTimePassword;
+			          if (rs.next()) {
+			        	  desktopPassword = rs.getString("desktopPassword");
+			        	  webPassword = rs.getString("webPassword");
+			              salt = rs.getString("salt");
+
+			              // DATABASE VALIDATION
+			              if (desktopPassword == null || webPassword == null || salt == null) {
+			                  throw new SQLException("Database inconsistant salt, desktopPassword, webPassword or one time password altered");
+			              }
+			              if (rs.next()) { // Should not append, because login is the primary key
+			                  throw new SQLException("Database inconsistent two CREDENTIALS with the same LOGIN");
+			              }
+			          } else { // TIME RESISTANT ATTACK (Even if the user does not exist the
+			              // Computation time is equal to the time needed for a legitimate user
+			        	  desktopPassword = "000000000000000000000000000=";
+			              salt = "00000000000=";
+			          }
+
+			          // Compute the new DIGEST
+			          byte[] proposedDigest = hasher.calculateHash(desktopPassword, base64ToByte(salt));
+
+			          if(Arrays.equals(proposedDigest,base64ToByte(password))){
+			        	  //generate new one time password and save it to the database
+			        	  oneTimePassword = generateOneTimePassword();
+
+			        	  ///TODO: sollen wir das überhaupt in die db schreiben ? eher nicht ?
+				          close(ps);
+			        	  ps = connection.prepareStatement("INSERT INTO CREDENTIAL (oneTimePassword) VALUES (?) WHERE `CREDENTIAL`.`username` = \'"+username+"\'");
+			              ps.setString(1,oneTimePassword);
+			              ps.executeUpdate();
+
+			        	  user.setUserName(username);
+						  user.setFailedLoginAttempts(0); //TODO: increaseFailed login ??
+						  user.setOneTimeCode(oneTimePassword);
+						  user.setSalt(salt);
+			        	  return user;
+			          }
+				} catch (IOException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}catch (SQLException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+			     finally{
+			          close(rs);
+			          close(ps);
+			     }
+
+
+			}
+	    }
+	    else{
+
+	    }
 		return null;
 	}
 
 
+
+	/**
+	 * Generates a unique one time password 8 bit long.
+	 * @return one time password as string
+	 */
+	private String generateOneTimePassword() {
+        // Uses a secure Random not a simple Random
+        SecureRandom random = null;
+		try {
+			random = SecureRandom.getInstance("SHA1PRNG"); //ist zufall gut genug ??
+		} catch (NoSuchAlgorithmException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+
+        ///TODO: consider lenght of 8.  any suggestions ? -> note the reason, when found!!
+        // one time password generation 8 bits long
+        byte[] bOneTimePassword = new byte[1];
+        random.nextBytes(bOneTimePassword);
+
+		return byteToBase64(bOneTimePassword);
+	}
 
 	@Override
 	public boolean createUser(String username, String desktopPassword,
@@ -59,10 +179,10 @@ public class MySQLDatabaseConnector implements DatabaseConnector {
 	              byte[] bSalt = new byte[8];
 	              random.nextBytes(bSalt);
 
-	              ///TODO: consider lenght of 8.  any suggestions ? -> note the reason when found!!
-	              // one time password generation 8 bits long
-	              byte[] bOneTimePassword = new byte[1];
-	              random.nextBytes(bOneTimePassword);
+//	              ///TODO: consider lenght of 8.  any suggestions ? -> note the reason, when found!!
+//	              // one time password generation 8 bits long
+//	              byte[] bOneTimePassword = new byte[1];
+//	              random.nextBytes(bOneTimePassword);
 
 	              // Digest computation
 	              byte[] bDesktopPasswordHash = hasher.calculateHash(desktopPassword, bSalt);
@@ -73,14 +193,15 @@ public class MySQLDatabaseConnector implements DatabaseConnector {
 
 	              //make binary salt to String
 	              String salt = byteToBase64(bSalt);
-	              String oneTimePassword = byteToBase64(bOneTimePassword);
+
+//	              String oneTimePassword = byteToBase64(bOneTimePassword);
 
 	              ps = connection.prepareStatement("INSERT INTO CREDENTIAL (username, desktopPassword, webPassword, salt, oneTimePassword) VALUES (?,?,?,?,?)");
 	              ps.setString(1,username);
 	              ps.setString(2,desktopPasswordHash);
 	              ps.setString(3,webPasswordHash);
 	              ps.setString(4,salt);
-	              ps.setString(5,oneTimePassword);
+//	              ps.setString(5,oneTimePassword);
 	              ps.executeUpdate();
 	              return true;
 	          } else {
