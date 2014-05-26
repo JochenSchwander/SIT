@@ -112,7 +112,7 @@ public class MySQLDatabaseConnector implements DatabaseConnector {
 						  user.setOneTimeCode(oneTimePassword);
 						  user.setSalt(salt);
 
-						  resetDesktopFailedLoginAttempts();
+//						  resetDesktopFailedLoginAttempts();
 			        	  return user;
 			          }
 				} catch (IOException e) {
@@ -141,10 +141,11 @@ public class MySQLDatabaseConnector implements DatabaseConnector {
 
 
 
-	private void resetDesktopFailedLoginAttempts() {
-		// TODO Auto-generated method stub
-
-	}
+//	private void resetDesktopFailedLoginAttempts() {
+//        ps = connection.prepareStatement("UPDATE INTO CREDENTIAL (desktopFailedLoginAttempts) VALUES (?");
+//        ps.setString(1,0);
+//        ps.executeUpdate();
+//	}
 
 	private void increaseDesktopFailedLoginAttempts() {
 		// TODO Auto-generated method stub
@@ -227,7 +228,7 @@ public class MySQLDatabaseConnector implements DatabaseConnector {
 	      Statement st = null;
 	      try {
 	            st = connection.createStatement();
-				st.execute("CREATE TABLE CREDENTIAL (username VARCHAR(100) PRIMARY KEY, desktopPassword VARCHAR(256) NOT NULL, webPassword VARCHAR(256) NOT NULL, salt VARCHAR(256) NOT NULL, oneTimePassword VARCHAR(30))");
+				st.execute("CREATE TABLE CREDENTIAL (username VARCHAR(100) PRIMARY KEY, desktopPassword VARCHAR(256) NOT NULL, webPassword VARCHAR(256) NOT NULL, salt VARCHAR(256) NOT NULL, desktopFailedLoginAttempts INTEGER(8))");
 				System.out.println("Anlegen der CREDENTIAL Tabelle erfolgreich!");
 
 	      } catch (SQLException e) {
