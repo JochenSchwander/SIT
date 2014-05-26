@@ -53,7 +53,7 @@ public class WebClient extends HttpServlet {
 	 * @see HttpServlet#doPost(HttpServletRequest request, HttpServletResponse response)
 	 */
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		//Get Hash an username from post parameters
+		//Get Hash and username from post parameters
 		String hash = request.getParameter("hashOutput");
 		String username = request.getParameter("username");
 		
