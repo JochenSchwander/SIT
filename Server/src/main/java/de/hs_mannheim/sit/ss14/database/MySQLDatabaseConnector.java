@@ -134,35 +134,13 @@ public class MySQLDatabaseConnector implements DatabaseConnector {
 
 	}
 
-	private int getDesktopFailedLoginAttempts() {
-		// TODO Auto-generated method stub
-		int failedLogins;
-
-
-		return failedLogins;
-	}
-
-	/**
-	 * Generates a unique one time password 8 bit long.
-	 * @return one time password as string
-	 */
-	private String generateOneTimePassword() {
-        // Uses a secure Random not a simple Random
-        SecureRandom random = null;
-		try {
-			random = SecureRandom.getInstance("SHA1PRNG"); //ist zufall gut genug ??
-		} catch (NoSuchAlgorithmException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-
-        ///TODO: consider lenght of 8.  any suggestions ? -> note the reason, when found!!
-        // one time password generation 8 bits long
-        byte[] bOneTimePassword = new byte[1];
-        random.nextBytes(bOneTimePassword);
-
-		return byteToBase64(bOneTimePassword);
-	}
+//	private int getDesktopFailedLoginAttempts() {
+//		// TODO Auto-generated method stub
+//		int failedLogins;
+//
+//
+//		return failedLogins;
+//	}
 
 	@Override
 	public boolean createUser(String username, String desktopPassword,
