@@ -179,7 +179,7 @@ public class MySQLDatabaseConnector implements DatabaseConnector {
 	              //make binary salt to String
 	              String salt = Base64.encodeBase64String(bSalt);
 
-	              ps = connection.prepareStatement("INSERT INTO CREDENTIAL (username, desktopPassword, webPassword, salt, oneTimePassword) VALUES (?,?,?,?,?)");
+	              ps = connection.prepareStatement("INSERT INTO CREDENTIAL (username, desktopPassword, webPassword, salt) VALUES (?,?,?,?)"); //desktopFailedLoginAttempts standard 0
 	              ps.setString(1,username);
 	              ps.setString(2,desktopPasswordHash);
 	              ps.setString(3,webPasswordHash);
