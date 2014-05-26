@@ -3,7 +3,7 @@ package de.hs_mannheim.sit.ss14.randomgenerator;
 import java.security.NoSuchAlgorithmException;
 import java.security.SecureRandom;
 
-import de.hs_mannheim.sit.ss14.binaryConverter.binaryConverter;
+import org.apache.commons.codec.binary.Base64;
 
 public class OtpGenerator implements RandomOneTimePasswordGenerator {
 
@@ -20,7 +20,7 @@ public class OtpGenerator implements RandomOneTimePasswordGenerator {
 			byte[] bOneTimePassword = new byte[1];
 	        random.nextBytes(bOneTimePassword);
 
-			return binaryConverter.byteToBase64(bOneTimePassword); ///TODO: siehe unten bestimmte zeichen auswählen !
+			return Base64.encodeBase64String(bOneTimePassword); ///TODO: siehe unten bestimmte zeichen auswählen !
 			//return new BigInteger(40, random).toString(32);
 
 		} catch (NoSuchAlgorithmException e) {

@@ -12,7 +12,8 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.Arrays;
 
-import de.hs_mannheim.sit.ss14.binaryConverter.binaryConverter;
+import org.apache.commons.codec.binary.Base64;
+
 import de.hs_mannheim.sit.ss14.hash.Hasher;
 import de.hs_mannheim.sit.ss14.hash.SHA512Hasher;
 import de.hs_mannheim.sit.ss14.randomgenerator.OtpGenerator;
@@ -45,13 +46,8 @@ public class MySQLDatabaseConnector implements DatabaseConnector {
 	@Override
 	public boolean checkWebPassword(User user, String hashedOneTimewebPassword){
 		if (user!=null||hashedOneTimewebPassword!=null){ //TODO: übedenken
-			try {
-				if(Arrays.equals(binaryConverter.base64ToByte(user.getOneTimeCode()),binaryConverter.base64ToByte(hashedOneTimewebPassword))){
-					return true;
-				}
-			} catch (IOException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
+			if(Arrays.equals(Base64.decodeBase64(user.getOneTimeCode()),Base64.decodeBase64(hashedOneTimewebPassword))){
+				return true;
 			}
 		}
 		return false;
@@ -106,9 +102,9 @@ public class MySQLDatabaseConnector implements DatabaseConnector {
 			          }
 
 			          // Compute the new DIGEST
-			          byte[] proposedDigest = hasher.calculateHash(desktopPassword, binaryConverter.base64ToByte(salt));
+			          byte[] proposedDigest = hasher.calculateHash(desktopPassword, Base64.decodeBase64(salt));
 
-			          if(Arrays.equals(proposedDigest,binaryConverter.base64ToByte(password))){
+			          if(Arrays.equals(proposedDigest,Base64.decodeBase64(password))){
 			        	  //generate new one time password and save it to the database
 			        	  oneTimePassword = otp.generateOneTimePassword();
 
@@ -174,13 +170,13 @@ public class MySQLDatabaseConnector implements DatabaseConnector {
 
 	              // Digest computation
 	              byte[] bDesktopPasswordHash = hasher.calculateHash(desktopPassword, bSalt);
-	              String desktopPasswordHash = binaryConverter.byteToBase64(bDesktopPasswordHash);
+	              String desktopPasswordHash = Base64.encodeBase64String(bDesktopPasswordHash);
 
 	              byte[] bWebPasswordHash = hasher.calculateHash(webPassword, bSalt);
-	              String webPasswordHash = binaryConverter.byteToBase64(bWebPasswordHash);
+	              String webPasswordHash = Base64.encodeBase64String(bWebPasswordHash);
 
 	              //make binary salt to String
-	              String salt = binaryConverter.byteToBase64(bSalt);
+	              String salt = Base64.encodeBase64String(bSalt);
 
 	              ps = connection.prepareStatement("INSERT INTO CREDENTIAL (username, desktopPassword, webPassword, salt, oneTimePassword) VALUES (?,?,?,?,?)");
 	              ps.setString(1,username);

@@ -40,43 +40,45 @@ public class WebClient extends HttpServlet {
     }
 
 	/**
+	 * Delivers the login form to the client.
 	 * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse response)
 	 */
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         RequestDispatcher view = request.getRequestDispatcher("WebLogin.html");
-
         view.forward(request, response);
 	}
 
 	/**
+	 * Handles post data and authenticates the user or redirect him.
 	 * @see HttpServlet#doPost(HttpServletRequest request, HttpServletResponse response)
 	 */
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		
+		//Get Hash and username from post parameters
 		String hash = request.getParameter("hashOutput");
 		String username = request.getParameter("username");
 		
 		User user = ConnectedUsers.getPendingUser(username);
 		
+		//check if the user exist
 		if(user == null){
 			RequestDispatcher view = request.getRequestDispatcher("LoginFailed.html");
 			view.forward(request, response);
 			return;
 		}
 		
-		if(dbCon.checkWebPassword(user, hash)){
+		
+		if(dbCon.checkWebPassword(user, hash)){ //authenticate the user if the credentials are correct
 			RequestDispatcher view = request.getRequestDispatcher("Success.html");
 			view.forward(request, response);
 			ConnectedUsers.authorizeUser(username);
-		}else{
+		}else if(user.getFailedLoginAttempts() >= 3){ //if the user already failed to login for 3 times remove him from pending users
+	        RequestDispatcher view = request.getRequestDispatcher("Suspended.html");
+		    view.forward(request, response);
+	        ConnectedUsers.removePendingUser(username);
+		}else { //redirect to the Weblogin and increase the failed login attempts
 			RequestDispatcher view = request.getRequestDispatcher("WebLogin.html");
 	        view.forward(request, response);
 	        user.increaseFailedLoginAttempts();
-	        
-	        if(user.getFailedLoginAttempts() >= 3){
-	        	ConnectedUsers.removePendingUser(username);
-	        }
-	        
 		}
 	}
 

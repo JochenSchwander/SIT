@@ -5,7 +5,7 @@ import java.io.UnsupportedEncodingException;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 
-import de.hs_mannheim.sit.ss14.binaryConverter.binaryConverter;
+import org.apache.commons.codec.binary.Base64;
 
 
 public class SHA512Hasher implements Hasher{
@@ -22,13 +22,13 @@ public class SHA512Hasher implements Hasher{
 	public String calculateHash(String password, String salt) throws NoSuchAlgorithmException, IOException {
 		MessageDigest digest = MessageDigest.getInstance("SHA-512");
 	      digest.reset();
-	      digest.update(binaryConverter.base64ToByte(salt));
+	      digest.update(Base64.decodeBase64(salt));
 	      byte[] input = digest.digest(password.getBytes("UTF-8"));
 	      for (int i = 0; i < ITERATION_NUMBER; i++) {
 	          digest.reset();
 	          input = digest.digest(input);
 	      }
-	      return binaryConverter.byteToBase64(input);
+	      return Base64.encodeBase64String(input);
 	}
 
 
@@ -37,7 +37,7 @@ public class SHA512Hasher implements Hasher{
 	   */
 	  @Override
 	  public byte[] calculateHash(String desktopPassword, byte[] salt) throws NoSuchAlgorithmException, UnsupportedEncodingException, IOException {
-	  	return binaryConverter.base64ToByte(calculateHash(desktopPassword, binaryConverter.byteToBase64(salt)));
+	  	return Base64.decodeBase64(calculateHash(desktopPassword, Base64.encodeBase64String(salt)));
 	  }
 }
 
