@@ -44,8 +44,8 @@ public class User {
 		return failedLoginAttempts;
 	}
 
-	public void setFailedLoginAttempts(final int failedLoginAttempts) {
-		this.failedLoginAttempts = failedLoginAttempts;
+	public void increaseFailedLoginAttempts() {
+		this.failedLoginAttempts++;
 	}
 
 	public void setOneTimeCode(final String oneTimeCode) {
