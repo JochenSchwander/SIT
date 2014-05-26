@@ -50,11 +50,6 @@ public class ClientSocket {
 	 * Schlüssel aus dem Parameter verschlüsselt.
 	 *
 	 * @param key
-	 * @throws IOException
-	 * @throws InvalidAlgorithmParameterException
-	 * @throws InvalidKeyException
-	 * @throws NoSuchPaddingException
-	 * @throws NoSuchAlgorithmException
 	 */
 	public void encryptConnectionWithKey(byte[] key) throws IOException,
 			Exception {
