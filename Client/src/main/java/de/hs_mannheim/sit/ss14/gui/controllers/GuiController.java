@@ -41,6 +41,8 @@ public class GuiController {
 	
 	public void displayLoggedInView(String recievedMessage) {
 		LoggedInModel loggedInModel = new LoggedInModel();
+		LoggedInController loginController = new LoggedInController(this, loggedInModel);
+		
 		loggedInModel.infoTextarea.setText(recievedMessage);
 		mainWindow.loggedInView(loggedInModel);
 		

@@ -53,8 +53,6 @@ public class ClientSocket {
 	 */
 	public void encryptConnectionWithKey(byte[] key) throws IOException,
 			Exception {
-		System.out.println("secret: " + key);
-
 		byte[] iv = { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 };
 		IvParameterSpec ivspec = new IvParameterSpec(iv);
 

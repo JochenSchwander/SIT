@@ -20,13 +20,11 @@ import de.hs_mannheim.sit.ss14.gui.models.LoginModel;
 public class LoginController {
 
 	private GuiController guiController;
-	private ClientSocket socket;
 	private LoginModel loginModel;
 
 	LoginController(GuiController guiController, LoginModel loginModel) {
 		this.guiController = guiController;
 		this.loginModel = loginModel;
-		this.socket = guiController.socket;
 
 		initModel();
 
@@ -40,8 +38,7 @@ public class LoginController {
 		loginModel.submitLoginAL = new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				//startLoginProcess();
-				guiController.displayOtpView();
+				startLoginProcess();
 			}
 		};
 
@@ -62,28 +59,27 @@ public class LoginController {
 					.setText("Fields must not be empty.");
 		} else {
 			try {
-				socket = new ClientSocket();
+				guiController.socket = new ClientSocket();
 				ClientDiffieHellman dh = new ClientDiffieHellman();
 				String recievedMessage;
 
 				// send pk and credentials to client
-				socket.sendMessage("login\n" + dh.calculatePublicKey() + ";"
+				guiController.socket.sendMessage("login\n" + dh.calculatePublicKey() + ";"
 						+ loginModel.usernameTextfield.getText() + ";"
 						+ loginModel.passwordTextfield.getText());
 
 				// recieve message
-				recievedMessage = socket.recieveMessage();
+				recievedMessage = guiController.socket.recieveMessage();
 				// check if matches this pattern: "login" then a new line "fail"
 				// or "success" and the message
 				if (recievedMessage.equals("login")) {
-					recievedMessage = socket.recieveMessage();
+					recievedMessage = guiController.socket.recieveMessage();
 					String[] recievedMessageArray = recievedMessage.split(";");
 
 					if (recievedMessageArray[0].equals("success")) {
 						// receive servers pk and generate shared secret and use
 						// it to encrypt the connection
-						socket.encryptConnectionWithKey(dh
-								.calculateSharedSecret(recievedMessageArray[1]));
+						//socket.encryptConnectionWithKey(dh.calculateSharedSecret(recievedMessageArray[1]));
 						guiController.displayOtpView();
 
 					} else { // if failed
@@ -101,7 +97,7 @@ public class LoginController {
 			} catch (Exception e) {
 				loginModel.credentialsMessageTextarea
 						.setText("We are sorry, an error occured.");
-				e.printStackTrace();
+				//e.printStackTrace();
 			}
 		}
 

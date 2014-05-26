@@ -243,7 +243,7 @@ public class RegisterTab extends JPanel {
 
 		JPanel buttonsPanel = new JPanel();
 		lowerPanel.add(buttonsPanel);
-		buttonsPanel.setBorder(new EmptyBorder(10, 10, 10, 10));
+		buttonsPanel.setBorder(new EmptyBorder(0, 10, 10, 10));
 		buttonsPanel.setLayout(new GridLayout(0, 1, 0, 0));
 
 

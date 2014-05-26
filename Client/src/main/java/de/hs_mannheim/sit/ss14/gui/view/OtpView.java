@@ -3,6 +3,8 @@ package de.hs_mannheim.sit.ss14.gui.view;
 import java.awt.Font;
 import java.awt.GridLayout;
 import java.awt.SystemColor;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
@@ -30,7 +32,7 @@ public class OtpView extends JPanel{
 		JPanel middlePanel = new JPanel();
 		middlePanel.setBorder(new EmptyBorder(10, 10, 10, 10));
 		add(middlePanel);
-		middlePanel.setLayout(new GridLayout(0, 2, 0, 0));
+		middlePanel.setLayout(new GridLayout(0, 3, 0, 0));
 		
 		JPanel leftMiddlePanel = new JPanel();
 		leftMiddlePanel.setBorder(new EmptyBorder(10, 10, 10, 10));
@@ -45,18 +47,45 @@ public class OtpView extends JPanel{
 		lblNewLabel.setHorizontalAlignment(SwingConstants.TRAILING);
 		leftMiddlePanel.add(lblNewLabel);
 		
+		JPanel middleMiddlePanel = new JPanel();
+		middleMiddlePanel.setBorder(new EmptyBorder(10, 10, 10, 10));
+		middlePanel.add(middleMiddlePanel);
+		middleMiddlePanel.setLayout(new GridLayout(2, 0, 0, 0));
+		
+		final JTextField otpTextField = otpModel.otpTextField;
+		middleMiddlePanel.add(otpTextField);
+		otpTextField.setColumns(10);
+		
+		final JTextField saltTextField = otpModel.saltTextField;
+		middleMiddlePanel.add(saltTextField);
+		
 		JPanel rightMiddlePanel = new JPanel();
 		rightMiddlePanel.setBorder(new EmptyBorder(10, 10, 10, 10));
 		middlePanel.add(rightMiddlePanel);
 		rightMiddlePanel.setLayout(new GridLayout(2, 0, 0, 0));
 		
-		JTextField otpTextField = otpModel.otpTextField;
-		rightMiddlePanel.add(otpTextField);
-		otpTextField.setColumns(10);
+		JButton copyOtpToClipboard = new JButton("copy to clipboard");
+		rightMiddlePanel.add(copyOtpToClipboard);
+		copyOtpToClipboard.addActionListener( new ActionListener()
+		{
+		    public void actionPerformed(ActionEvent e)
+		    {
+		    	otpTextField.selectAll();
+		    	otpTextField.copy();
+		    }
+		});
 		
-		JTextField saltTextField = otpModel.saltTextField;
-		rightMiddlePanel.add(saltTextField);
+		JButton copySaltToClipboard = new JButton("copy to clipboard");
+		rightMiddlePanel.add(copySaltToClipboard);
 		saltTextField.setColumns(10);
+		copySaltToClipboard.addActionListener( new ActionListener()
+		{
+		    public void actionPerformed(ActionEvent e)
+		    {
+		    	saltTextField.selectAll();
+		    	saltTextField.copy();
+		    }
+		});
 		
 		JPanel lowerPanel = new JPanel();
 		add(lowerPanel);

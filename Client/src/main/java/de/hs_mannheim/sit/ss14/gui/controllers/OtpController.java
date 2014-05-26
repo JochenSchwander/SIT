@@ -13,12 +13,10 @@ import de.hs_mannheim.sit.ss14.auxiliaries.ClientSocket;
 import de.hs_mannheim.sit.ss14.gui.models.OtpModel;
 
 public class OtpController {
-	private ClientSocket socket;
 	private GuiController guiController;
 	private OtpModel otpModel;
 
 	OtpController(GuiController guiController, OtpModel otpModel) {
-		this.socket = guiController.socket;
 		this.guiController = guiController;
 		this.otpModel = otpModel;
 
@@ -47,80 +45,21 @@ public class OtpController {
 	 * 
 	 */
 	private void requestOtp() {
-		Runnable requestOtp = new Runnable() {
-			@Override
-			public void run() {
-				try {
-					socket = new ClientSocket();
-					socket.sendMessage("requestotp");
-					
-					if (socket.recieveMessage().equals("requestotp")) {
-						String recievedMessage = socket.recieveMessage();
-						String[] recievedMessageArray = recievedMessage.split(";");
-
-						// Ausgabe des empfangenen OTPs
-
-						otpModel.infoTextarea.setText("Your OTP:\n"
-								+ recievedMessageArray[0] + "\nand Salt:\n"
-								+ recievedMessageArray[1]);
-
-					} else {
-						throw new Exception("Communication with server failed.");
-					}
-				} catch (IOException e) {
-					otpModel.infoTextarea
-							.setText("The connection to the server could not be established.");
-				} catch (Exception e) {
-					otpModel.infoTextarea.setText("We are sorry, an error occured.");
-					e.printStackTrace();
-				}
-			}
-		};
-
-		SwingUtilities.invokeLater(requestOtp);
-//		try {
-//			socket = new ClientSocket();
-//			socket.sendMessage("requestotp");
-//
-//			if (socket.recieveMessage().equals("requestotp")) {
-//				String recievedMessage = socket.recieveMessage();
-//				String[] recievedMessageArray = recievedMessage.split(";");
-//
-//				// Ausgabe des empfangenen OTPs
-//
-//				otpModel.infoTextarea.setText("Your OTP:\n"
-//						+ recievedMessageArray[0] + "\nand Salt:\n"
-//						+ recievedMessageArray[1]);
-//
-//			} else {
-//				throw new Exception("Communication with server failed.");
-//			}
-//		} catch (IOException e) {
-//			otpModel.infoTextarea
-//					.setText("The connection to the server could not be established.");
-//		} catch (Exception e) {
-//			otpModel.infoTextarea.setText("We are sorry, an error occured.");
-//			e.printStackTrace();
-//	}
-	}
-	
-	
-	
-	
-	private void waitForServerResponse() {
 		try {
-			if (socket.recieveMessage().equals("weblogin")) {
-				String recievedMessage = socket.recieveMessage();
+			// socket = new ClientSocket();
+			guiController.socket.sendMessage("requestotp");
+
+			String recievedMessage = guiController.socket.recieveMessage();
+			if (recievedMessage.equals("requestotp")) {
+				recievedMessage = guiController.socket.recieveMessage();
 				String[] recievedMessageArray = recievedMessage.split(";");
 
-				if (recievedMessageArray[0].equals("success")) {
-					
-					guiController.displayLoggedInView(recievedMessageArray[1]);
+				// Ausgabe des empfangenen OTPs
 
-				} else { // if failed
-					otpModel.infoTextarea
-							.setText(recievedMessageArray[1]);
-				}
+				otpModel.otpTextField.setText(recievedMessageArray[0]);
+				otpModel.saltTextField.setText(recievedMessageArray[1]);
+
+				waitForServerResponse();
 
 			} else {
 				throw new Exception("Communication with server failed.");
@@ -132,5 +71,45 @@ public class OtpController {
 			otpModel.infoTextarea.setText("We are sorry, an error occured.");
 			e.printStackTrace();
 		}
+	}
+
+	private void waitForServerResponse() {
+		guiController.displayLoggedInView("depp");
+		(new Thread(new Runnable() {
+			@Override
+			public void run() {
+				try {
+					guiController.socket.sendMessage("weblogin");
+
+					String recievedMessage = guiController.socket
+							.recieveMessage();
+					if (recievedMessage.equals("weblogin")) {
+						recievedMessage = guiController.socket.recieveMessage();
+						String[] recievedMessageArray = recievedMessage
+								.split(";");
+
+						if (recievedMessageArray[0].equals("success")) {
+
+							guiController
+									.displayLoggedInView(recievedMessageArray[1]);
+
+						} else { // if failed
+							otpModel.infoTextarea
+									.setText(recievedMessageArray[1]);
+						}
+
+					} else {
+						throw new Exception("Communication with server failed.");
+					}
+				} catch (IOException e) {
+					otpModel.infoTextarea
+							.setText("The connection to the server could not be established.");
+				} catch (Exception e) {
+					otpModel.infoTextarea
+							.setText("We are sorry, an error occured.");
+					e.printStackTrace();
+				}
+			}
+		})).start();
 	}
 }
