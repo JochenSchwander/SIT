@@ -1,9 +1,7 @@
 package de.hs_mannheim.sit.ss14.database;
 ///TODO: decide wicht of the two below !!
 import java.io.IOException;
-import java.io.UnsupportedEncodingException;
 import java.security.NoSuchAlgorithmException;
-import java.security.SecureRandom;
 //import sun.security.provider.SecureRandom;
 ///END DECISITON
 import java.sql.Connection;
@@ -18,6 +16,8 @@ import org.apache.commons.codec.binary.Base64;
 
 import de.hs_mannheim.sit.ss14.hash.Hasher;
 import de.hs_mannheim.sit.ss14.hash.SHA512Hasher;
+import de.hs_mannheim.sit.ss14.randomgenerator.OtpGenerator;
+import de.hs_mannheim.sit.ss14.randomgenerator.SaltGenerator;
 import de.hs_mannheim.sit.ss14.sync.User;
 
 
@@ -25,17 +25,26 @@ public class MySQLDatabaseConnector implements DatabaseConnector {
 
 	private Connection connection;
 	private Hasher hasher;
+	private OtpGenerator otp;
 
 
 	@Override
-	public void connect() throws ClassNotFoundException, SQLException {
-		Class.forName( "com.mysql.jdbc.Driver" );
-		connection = DriverManager.getConnection( "jdbc:mysql://localhost:3306/sit", "root", "gargelkarx" );
-		hasher = new SHA512Hasher();
+	public void connect(){
+		try {
+			Class.forName( "com.mysql.jdbc.Driver" );
+			connection = DriverManager.getConnection( "jdbc:mysql://localhost:3306/sit", "root", "gargelkarx" );
+			hasher = new SHA512Hasher();
+		} catch (ClassNotFoundException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	}
 
 	@Override
-	public boolean checkWebPassword(User user, String hashedOneTimewebPassword) throws IOException {
+	public boolean checkWebPassword(User user, String hashedOneTimewebPassword){
 		if (user!=null||hashedOneTimewebPassword!=null){ //TODO: übedenken
 			if(Arrays.equals(Base64.decodeBase64(user.getOneTimeCode()),Base64.decodeBase64(hashedOneTimewebPassword))){
 				return true;
@@ -62,12 +71,13 @@ public class MySQLDatabaseConnector implements DatabaseConnector {
 	    ResultSet rs = null;
 
 
-	    if(getDesktopFailedLoginAttempts() < 3){ //TODO: richtige stelle ?
+//	    if(getDesktopFailedLoginAttempts() < 3){ //TODO: richtige stelle ?
 			if (password==null||username==null){ //TODO: übedenken
 				user.setUserName("");
 				increaseDesktopFailedLoginAttempts(); //increase failed login attempts in db
 				user.setOneTimeCode("");
 				user.setSalt("");
+				///TODO: throw new Exception("password or username was 'null'");
 				return null;
 			} else
 			{
@@ -96,12 +106,13 @@ public class MySQLDatabaseConnector implements DatabaseConnector {
 
 			          if(Arrays.equals(proposedDigest,Base64.decodeBase64(password))){
 			        	  //generate new one time password and save it to the database
-			        	  oneTimePassword = generateOneTimePassword();
+			        	  oneTimePassword = otp.generateOneTimePassword();
 
 			        	  user.setUserName(username);
-						  user.setFailedLoginAttempts(0); //TODO: increaseFailed login ??
 						  user.setOneTimeCode(oneTimePassword);
 						  user.setSalt(salt);
+
+//						  resetDesktopFailedLoginAttempts();
 			        	  return user;
 			          }
 				} catch (IOException e) {
@@ -121,18 +132,23 @@ public class MySQLDatabaseConnector implements DatabaseConnector {
 
 
 			}
-	    }
-	    else{
-
-	    }
+//	    }
+//	    else{
+//
+//	    }
 		return null;
 	}
 
 
 
+//	private void resetDesktopFailedLoginAttempts() {
+//        ps = connection.prepareStatement("UPDATE INTO CREDENTIAL (desktopFailedLoginAttempts) VALUES (?");
+//        ps.setString(1,0);
+//        ps.executeUpdate();
+//	}
+
 	private void increaseDesktopFailedLoginAttempts() {
 		// TODO Auto-generated method stub
-
 	}
 
 //	private int getDesktopFailedLoginAttempts() {
@@ -145,20 +161,13 @@ public class MySQLDatabaseConnector implements DatabaseConnector {
 
 	@Override
 	public boolean createUser(String username, String desktopPassword,
-			String webPassword) throws NoSuchAlgorithmException, UnsupportedEncodingException, IOException, SQLException {
+			String webPassword) {
 		PreparedStatement ps = null;
 	      try {
 	          if (username!=null&&desktopPassword!=null&&webPassword!=null&&username.length()<=100){
-	              // Uses a secure Random not a simple Random
-	              SecureRandom random = SecureRandom.getInstance("SHA1PRNG");
-	              // Salt generation 64 bits long
-	              byte[] bSalt = new byte[8];
-	              random.nextBytes(bSalt);
 
-//	              ///TODO: consider lenght of 8.  any suggestions ? -> note the reason, when found!!
-//	              // one time password generation 8 bits long
-//	              byte[] bOneTimePassword = new byte[1];
-//	              random.nextBytes(bOneTimePassword);
+	              // Salt generation 64 bits long
+	              byte[] bSalt = SaltGenerator.generateOneTimePassword();
 
 	              // Digest computation
 	              byte[] bDesktopPasswordHash = hasher.calculateHash(desktopPassword, bSalt);
@@ -170,26 +179,30 @@ public class MySQLDatabaseConnector implements DatabaseConnector {
 	              //make binary salt to String
 	              String salt = Base64.encodeBase64String(bSalt);
 
-//	              String oneTimePassword = byteToBase64(bOneTimePassword);
-
 	              ps = connection.prepareStatement("INSERT INTO CREDENTIAL (username, desktopPassword, webPassword, salt, oneTimePassword) VALUES (?,?,?,?,?)");
 	              ps.setString(1,username);
 	              ps.setString(2,desktopPasswordHash);
 	              ps.setString(3,webPasswordHash);
 	              ps.setString(4,salt);
-//	              ps.setString(5,oneTimePassword);
 	              ps.executeUpdate();
 	              return true;
 	          } else {
 	              return false;
 	          }
+	      } catch (NoSuchAlgorithmException e){
+	    	  e.printStackTrace();
+	      } catch (IOException e){
+	    	  e.printStackTrace();
+	      } catch (SQLException e){
+	    	  e.printStackTrace();
 	      } finally {
 	          close(ps);
 	      }
+	      return false;
 	}
 
 	@Override
-	public void deleteUser(String username) throws SQLException{
+	public void deleteUser(String username){
 	      Statement st = null;
 	      try {
 	          st = connection.createStatement();
@@ -201,6 +214,8 @@ public class MySQLDatabaseConnector implements DatabaseConnector {
 
 				e.printStackTrace();
 			}
+	      } catch (SQLException e){
+	    	  e.printStackTrace();
 	      } finally {
 	          close(st);
 	      }
@@ -209,39 +224,35 @@ public class MySQLDatabaseConnector implements DatabaseConnector {
 
 
 	@Override
-	public void createTableStructure() throws SQLException{
+	public void createTableStructure(){
 	      Statement st = null;
 	      try {
-	          st = connection.createStatement();
-	          try {
-				st.execute("CREATE TABLE CREDENTIAL (username VARCHAR(100) PRIMARY KEY, desktopPassword VARCHAR(256) NOT NULL, webPassword VARCHAR(256) NOT NULL, salt VARCHAR(256) NOT NULL, oneTimePassword VARCHAR(30))");
+	            st = connection.createStatement();
+				st.execute("CREATE TABLE CREDENTIAL (username VARCHAR(100) PRIMARY KEY, desktopPassword VARCHAR(256) NOT NULL, webPassword VARCHAR(256) NOT NULL, salt VARCHAR(256) NOT NULL, desktopFailedLoginAttempts INTEGER(8))");
 				System.out.println("Anlegen der CREDENTIAL Tabelle erfolgreich!");
-	          } catch (SQLException e) {
+
+	      } catch (SQLException e) {
 				System.out.println("Fehler beim Anlegen der CREDENTIAL Tabelle!");
 
 				e.printStackTrace();
-			}
-	      } finally {
+		  } finally {
 	          close(st);
 	      }
 	  }
 
 	@Override
-	public void deleteTableStructure() throws SQLException{
+	public void deleteTableStructure(){
 	      Statement st = null;
 	      try {
 	          st = connection.createStatement();
-	          try {
-				st.execute("DROP TABLE CREDENTIAL");
-				System.out.println("Löschen der CREDENTIAL Tabelle erfolgreich!");
+	          st.execute("DROP TABLE CREDENTIAL");
+	          System.out.println("Löschen der CREDENTIAL Tabelle erfolgreich!");
 	          } catch (SQLException e) {
-				System.out.println("Fehler bein Löschen der CREDENTIAL Tabelle!");
-
-				e.printStackTrace();
-			}
-	      } finally {
+	        	  System.out.println("Fehler bein Löschen der CREDENTIAL Tabelle!");
+	        	  e.printStackTrace();
+	          } finally {
 	          close(st);
-	      }
+	          }
 	  }
 
 	/**
