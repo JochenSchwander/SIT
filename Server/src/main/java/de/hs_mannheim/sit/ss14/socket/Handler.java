@@ -9,7 +9,6 @@ import java.net.Socket;
 import java.security.InvalidAlgorithmParameterException;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
-import java.sql.SQLException;
 
 import javax.crypto.Cipher;
 import javax.crypto.CipherInputStream;
@@ -159,22 +158,15 @@ public class Handler implements Runnable {
 		// TODO decrypt!
 
 		String[] userdataArray = userdata.split(";");
-		try {
-			if (dbcon.createUser(userdataArray[0], userdataArray[1], userdataArray[2])) {
-				out.println("register");
-				out.println("success");
-			} else {
-				out.println("register");
-				out.println("fail");
-			}
-		} catch (NoSuchAlgorithmException | SQLException | IndexOutOfBoundsException e) {
-			e.printStackTrace();
+		if (dbcon.createUser(userdataArray[0], userdataArray[1], userdataArray[2])) {
+			out.println("register");
+			out.println("success");
+		} else {
 			out.println("register");
 			out.println("fail");
-		} finally {
-			out.flush();
-			closeSocketConnection();
 		}
+		out.flush();
+		closeSocketConnection();
 	}
 
 	/**
