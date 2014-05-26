@@ -7,7 +7,7 @@ import javax.swing.JPasswordField;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
 
-import de.hs_mannheim.sit.ss14.ClientSocket;
+import de.hs_mannheim.sit.ss14.auxiliaries.ClientSocket;
 import de.hs_mannheim.sit.ss14.gui.models.LoginModel;
 import de.hs_mannheim.sit.ss14.gui.models.RegisterModel;
 
@@ -50,7 +50,7 @@ public class RegisterController {
 				registerModel.usernameMessageTextarea.setText("");
 				registerModel.desktopPasswordsMessageTextarea.setText("");
 				registerModel.webPasswordsMessageTextarea.setText("");
-				registerModel.infoTextarea.setText("");
+				registerModel.infoTextarea.setText("Hier können sie sich für die Benutzung der Anwendung registrieren.");
 			}
 		};
 
@@ -67,7 +67,7 @@ public class RegisterController {
 		registerModel.usernameMessageTextarea.setText("");
 		registerModel.desktopPasswordsMessageTextarea.setText("");
 		registerModel.webPasswordsMessageTextarea.setText("");
-		registerModel.infoTextarea.setText("");
+		registerModel.infoTextarea.setText("Hier können sie sich für die Benutzung der Anwendung registrieren.");
 		
 		if (checkInputValidity()) {
 

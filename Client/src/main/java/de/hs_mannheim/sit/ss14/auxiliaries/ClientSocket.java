@@ -1,4 +1,4 @@
-package de.hs_mannheim.sit.ss14;
+package de.hs_mannheim.sit.ss14.auxiliaries;
 
 import java.io.*;
 import java.net.Socket;

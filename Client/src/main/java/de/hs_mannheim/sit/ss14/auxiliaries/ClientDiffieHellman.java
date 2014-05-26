@@ -1,4 +1,4 @@
-package de.hs_mannheim.sit.ss14;
+package de.hs_mannheim.sit.ss14.auxiliaries;
 
 import java.math.BigInteger;
 import java.security.AlgorithmParameterGenerator;
@@ -15,8 +15,7 @@ import javax.crypto.spec.DHParameterSpec;
  * Diffie Hellman Algorithm implementation by Oracle. Split up in Server and
  * Client Classes by DS. Function names and comments by Jochen Schwander.
  * 
- * @src http://docs.oracle.com/javase/7/docs/technotes/guides/security/crypto/
- *      CryptoSpec.html Appendix D
+ * @src http://docs.oracle.com/javase/7/docs/technotes/guides/security/crypto/CryptoSpec.html Appendix D
  * 
  *      Copyright (c) 1997, 2001, Oracle and/or its affiliates. All rights
  *      reserved.
