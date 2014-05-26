@@ -20,6 +20,7 @@ import javax.crypto.spec.SecretKeySpec;
 import org.apache.commons.codec.binary.Base64;
 
 import de.hs_mannheim.sit.ss14.crypto.DiffieHellman;
+import de.hs_mannheim.sit.ss14.crypto.RSADecrypter;
 import de.hs_mannheim.sit.ss14.database.DatabaseConnector;
 import de.hs_mannheim.sit.ss14.sync.ConnectedUsers;
 import de.hs_mannheim.sit.ss14.sync.User;
@@ -36,6 +37,7 @@ public class Handler implements Runnable {
 	private PrintWriter out;
 	private Status status;
 	private User user;
+	private RSADecrypter rsaDecrypter;
 
 	/**
 	 * Represents the status of the connected User.
@@ -56,9 +58,10 @@ public class Handler implements Runnable {
 	 * @throws IOException
 	 *             in case something goes wrong with in-/output streams
 	 */
-	Handler(final Socket client, final DatabaseConnector dbcon) throws IOException {
+	Handler(final Socket client, final DatabaseConnector dbcon, final RSADecrypter rsaDecrypter) throws IOException {
 		this.client = client;
 		this.dbcon = dbcon;
+		this.rsaDecrypter = rsaDecrypter;
 		in = new BufferedReader(new InputStreamReader(client.getInputStream()));
 		out = new PrintWriter(new OutputStreamWriter(client.getOutputStream()));
 		status = Status.UNAUTHORIZED;
@@ -155,7 +158,7 @@ public class Handler implements Runnable {
 	private void register() throws IOException {
 		String userdata = in.readLine();
 
-		// TODO decrypt!
+		rsaDecrypter.decrypt(userdata);
 
 		String[] userdataArray = userdata.split(";");
 		if (dbcon.createUser(userdataArray[0], userdataArray[1], userdataArray[2])) {
@@ -177,7 +180,7 @@ public class Handler implements Runnable {
 	private void login() throws IOException {
 		String userdata = in.readLine();
 
-		// TODO decrypt!
+		rsaDecrypter.decrypt(userdata);
 
 		String[] userdataArray = userdata.split(";");
 		user = dbcon.checkDesktopPassword(userdataArray[2], userdataArray[1]);

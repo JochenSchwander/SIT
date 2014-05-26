@@ -6,6 +6,7 @@ import java.sql.SQLException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.TimeUnit;
 
+import de.hs_mannheim.sit.ss14.crypto.RSADecrypter;
 import de.hs_mannheim.sit.ss14.database.DatabaseConnector;
 import de.hs_mannheim.sit.ss14.database.MySQLDatabaseConnector;
 
@@ -18,6 +19,7 @@ public class NetworkService implements Runnable {
 	private final ServerSocket serverSocket;
 	private final ExecutorService pool;
 	private final DatabaseConnector dbcon;
+	private final RSADecrypter rsaDecrypter;
 
 	/**
 	 * Constructor.
@@ -28,7 +30,8 @@ public class NetworkService implements Runnable {
 	public NetworkService(final ExecutorService pool, final ServerSocket serverSocket) {
 		this.serverSocket = serverSocket;
 		this.pool = pool;
-		this.dbcon = new MySQLDatabaseConnector();
+		rsaDecrypter = new RSADecrypter();
+		dbcon = new MySQLDatabaseConnector();
 
 		try {
 			dbcon.connect();
@@ -42,7 +45,7 @@ public class NetworkService implements Runnable {
 	public void run() {
 		try {
 			while (true) {
-				pool.execute(new Handler(serverSocket.accept(), dbcon));
+				pool.execute(new Handler(serverSocket.accept(), dbcon, rsaDecrypter));
 			}
 		} catch (IOException e) {
 			e.printStackTrace();
