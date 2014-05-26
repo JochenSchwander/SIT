@@ -10,17 +10,13 @@ import de.hs_mannheim.sit.ss14.socket.Handler;
  */
 public class User {
 
-	public User(){
-		this.failedLoginAttempts = 0;
-	}
-
 	private String userName;
 
 	private String salt;
 
 	private String oneTimeCode;
 
-	private int failedLoginAttempts;
+	private int failedLoginAttempts; //initial == 0
 
 	private Handler handler;
 
@@ -48,8 +44,8 @@ public class User {
 		return failedLoginAttempts;
 	}
 
-	public void setFailedLoginAttempts(final int failedLoginAttempts) {
-		this.failedLoginAttempts = failedLoginAttempts;
+	public void increaseFailedLoginAttempts() {
+		this.failedLoginAttempts++;
 	}
 
 	public void setOneTimeCode(final String oneTimeCode) {

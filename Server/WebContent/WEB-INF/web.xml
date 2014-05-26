@@ -8,10 +8,10 @@
   <servlet>
     <servlet-name>WebClient</servlet-name>
     <servlet-class>de.hs_mannheim.sit.ss14.webclient.WebClient</servlet-class>
-    <load-on-startup>1</load-on-startup>
+    <load-on-startup>2</load-on-startup>
   </servlet>
   <servlet-mapping>
 	<servlet-name>WebClient</servlet-name>
-	<url-pattern>/WebClient/</url-pattern>
+	<url-pattern>/WebClient</url-pattern>
 </servlet-mapping>
 </web-app>
