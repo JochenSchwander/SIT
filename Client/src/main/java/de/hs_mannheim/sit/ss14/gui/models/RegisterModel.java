@@ -19,7 +19,6 @@ public class RegisterModel {
 	public JTextArea webPasswordsMessageTextarea;
 	
 	public ActionListener submitRegisterAL;
-	public ActionListener resetRegisterAL;
 
 	public RegisterModel() {
 	}

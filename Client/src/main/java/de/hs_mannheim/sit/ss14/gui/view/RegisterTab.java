@@ -4,9 +4,12 @@ import java.awt.*;
 
 import javax.swing.*;
 import javax.swing.border.*;
+import javax.swing.text.AbstractDocument;
 
+import de.hs_mannheim.sit.ss14.auxiliaries.DocumentSizeFilter;
 import de.hs_mannheim.sit.ss14.gui.controllers.RegisterController;
 import de.hs_mannheim.sit.ss14.gui.models.RegisterModel;
+
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
 
@@ -38,7 +41,7 @@ public class RegisterTab extends JPanel {
 		infoTextarea.setWrapStyleWord(true);
 		infoTextarea.setLineWrap(true);
 		infoTextarea.setEditable(false);
-		infoTextarea.setText("Hier können sie sich für die Benutzung der Anwendung registrieren.");
+		infoTextarea.setText("Register for using the application.");
 		upperPanel.add(infoTextarea);
 
 		JPanel middleSplittedPanel = new JPanel();
@@ -68,10 +71,9 @@ public class RegisterTab extends JPanel {
 
 		JPanel usernameTextfieldPanel = new JPanel();
 		usernameTextfieldPanel.setBorder(new TitledBorder(new EmptyBorder(10,
-				10, 10, 10), "Benutzername", TitledBorder.LEADING,
+				10, 10, 10), "Username", TitledBorder.LEADING,
 				TitledBorder.TOP, null, null));
 		GridBagConstraints gbc_usernameTextfieldPanel = new GridBagConstraints();
-		// gbc_usernameTextfieldPanel.insets = new Insets(0, 0, 5, 0);
 		gbc_usernameTextfieldPanel.fill = GridBagConstraints.BOTH;
 		gbc_usernameTextfieldPanel.gridx = 0;
 		gbc_usernameTextfieldPanel.gridy = 0;
@@ -82,13 +84,13 @@ public class RegisterTab extends JPanel {
 		JTextField usernameTextfield = registerModel.usernameTextfield;
 		usernameTextfieldPanel.add(usernameTextfield);
 		usernameTextfield.setColumns(10);
+		((AbstractDocument) usernameTextfield.getDocument()).setDocumentFilter(new DocumentSizeFilter(100, "[A-Za-z0-9]+"));
 
 		JPanel desktopPasswordTextfieldPanel = new JPanel();
 		desktopPasswordTextfieldPanel.setBorder(new TitledBorder(
 				new EmptyBorder(10, 10, 0, 10), "Desktoppasswort",
 				TitledBorder.LEADING, TitledBorder.TOP, null, null));
 		GridBagConstraints gbc_desktopPasswordTextfieldPanel = new GridBagConstraints();
-		// gbc_desktopPasswordTextfieldPanel.insets = new Insets(0, 0, 5, 0);
 		gbc_desktopPasswordTextfieldPanel.fill = GridBagConstraints.BOTH;
 		gbc_desktopPasswordTextfieldPanel.gridx = 0;
 		gbc_desktopPasswordTextfieldPanel.gridy = 1;
@@ -99,14 +101,14 @@ public class RegisterTab extends JPanel {
 		JPasswordField desktopPasswordTextfield = registerModel.desktopPasswordTextfield;
 		desktopPasswordTextfield.setToolTipText("");
 		desktopPasswordTextfieldPanel.add(desktopPasswordTextfield);
+		((AbstractDocument) desktopPasswordTextfield.getDocument())
+		.setDocumentFilter(new DocumentSizeFilter(100, ".+"));
 
 		JPanel repeatDesktopPasswordTextfieldPanel = new JPanel();
 		repeatDesktopPasswordTextfieldPanel.setBorder(new TitledBorder(
 				new EmptyBorder(0, 10, 10, 10), "Desktoppasswort wiederholen",
 				TitledBorder.LEADING, TitledBorder.TOP, null, null));
 		GridBagConstraints gbc_repeatDesktopPasswordTextfieldPanel = new GridBagConstraints();
-		// gbc_repeatDesktopPasswordTextfieldPanel.insets = new Insets(0, 0, 5,
-		// 0);
 		gbc_repeatDesktopPasswordTextfieldPanel.fill = GridBagConstraints.BOTH;
 		gbc_repeatDesktopPasswordTextfieldPanel.gridx = 0;
 		gbc_repeatDesktopPasswordTextfieldPanel.gridy = 2;
@@ -117,13 +119,14 @@ public class RegisterTab extends JPanel {
 
 		JPasswordField repeatDesktopPasswordTextfield = registerModel.repeatDesktopPasswordTextfield;
 		repeatDesktopPasswordTextfieldPanel.add(repeatDesktopPasswordTextfield);
+		((AbstractDocument) repeatDesktopPasswordTextfield.getDocument())
+		.setDocumentFilter(new DocumentSizeFilter(100, ".+"));
 
 		JPanel webPasswordTextfieldPanel = new JPanel();
 		webPasswordTextfieldPanel.setBorder(new TitledBorder(new EmptyBorder(
 				10, 10, 0, 10), "Webpasswort", TitledBorder.LEADING,
 				TitledBorder.TOP, null, null));
 		GridBagConstraints gbc_webPasswordTextfieldPanel = new GridBagConstraints();
-		// gbc_webPasswordTextfieldPanel.insets = new Insets(0, 0, 5, 0);
 		gbc_webPasswordTextfieldPanel.fill = GridBagConstraints.BOTH;
 		gbc_webPasswordTextfieldPanel.gridx = 0;
 		gbc_webPasswordTextfieldPanel.gridy = 3;
@@ -133,13 +136,14 @@ public class RegisterTab extends JPanel {
 
 		JPasswordField webPasswordTextfield = registerModel.webPasswordTextfield;
 		webPasswordTextfieldPanel.add(webPasswordTextfield);
+		((AbstractDocument) webPasswordTextfield.getDocument())
+		.setDocumentFilter(new DocumentSizeFilter(100, ".+"));
 
 		JPanel repeatWebPasswordTextfieldPanel = new JPanel();
 		repeatWebPasswordTextfieldPanel.setBorder(new TitledBorder(
 				new EmptyBorder(0, 10, 10, 10), "Webpasswort wiederholen",
 				TitledBorder.LEADING, TitledBorder.TOP, null, null));
 		GridBagConstraints gbc_repeatWebPasswordTextfieldPanel = new GridBagConstraints();
-		// gbc_repeatWebPasswordTextfieldPanel.insets = new Insets(0, 0, 5, 0);
 		gbc_repeatWebPasswordTextfieldPanel.fill = GridBagConstraints.BOTH;
 		gbc_repeatWebPasswordTextfieldPanel.gridx = 0;
 		gbc_repeatWebPasswordTextfieldPanel.gridy = 4;
@@ -149,6 +153,8 @@ public class RegisterTab extends JPanel {
 
 		JPasswordField repeatWebPasswordTextfield = registerModel.repeatWebPasswordTextfield;
 		repeatWebPasswordTextfieldPanel.add(repeatWebPasswordTextfield);
+		((AbstractDocument) repeatWebPasswordTextfield.getDocument())
+		.setDocumentFilter(new DocumentSizeFilter(100, ".+"));
 		repeatWebPasswordTextfield
 				.addActionListener(registerModel.submitRegisterAL);
 
@@ -168,7 +174,6 @@ public class RegisterTab extends JPanel {
 		JPanel usernameMessageTextareaPanel = new JPanel();
 		usernameMessageTextareaPanel.setBorder(new EmptyBorder(10, 10, 10, 10));
 		GridBagConstraints gbc_usernameMessageTextareaPanel = new GridBagConstraints();
-		// gbc_usernameMessageTextareaPanel.insets = new Insets(0, 0, 5, 0);
 		gbc_usernameMessageTextareaPanel.fill = GridBagConstraints.BOTH;
 		gbc_usernameMessageTextareaPanel.gridx = 0;
 		gbc_usernameMessageTextareaPanel.gridy = 0;
@@ -210,7 +215,6 @@ public class RegisterTab extends JPanel {
 				.setBorder(new EmptyBorder(0, 10, 0, 10));
 		GridBagConstraints gbc_webPasswordsMessageTextareaPanel = new GridBagConstraints();
 		gbc_webPasswordsMessageTextareaPanel.gridheight = 3;
-		// gbc_webPasswordsMessageTextareaPanel.insets = new Insets(0, 0, 5, 0);
 		gbc_webPasswordsMessageTextareaPanel.fill = GridBagConstraints.BOTH;
 		gbc_webPasswordsMessageTextareaPanel.gridx = 0;
 		gbc_webPasswordsMessageTextareaPanel.gridy = 3;
@@ -240,11 +244,8 @@ public class RegisterTab extends JPanel {
 		JPanel buttonsPanel = new JPanel();
 		lowerPanel.add(buttonsPanel);
 		buttonsPanel.setBorder(new EmptyBorder(10, 10, 10, 10));
-		buttonsPanel.setLayout(new GridLayout(0, 2, 0, 0));
+		buttonsPanel.setLayout(new GridLayout(0, 1, 0, 0));
 
-		JButton btnReset = new JButton("Reset");
-		btnReset.addActionListener(registerModel.resetRegisterAL);
-		buttonsPanel.add(btnReset);
 
 		JButton btnRegister = new JButton("Register");
 		buttonsPanel.add(btnRegister);

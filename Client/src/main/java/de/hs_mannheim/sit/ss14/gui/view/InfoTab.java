@@ -16,10 +16,6 @@ public class InfoTab extends JPanel {
 		setBorder(new EmptyBorder(10, 10, 10, 10));
 		setLayout(new GridLayout(0, 1, 0, 0));
 		
-		JTextField textField = new JTextField();
-		add(textField);
-		textField.setColumns(10);
-		
 		JTextArea infoTextarea = new JTextArea();
 		add(infoTextarea);
 		infoTextarea.setBackground(SystemColor.control);
@@ -27,10 +23,8 @@ public class InfoTab extends JPanel {
 		infoTextarea.setWrapStyleWord(true);
 		infoTextarea.setEditable(false);
 		infoTextarea.setText("SIT Projekt\n\nTeammitglieder:\nKwiotek\nMath\nSchwander\nSeemann");;
-
-				
-
-
+		
+		System.out.println("\007");
 	}
 
 }

@@ -1,4 +1,4 @@
-package de.hs_mannheim.sit.ss14.gui.view;
+package de.hs_mannheim.sit.ss14.auxiliaries;
 
 import javax.swing.text.*;
 import java.awt.*;

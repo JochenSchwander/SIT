@@ -26,7 +26,7 @@ public class LoginController {
 	LoginController(GuiController guiController, LoginModel loginModel) {
 		this.guiController = guiController;
 		this.loginModel = loginModel;
-		this.socket=guiController.socket;
+		this.socket = guiController.socket;
 
 		initModel();
 
@@ -40,7 +40,8 @@ public class LoginController {
 		loginModel.submitLoginAL = new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				startLoginProcess();
+				//startLoginProcess();
+				guiController.displayOtpView();
 			}
 		};
 
@@ -50,7 +51,7 @@ public class LoginController {
 	 * Für den Loginablauf zuständige Funktion. 1. Verbindungsaufbau zum Server.
 	 * 2. Schlüsseltausch über Diffie-Hellmann, der mit RSA verschlüsselt ist.
 	 * ab dann, Verbindung verschlüsselt mit AES 3. delegieren des
-	 * Onetimepasswort-requests an die Funktion requestOtp();
+	 * Onetimepasswort-requests
 	 * 
 	 */
 	@SuppressWarnings("deprecation")
@@ -81,10 +82,11 @@ public class LoginController {
 					if (recievedMessageArray[0].equals("success")) {
 						// receive servers pk and generate shared secret and use
 						// it to encrypt the connection
-						socket.encryptConnectionWithKey(dh.calculateSharedSecret(recievedMessageArray[1]));
-						requestOtp();
+						socket.encryptConnectionWithKey(dh
+								.calculateSharedSecret(recievedMessageArray[1]));
+						guiController.displayOtpView();
 
-					} else { //if failed
+					} else { // if failed
 						loginModel.infoTextarea
 								.setText(recievedMessageArray[1]);
 					}
@@ -103,40 +105,5 @@ public class LoginController {
 			}
 		}
 
-		// guiController.startView.displayLoggedInView();
-
-		// loginModel.credentialsMessageTextarea.setText("Username: "
-		// + loginModel.usernameTextfield.getText() + "\nPasswort: "
-		// + loginModel.passwordTextfield.getText());
-		//
-		// requestOtp();}
 	}
-
-	/**
-	 * request the onetimepassword and salt and shows it to the user
-	 * 
-	 * @param loginModel
-	 * @throws IOException
-	 */
-	private void requestOtp() throws IOException, Exception {
-		socket.sendMessage("requestotp");
-
-		if (socket.recieveMessage().equals("requestotp")) {
-			String recievedMessage = socket.recieveMessage();
-			String[] recievedMessageArray = recievedMessage.split(";");
-			
-			// Ausgabe des empfangenen OTPs
-
-			loginModel.infoTextarea
-					.setText("Your OTP:\n"
-							+ recievedMessageArray[0]+"\nand Salt:\n"+recievedMessageArray[1]);
-			
-			guiController.startView.loginTab.displayOtp(loginModel);
-
-		} else {
-			throw new Exception("Communication with server failed.");
-		}
-
-	}
-
 }

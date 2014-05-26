@@ -39,21 +39,6 @@ public class RegisterController {
 
 			}
 		};
-		registerModel.resetRegisterAL = new ActionListener() {
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				registerModel.usernameTextfield.setText("");
-				registerModel.desktopPasswordTextfield.setText("");
-				registerModel.repeatDesktopPasswordTextfield.setText("");
-				registerModel.webPasswordTextfield.setText("");
-				registerModel.repeatWebPasswordTextfield.setText("");
-				registerModel.usernameMessageTextarea.setText("");
-				registerModel.desktopPasswordsMessageTextarea.setText("");
-				registerModel.webPasswordsMessageTextarea.setText("");
-				registerModel.infoTextarea.setText("Hier können sie sich für die Benutzung der Anwendung registrieren.");
-			}
-		};
-
 	}
 
 	/**
@@ -121,8 +106,6 @@ public class RegisterController {
 		}
 		for (int i = 0; i < password.length; i++) {
 			if (password[i] != password2[i]) {
-				System.out.println("PW1: "+password[i]);
-				System.out.println("PW2: "+password2[i]);
 				return false;
 			}
 		}
