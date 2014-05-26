@@ -14,7 +14,7 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.Arrays;
 
-import de.hs_mannheim.sit.ss14.binaryConverter.binaryConverter;
+import de.hs_mannheim.sit.ss14.binaryconverter.BinaryConverter;
 import de.hs_mannheim.sit.ss14.hash.Hasher;
 import de.hs_mannheim.sit.ss14.hash.SHA512Hasher;
 import de.hs_mannheim.sit.ss14.sync.User;
@@ -36,7 +36,7 @@ public class MySQLDatabaseConnector implements DatabaseConnector {
 	@Override
 	public boolean checkWebPassword(User user, String hashedOneTimewebPassword) throws IOException {
 		if (user!=null||hashedOneTimewebPassword!=null){ //TODO: übedenken
-			if(Arrays.equals(binaryConverter.base64ToByte(user.getOneTimeCode()),binaryConverter.base64ToByte(hashedOneTimewebPassword))){
+			if(Arrays.equals(BinaryConverter.base64ToByte(user.getOneTimeCode()),BinaryConverter.base64ToByte(hashedOneTimewebPassword))){
 				return true;
 			}
 		}
@@ -91,9 +91,9 @@ public class MySQLDatabaseConnector implements DatabaseConnector {
 			          }
 
 			          // Compute the new DIGEST
-			          byte[] proposedDigest = hasher.calculateHash(desktopPassword, binaryConverter.base64ToByte(salt));
+			          byte[] proposedDigest = hasher.calculateHash(desktopPassword, BinaryConverter.base64ToByte(salt));
 
-			          if(Arrays.equals(proposedDigest,binaryConverter.base64ToByte(password))){
+			          if(Arrays.equals(proposedDigest,BinaryConverter.base64ToByte(password))){
 			        	  //generate new one time password and save it to the database
 			        	  oneTimePassword = generateOneTimePassword();
 
@@ -161,13 +161,13 @@ public class MySQLDatabaseConnector implements DatabaseConnector {
 
 	              // Digest computation
 	              byte[] bDesktopPasswordHash = hasher.calculateHash(desktopPassword, bSalt);
-	              String desktopPasswordHash = binaryConverter.byteToBase64(bDesktopPasswordHash);
+	              String desktopPasswordHash = BinaryConverter.byteToBase64(bDesktopPasswordHash);
 
 	              byte[] bWebPasswordHash = hasher.calculateHash(webPassword, bSalt);
-	              String webPasswordHash = binaryConverter.byteToBase64(bWebPasswordHash);
+	              String webPasswordHash = BinaryConverter.byteToBase64(bWebPasswordHash);
 
 	              //make binary salt to String
-	              String salt = binaryConverter.byteToBase64(bSalt);
+	              String salt = BinaryConverter.byteToBase64(bSalt);
 
 //	              String oneTimePassword = byteToBase64(bOneTimePassword);
 
