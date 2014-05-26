@@ -9,18 +9,21 @@ import javax.swing.text.AbstractDocument;
 import de.hs_mannheim.sit.ss14.gui.models.LoginModel;
 
 /**
- * Beim Erstellen durch ViewStart wird die Ansicht für das erste Sicherheitskriterium gezeigt, und mit showOtp() wird dann das OTP angezeigt,
+ * Beim Erstellen durch ViewStart wird die Ansicht für das erste
+ * Sicherheitskriterium gezeigt, und mit showOtp() wird dann das OTP angezeigt,
  * welches im Web eingegeben werden muss.
+ * 
  * @author DS
- *
+ * 
  */
 public class LoginTab extends JPanel {
 
 	private JButton btnLogin;
 	private static final long serialVersionUID = 1L;;
+	private LoginModel loginModel;
 
 	LoginTab(LoginModel loginModel) {
-		
+
 		// this element settings
 		setLayout(new GridLayout(2, 1));
 
@@ -29,15 +32,16 @@ public class LoginTab extends JPanel {
 		add(upperPanel);
 		upperPanel.setLayout(new GridLayout(1, 0, 0, 0));
 		upperPanel.setBorder(new EmptyBorder(15, 10, 15, 10));
-		
-		JTextArea infoTextarea=loginModel.infoTextarea;
+
+		JTextArea infoTextarea = loginModel.infoTextarea;
 		upperPanel.add(loginModel.infoTextarea);
-		infoTextarea.setText("Willkommen im Loginbereich. \n\nGeben Sie ihr erstes Sicherheitskriterium ein.");
+		infoTextarea
+				.setText("Welcome to the login area. \n\nPlease login with your credentials.");
 		infoTextarea.setEditable(false);
 		infoTextarea.setLineWrap(true);
 		infoTextarea.setWrapStyleWord(true);
 		infoTextarea.setBackground(SystemColor.control);
-		
+
 		// lower row
 		JPanel lowerSplittedPanel = new JPanel();
 		add(lowerSplittedPanel);
@@ -53,28 +57,29 @@ public class LoginTab extends JPanel {
 		lowerLeftSplittedPanel.add(usernamePanel);
 		usernamePanel.setLayout(new GridLayout(1, 0, 0, 0));
 		usernamePanel.setBorder(new TitledBorder(
-				new EmptyBorder(10, 10, 10, 10), "Benutzername",
+				new EmptyBorder(10, 10, 10, 10), "Username",
 				TitledBorder.LEADING, TitledBorder.TOP, null, null));
 
-		JTextField usernameTextfield =	loginModel.usernameTextfield;
+		JTextField usernameTextfield = loginModel.usernameTextfield;
 		usernamePanel.add(usernameTextfield);
 		usernameTextfield.setFont(new Font("Tahoma", Font.PLAIN, 16));
-		//((AbstractDocument) usernameTextfield.getDocument()).setDocumentFilter(new DocumentSizeFilter(20));
+		((AbstractDocument) usernameTextfield.getDocument())
+				.setDocumentFilter(new DocumentSizeFilter(100, "[A-Za-z0-9]+"));
 
 		// lower row left side lower panel
 		JPanel passwordPanel = new JPanel();
 		lowerLeftSplittedPanel.add(passwordPanel);
 		passwordPanel.setLayout(new GridLayout(1, 0, 0, 0));
 		passwordPanel.setBorder(new TitledBorder(
-				new EmptyBorder(10, 10, 10, 10), "Passwort",
+				new EmptyBorder(10, 10, 10, 10), "Password",
 				TitledBorder.LEADING, TitledBorder.TOP, null, null));
 
-		JTextField passwordTextfield =	loginModel.passwordTextfield;
+		JTextField passwordTextfield = loginModel.passwordTextfield;
 		passwordPanel.add(passwordTextfield);
-		//((AbstractDocument) passwordTextfield.getDocument()).setDocumentFilter(new DocumentSizeFilter(50));
+		((AbstractDocument) passwordTextfield.getDocument())
+				.setDocumentFilter(new DocumentSizeFilter(100, ".+"));
 		passwordTextfield.setFont(new Font("Tahoma", Font.PLAIN, 16));
 		passwordTextfield.addActionListener(loginModel.submitLoginAL);
-
 
 		// lower row right side panel
 		JPanel lowerRightSplittedPanel = new JPanel();
@@ -87,7 +92,7 @@ public class LoginTab extends JPanel {
 		credentialsMessagePanel.setLayout(new GridLayout(1, 0, 0, 0));
 		credentialsMessagePanel.setBorder(new EmptyBorder(15, 10, 15, 10));
 
-		JTextArea credentialsMessageTextarea =	loginModel.credentialsMessageTextarea;
+		JTextArea credentialsMessageTextarea = loginModel.credentialsMessageTextarea;
 		credentialsMessageTextarea.setEditable(false);
 		credentialsMessageTextarea.setLineWrap(true);
 		credentialsMessageTextarea.setWrapStyleWord(true);
@@ -103,13 +108,13 @@ public class LoginTab extends JPanel {
 		btnLogin = new JButton("Login");
 		LoginButtonPanel.add(btnLogin);
 		btnLogin.addActionListener(loginModel.submitLoginAL);
-
 	}
-	
-	public void displayOtp(LoginModel loginModel){
+
+	public void displayOtp(LoginModel loginModel) {
+		
 		loginModel.usernameTextfield.setEnabled(false);
 		loginModel.passwordTextfield.setEnabled(false);
 		btnLogin.setEnabled(false);
-		
+
 	}
 }

@@ -57,7 +57,19 @@ public class StartView extends JFrame {
 		setVisible(true);
 	}
 
-	public void displayLoggedInView() {
+	public void loggedInView() {
+		getContentPane().removeAll();
+		getContentPane().setLayout(new GridLayout(1, 1));
+
+		JPanel usernamePanel = new JPanel();
+		usernamePanel.setLayout(new GridLayout(1, 0, 0, 0));
+		usernamePanel.setBackground(Color.green);
+
+		getContentPane().add(usernamePanel);
+		setVisible(true);
+	}
+	
+	public void otpView() {
 		getContentPane().removeAll();
 		getContentPane().setLayout(new GridLayout(1, 1));
 

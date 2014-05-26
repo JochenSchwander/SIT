@@ -1,5 +1,6 @@
 package de.hs_mannheim.sit.ss14.gui.controllers;
 
+import de.hs_mannheim.sit.ss14.auxiliaries.ClientSocket;
 import de.hs_mannheim.sit.ss14.gui.models.*;
 import de.hs_mannheim.sit.ss14.gui.view.*;
 
@@ -11,6 +12,8 @@ import de.hs_mannheim.sit.ss14.gui.view.*;
  */
 public class GuiController {
 	public StartView startView;
+	public ClientSocket socket;
+	
 
 	GuiController() {
 		startView();
