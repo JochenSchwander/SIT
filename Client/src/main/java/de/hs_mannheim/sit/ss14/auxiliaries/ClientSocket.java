@@ -1,21 +1,27 @@
 package de.hs_mannheim.sit.ss14.auxiliaries;
 
-import java.io.*;
-import java.math.BigInteger;
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.OutputStreamWriter;
+import java.io.PrintWriter;
 import java.net.Socket;
 import java.security.InvalidAlgorithmParameterException;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
 
-import javax.crypto.*;
+import javax.crypto.Cipher;
+import javax.crypto.CipherInputStream;
+import javax.crypto.CipherOutputStream;
+import javax.crypto.NoSuchPaddingException;
 import javax.crypto.spec.IvParameterSpec;
 import javax.crypto.spec.SecretKeySpec;
 
 /**
  * Stellt Funktionen für die Server-Client-Verbindung bereit.
- * 
+ *
  * @author DS
- * 
+ *
  */
 public class ClientSocket {
 
@@ -28,7 +34,7 @@ public class ClientSocket {
 	/**
 	 * Beim Instanziierung der Klasse wird automatisch eine Verbindung zum
 	 * Server hergestellt.
-	 * 
+	 *
 	 * @throws IOException
 	 */
 	public ClientSocket() throws IOException {
@@ -42,7 +48,7 @@ public class ClientSocket {
 	/**
 	 * sobald diese Methode aufgerufen wurden, wird die Verbindung mit dem
 	 * Schlüssel aus dem Parameter verschlüsselt.
-	 * 
+	 *
 	 * @param key
 	 * @throws IOException
 	 * @throws InvalidAlgorithmParameterException
@@ -50,7 +56,7 @@ public class ClientSocket {
 	 * @throws NoSuchPaddingException
 	 * @throws NoSuchAlgorithmException
 	 */
-	public void encryptConnectionWithKey(String key) throws IOException,
+	public void encryptConnectionWithKey(byte[] key) throws IOException,
 			Exception {
 		System.out.println("secret: " + key);
 
@@ -58,14 +64,12 @@ public class ClientSocket {
 		IvParameterSpec ivspec = new IvParameterSpec(iv);
 
 		Cipher aesDec = Cipher.getInstance("AES/CBC/PKCS5Padding");
-		aesDec.init(Cipher.DECRYPT_MODE, new SecretKeySpec(
-				hexStringToByteArray(key), "AES"), ivspec);
+		aesDec.init(Cipher.DECRYPT_MODE, new SecretKeySpec(key, "AES"), ivspec);
 		in = new BufferedReader(new InputStreamReader(new CipherInputStream(
 				clientSocket.getInputStream(), aesDec)));
 
 		Cipher aesEnc = Cipher.getInstance("AES/CBC/PKCS5Padding");
-		aesEnc.init(Cipher.ENCRYPT_MODE, new SecretKeySpec(
-				hexStringToByteArray(key), "AES"), ivspec);
+		aesEnc.init(Cipher.ENCRYPT_MODE, new SecretKeySpec(key, "AES"), ivspec);
 		out = new PrintWriter(new OutputStreamWriter(new CipherOutputStream(
 				clientSocket.getOutputStream(), aesEnc)));
 
@@ -84,14 +88,4 @@ public class ClientSocket {
 		clientSocket.close();
 	}
 
-	/**
-	 * Convert the D-H key to a byte array.
-	 * 
-	 * @param s
-	 *            D-H key
-	 * @return D-H key as byte array
-	 */
-	private static byte[] hexStringToByteArray(final String hexString) {
-		return (new BigInteger(hexString, 16)).toByteArray();
-	}
 }
