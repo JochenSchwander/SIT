@@ -36,18 +36,10 @@ public class MySQLDatabaseConnector implements DatabaseConnector {
 
 	@Override
 	public boolean checkWebPassword(User user, String hashedOneTimewebPassword) throws IOException {
-		if(user.getFailedLoginAttempts() < 3){
-			if (user!=null||hashedOneTimewebPassword!=null){ //TODO: übedenken
-				if(Arrays.equals(base64ToByte(user.getOneTimeCode()),base64ToByte(hashedOneTimewebPassword))){
-					return true;
-				}
-				else{
-					  user.setFailedLoginAttempts(user.getFailedLoginAttempts() +1); //TODO: increaseFailed login ??
-				}
+		if (user!=null||hashedOneTimewebPassword!=null){ //TODO: übedenken
+			if(Arrays.equals(base64ToByte(user.getOneTimeCode()),base64ToByte(hashedOneTimewebPassword))){
+				return true;
 			}
-		}
-		else {
-			///TODO: return false, ERROR(Passwort 3 mal falsch eingebgen)
 		}
 		return false;
 	}
@@ -63,17 +55,17 @@ public class MySQLDatabaseConnector implements DatabaseConnector {
 //	}
 
 	@Override
-	public User checkDesktopPassword(String password, String username) throws NoSuchAlgorithmException {
+	public User checkDesktopPassword(String password, String username){
 		User user;
 		user = new User(); ///TODO: check if already exists in LIST !!
 		PreparedStatement ps = null;
 	    ResultSet rs = null;
 
 
-	    if(user.getFailedLoginAttempts() < 3){ //TODO: richtige stelle ?
+	    if(getDesktopFailedLoginAttempts() < 3){ //TODO: richtige stelle ?
 			if (password==null||username==null){ //TODO: übedenken
 				user.setUserName("");
-				user.setFailedLoginAttempts(user.getFailedLoginAttempts() + 1); //TODO: increaseFailed login ??
+				increaseDesktopFailedLoginAttempts(); //increase failed login attempts in db
 				user.setOneTimeCode("");
 				user.setSalt("");
 				return null;
@@ -84,7 +76,7 @@ public class MySQLDatabaseConnector implements DatabaseConnector {
 					ps = connection.prepareStatement("SELECT username, desktopPassword, webPassword, salt FROM CREDENTIAL WHERE username = ?");
 					ps.setString(1, username);
 			          rs = ps.executeQuery();
-			          String desktopPassword, webPassword, salt, oneTimePassword;
+			          String desktopPassword = null, webPassword, salt = null, oneTimePassword;
 			          if (rs.next()) {
 			        	  desktopPassword = rs.getString("desktopPassword");
 			        	  webPassword = rs.getString("webPassword");
@@ -97,10 +89,6 @@ public class MySQLDatabaseConnector implements DatabaseConnector {
 			              if (rs.next()) { // Should not append, because login is the primary key
 			                  throw new SQLException("Database inconsistent two CREDENTIALS with the same LOGIN");
 			              }
-			          } else { // TIME RESISTANT ATTACK (Even if the user does not exist the
-			              // Computation time is equal to the time needed for a legitimate user
-			        	  desktopPassword = "000000000000000000000000000=";
-			              salt = "00000000000=";
 			          }
 
 			          // Compute the new DIGEST
@@ -109,12 +97,6 @@ public class MySQLDatabaseConnector implements DatabaseConnector {
 			          if(Arrays.equals(proposedDigest,base64ToByte(password))){
 			        	  //generate new one time password and save it to the database
 			        	  oneTimePassword = generateOneTimePassword();
-
-			        	  ///TODO: sollen wir das überhaupt in die db schreiben ? eher nicht ?
-				          close(ps);
-			        	  ps = connection.prepareStatement("INSERT INTO CREDENTIAL (oneTimePassword) VALUES (?) WHERE `CREDENTIAL`.`username` = \'"+username+"\'");
-			              ps.setString(1,oneTimePassword);
-			              ps.executeUpdate();
 
 			        	  user.setUserName(username);
 						  user.setFailedLoginAttempts(0); //TODO: increaseFailed login ??
@@ -126,6 +108,9 @@ public class MySQLDatabaseConnector implements DatabaseConnector {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}catch (SQLException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}catch (NoSuchAlgorithmException e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}
@@ -144,6 +129,19 @@ public class MySQLDatabaseConnector implements DatabaseConnector {
 	}
 
 
+
+	private void increaseDesktopFailedLoginAttempts() {
+		// TODO Auto-generated method stub
+
+	}
+
+	private int getDesktopFailedLoginAttempts() {
+		// TODO Auto-generated method stub
+		int failedLogins;
+
+
+		return failedLogins;
+	}
 
 	/**
 	 * Generates a unique one time password 8 bit long.
