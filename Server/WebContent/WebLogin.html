@@ -61,16 +61,22 @@
 		}
 
 		$( "#calcHash" ).click(function() {
-
-			var input = $( "#webPassword" ).val() + $("#otp").val() +$( "#salt" ).val();
-
+			//Hash webpassword + salt
+			var input = $( "#webPassword" ).val() + $( "#salt" ).val() //$( "#webPassword" ).val() + $("#otp").val() +$( "#salt" ).val();
 		  	var shaObj = new jsSHA(input, "TEXT"); //"HEX" OR "TEXT"
-
 			var hash = shaObj.getHash("SHA-512", "HEX", "1000"); //third param is number of rounds
-			var hmac = shaObj.getHMAC("SecretKey", "TEXT", "SHA-512", "HEX");
+			//var hmac = shaObj.getHMAC("SecretKey", "TEXT", "SHA-512", "HEX");
 			
-			$( "#hashOutput" ).val(hash);
+			//Hash the Hash + otp
+			var input_second = hash + $("#otp").val();
+			
+			var shaObj_second = new jsSHA(input_second, "TEXT");
+			var hash_second = shaObj.getHash("SHA-512", "HEX", "1000");
+			
+			
+			$( "#hashOutput" ).val(hash_second);
 			setCookie("salt",$( "#salt" ).val(),365); //Set Cookie for Salt
+			
 		});
 	</SCRIPT>
 
