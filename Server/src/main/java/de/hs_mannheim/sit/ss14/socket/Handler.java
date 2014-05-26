@@ -5,7 +5,6 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
-import java.math.BigInteger;
 import java.net.Socket;
 import java.security.InvalidAlgorithmParameterException;
 import java.security.InvalidKeyException;
@@ -18,6 +17,8 @@ import javax.crypto.CipherOutputStream;
 import javax.crypto.NoSuchPaddingException;
 import javax.crypto.spec.IvParameterSpec;
 import javax.crypto.spec.SecretKeySpec;
+
+import org.apache.commons.codec.binary.Base64;
 
 import de.hs_mannheim.sit.ss14.crypto.DiffieHellman;
 import de.hs_mannheim.sit.ss14.database.DatabaseConnector;
@@ -197,7 +198,7 @@ public class Handler implements Runnable {
 		} else {
 			DiffieHellman dh = new DiffieHellman();
 			String B = "";
-			String K = null;
+			byte[] K = null;
 			try {
 				B = dh.calculatePublicKey(userdataArray[0]);
 				K = dh.calculateSharedSecret();
@@ -216,11 +217,11 @@ public class Handler implements Runnable {
 				IvParameterSpec ivspec = new IvParameterSpec(iv);
 
 				Cipher aesDec = Cipher.getInstance("AES/CBC/PKCS5Padding");
-				aesDec.init(Cipher.DECRYPT_MODE, new SecretKeySpec(hexStringToByteArray(K), "AES"), ivspec);
+				aesDec.init(Cipher.DECRYPT_MODE, new SecretKeySpec(Base64.decodeBase64(K), "AES"), ivspec);
 				in = new BufferedReader(new InputStreamReader(new CipherInputStream(client.getInputStream(), aesDec)));
 
 				Cipher aesEnc = Cipher.getInstance("AES/CBC/PKCS5Padding");
-				aesEnc.init(Cipher.ENCRYPT_MODE, new SecretKeySpec(hexStringToByteArray(K), "AES"), ivspec);
+				aesEnc.init(Cipher.ENCRYPT_MODE, new SecretKeySpec(Base64.decodeBase64(K), "AES"), ivspec);
 				out = new PrintWriter(new OutputStreamWriter(new CipherOutputStream(client.getOutputStream(), aesEnc)));
 
 			} catch (NoSuchAlgorithmException | NoSuchPaddingException | InvalidKeyException | InvalidAlgorithmParameterException e) {
@@ -254,17 +255,6 @@ public class Handler implements Runnable {
 				// only happens when already closed -> dont care
 			}
 		}
-	}
-
-	/**
-	 * Convert the D-H key to a byte array.
-	 *
-	 * @param s
-	 *            D-H key
-	 * @return D-H key as byte array
-	 */
-	private static byte[] hexStringToByteArray(final String hexString) {
-		return (new BigInteger(hexString, 16)).toByteArray();
 	}
 
 }
