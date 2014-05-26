@@ -14,8 +14,7 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.Arrays;
 
-import sun.misc.BASE64Decoder;
-import sun.misc.BASE64Encoder;
+import de.hs_mannheim.sit.ss14.binaryconverter.BinaryConverter;
 import de.hs_mannheim.sit.ss14.hash.Hasher;
 import de.hs_mannheim.sit.ss14.hash.SHA512Hasher;
 import de.hs_mannheim.sit.ss14.sync.User;
@@ -37,7 +36,7 @@ public class MySQLDatabaseConnector implements DatabaseConnector {
 	@Override
 	public boolean checkWebPassword(User user, String hashedOneTimewebPassword) throws IOException {
 		if (user!=null||hashedOneTimewebPassword!=null){ //TODO: übedenken
-			if(Arrays.equals(base64ToByte(user.getOneTimeCode()),base64ToByte(hashedOneTimewebPassword))){
+			if(Arrays.equals(BinaryConverter.base64ToByte(user.getOneTimeCode()),BinaryConverter.base64ToByte(hashedOneTimewebPassword))){
 				return true;
 			}
 		}
@@ -92,9 +91,9 @@ public class MySQLDatabaseConnector implements DatabaseConnector {
 			          }
 
 			          // Compute the new DIGEST
-			          byte[] proposedDigest = hasher.calculateHash(desktopPassword, base64ToByte(salt));
+			          byte[] proposedDigest = hasher.calculateHash(desktopPassword, BinaryConverter.base64ToByte(salt));
 
-			          if(Arrays.equals(proposedDigest,base64ToByte(password))){
+			          if(Arrays.equals(proposedDigest,BinaryConverter.base64ToByte(password))){
 			        	  //generate new one time password and save it to the database
 			        	  oneTimePassword = generateOneTimePassword();
 
@@ -135,35 +134,13 @@ public class MySQLDatabaseConnector implements DatabaseConnector {
 
 	}
 
-	private int getDesktopFailedLoginAttempts() {
-		// TODO Auto-generated method stub
-		int failedLogins;
-
-
-		return failedLogins;
-	}
-
-	/**
-	 * Generates a unique one time password 8 bit long.
-	 * @return one time password as string
-	 */
-	private String generateOneTimePassword() {
-        // Uses a secure Random not a simple Random
-        SecureRandom random = null;
-		try {
-			random = SecureRandom.getInstance("SHA1PRNG"); //ist zufall gut genug ??
-		} catch (NoSuchAlgorithmException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-
-        ///TODO: consider lenght of 8.  any suggestions ? -> note the reason, when found!!
-        // one time password generation 8 bits long
-        byte[] bOneTimePassword = new byte[1];
-        random.nextBytes(bOneTimePassword);
-
-		return byteToBase64(bOneTimePassword);
-	}
+//	private int getDesktopFailedLoginAttempts() {
+//		// TODO Auto-generated method stub
+//		int failedLogins;
+//
+//
+//		return failedLogins;
+//	}
 
 	@Override
 	public boolean createUser(String username, String desktopPassword,
@@ -184,13 +161,13 @@ public class MySQLDatabaseConnector implements DatabaseConnector {
 
 	              // Digest computation
 	              byte[] bDesktopPasswordHash = hasher.calculateHash(desktopPassword, bSalt);
-	              String desktopPasswordHash = byteToBase64(bDesktopPasswordHash);
+	              String desktopPasswordHash = BinaryConverter.byteToBase64(bDesktopPasswordHash);
 
 	              byte[] bWebPasswordHash = hasher.calculateHash(webPassword, bSalt);
-	              String webPasswordHash = byteToBase64(bWebPasswordHash);
+	              String webPasswordHash = BinaryConverter.byteToBase64(bWebPasswordHash);
 
 	              //make binary salt to String
-	              String salt = byteToBase64(bSalt);
+	              String salt = BinaryConverter.byteToBase64(bSalt);
 
 //	              String oneTimePassword = byteToBase64(bOneTimePassword);
 
@@ -292,27 +269,7 @@ public class MySQLDatabaseConnector implements DatabaseConnector {
 	      }
 	  }
 
-	  /**
-	   * From a base 64 representation, returns the corresponding byte[]
-	   * @param data String The base64 representation
-	   * @return byte[]
-	   * @throws IOException
-	   */
-	  public static byte[] base64ToByte(String data) throws IOException {
-	      BASE64Decoder decoder = new BASE64Decoder();
-	      return decoder.decodeBuffer(data);
-	  }
 
-	  /**
-	   * From a byte[] returns a base 64 representation
-	   * @param data byte[]
-	   * @return String
-	   * @throws IOException
-	   */
-	  public static String byteToBase64(byte[] data){
-	      BASE64Encoder endecoder = new BASE64Encoder();
-	      return endecoder.encode(data);
-	  }
 
 
 
