@@ -1,9 +1,15 @@
 package de.hs_mannheim.sit.ss14.auxiliaries;
 
 import java.io.*;
+import java.math.BigInteger;
 import java.net.Socket;
+import java.security.InvalidAlgorithmParameterException;
+import java.security.InvalidKeyException;
+import java.security.NoSuchAlgorithmException;
 
 import javax.crypto.*;
+import javax.crypto.spec.IvParameterSpec;
+import javax.crypto.spec.SecretKeySpec;
 
 /**
  * Stellt Funktionen für die Server-Client-Verbindung bereit.
@@ -39,28 +45,53 @@ public class ClientSocket {
 	 * 
 	 * @param key
 	 * @throws IOException
+	 * @throws InvalidAlgorithmParameterException
+	 * @throws InvalidKeyException
+	 * @throws NoSuchPaddingException
+	 * @throws NoSuchAlgorithmException
 	 */
-	public void encryptConnectionWithKey(Cipher cipher) throws IOException {
+	public void encryptConnectionWithKey(String key) throws IOException,
+			Exception {
+		System.out.println("secret: " + key);
+
+		byte[] iv = { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 };
+		IvParameterSpec ivspec = new IvParameterSpec(iv);
+
+		Cipher aesDec = Cipher.getInstance("AES/CBC/PKCS5Padding");
+		aesDec.init(Cipher.DECRYPT_MODE, new SecretKeySpec(
+				hexStringToByteArray(key), "AES"), ivspec);
 		in = new BufferedReader(new InputStreamReader(new CipherInputStream(
-				clientSocket.getInputStream(), cipher)));
+				clientSocket.getInputStream(), aesDec)));
+
+		Cipher aesEnc = Cipher.getInstance("AES/CBC/PKCS5Padding");
+		aesEnc.init(Cipher.ENCRYPT_MODE, new SecretKeySpec(
+				hexStringToByteArray(key), "AES"), ivspec);
 		out = new PrintWriter(new OutputStreamWriter(new CipherOutputStream(
-				clientSocket.getOutputStream(), cipher)));
+				clientSocket.getOutputStream(), aesEnc)));
+
 	}
 
 	public void sendMessage(String sendString) throws IOException {
-		PrintWriter outToServer = new PrintWriter(new OutputStreamWriter(
-				clientSocket.getOutputStream()));
-		outToServer.println(sendString);
-		outToServer.flush();
+		out.println(sendString);
+		out.flush();
 	}
 
 	public String recieveMessage() throws IOException {
-		BufferedReader inFromServer = new BufferedReader(new InputStreamReader(
-				clientSocket.getInputStream()));
-		return inFromServer.readLine();
+		return in.readLine();
 	}
 
 	public void closeConnection() throws IOException {
 		clientSocket.close();
+	}
+
+	/**
+	 * Convert the D-H key to a byte array.
+	 * 
+	 * @param s
+	 *            D-H key
+	 * @return D-H key as byte array
+	 */
+	private static byte[] hexStringToByteArray(final String hexString) {
+		return (new BigInteger(hexString, 16)).toByteArray();
 	}
 }
