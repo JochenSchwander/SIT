@@ -20,6 +20,8 @@ public class User {
 
 	private Handler handler;
 
+	private String oneTimePasswordExpirationDate;
+
 	public String getUserName() {
 		return userName;
 	}
@@ -58,6 +60,14 @@ public class User {
 
 	public void setHandler(final Handler handler) {
 		this.handler = handler;
+	}
+
+	public void setOneTimePasswordExpirationDate(String oneTimePasswordExpirationDate) {
+		this.oneTimePasswordExpirationDate = oneTimePasswordExpirationDate;
+	}
+
+	public String getOneTimePasswordExpirationDate() {
+		return oneTimePasswordExpirationDate;
 	}
 
 }
