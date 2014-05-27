@@ -158,7 +158,7 @@ public class Handler implements Runnable {
 	private void register() throws IOException {
 		String userdata = in.readLine();
 
-		rsaDecrypter.decrypt(userdata);
+		userdata = rsaDecrypter.decrypt(userdata);
 
 		String[] userdataArray = userdata.split(";");
 		if (dbcon.createUser(userdataArray[0], userdataArray[1], userdataArray[2])) {
@@ -180,7 +180,7 @@ public class Handler implements Runnable {
 	private void login() throws IOException {
 		String userdata = in.readLine();
 
-		rsaDecrypter.decrypt(userdata);
+		userdata = rsaDecrypter.decrypt(userdata);
 
 		String[] userdataArray = userdata.split(";");
 		user = dbcon.checkDesktopPassword(userdataArray[2], userdataArray[1]);
@@ -206,7 +206,6 @@ public class Handler implements Runnable {
 			out.println("success;" + B);
 			out.flush();
 
-			// TODO close streams?
 			try {
 				byte[] iv = { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 };
 				IvParameterSpec ivspec = new IvParameterSpec(iv);
