@@ -1,9 +1,7 @@
 package de.hs_mannheim.sit.ss14.crypto;
 
-import java.io.DataInputStream;
-import java.io.File;
-import java.io.FileInputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.security.InvalidAlgorithmParameterException;
 import java.security.InvalidKeyException;
 import java.security.Key;
@@ -36,7 +34,7 @@ public class RSADecrypter {
 	public RSADecrypter() {
 		try {
 			rsaCipher = Cipher.getInstance("RSA");
-			rsaCipher.init(Cipher.UNWRAP_MODE, getPrivateKey("private_key.der"));
+			rsaCipher.init(Cipher.UNWRAP_MODE, getPrivateKey());
 		} catch (NoSuchAlgorithmException | NoSuchPaddingException | InvalidKeyException | InvalidKeySpecException | IOException e) {
 			e.printStackTrace();
 		}
@@ -77,13 +75,11 @@ public class RSADecrypter {
 	 * @throws NoSuchAlgorithmException
 	 * @throws IOException
 	 */
-	private PrivateKey getPrivateKey(final String filename) throws InvalidKeySpecException, NoSuchAlgorithmException, IOException {
-		File f = new File(filename);
-		FileInputStream fis = new FileInputStream(f);
-		DataInputStream dis = new DataInputStream(fis);
-		byte[] keyBytes = new byte[(int) f.length()];
-		dis.readFully(keyBytes);
-		dis.close();
+	private PrivateKey getPrivateKey() throws InvalidKeySpecException, NoSuchAlgorithmException, IOException {
+		InputStream f = this.getClass().getClassLoader().getResourceAsStream("private_key.der");
+		byte[] keyBytes = new byte[(int) 1217];
+		f.read(keyBytes);
+		f.close();
 
 		PKCS8EncodedKeySpec spec = new PKCS8EncodedKeySpec(keyBytes);
 		KeyFactory kf = KeyFactory.getInstance("RSA");
