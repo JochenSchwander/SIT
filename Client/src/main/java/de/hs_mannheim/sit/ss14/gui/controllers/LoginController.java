@@ -66,12 +66,8 @@ public class LoginController {
 
 				// send pk and credentials to client
 				RSAEncrypter rsa = new RSAEncrypter();
-				String messageToSend = "login\n"
-						+ rsa.encrypt(dh.calculatePublicKey()) + ";"
-						+ rsa.encrypt(loginModel.usernameTextfield.getText())+ ";"
-						+ rsa.encrypt(loginModel.passwordTextfield.getText());
 
-				guiController.socket.sendMessage(messageToSend);
+				guiController.socket.sendMessage("login\n"+rsa.encrypt(dh.calculatePublicKey(), loginModel.usernameTextfield.getText(),loginModel.passwordTextfield.getText()));
 
 				// recieve message
 				recievedMessage = guiController.socket.recieveMessage();
@@ -97,8 +93,6 @@ public class LoginController {
 					loginModel.infoTextarea
 							.setText("There was a problem communicating with the server.");
 				}
-
-				// requestOtp();
 			} catch (IOException e) {
 				loginModel.credentialsMessageTextarea
 						.setText("The connection to the server could not be established.");
