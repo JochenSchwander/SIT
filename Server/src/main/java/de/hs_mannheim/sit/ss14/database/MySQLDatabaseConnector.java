@@ -102,7 +102,7 @@ public class MySQLDatabaseConnector implements DatabaseConnector {
 			          }
 
 			          // Compute the new DIGEST
-			          byte[] proposedDigest = hasher.calculateHash(desktopPassword, Base64.decodeBase64(salt));
+			          byte[] proposedDigest = Base64.decodeBase64(hasher.calculateHash(desktopPassword, salt));
 
 			          if(Arrays.equals(proposedDigest,Base64.decodeBase64(password))){
 			        	  //generate new one time password and save it to the database
@@ -159,6 +159,9 @@ public class MySQLDatabaseConnector implements DatabaseConnector {
 //		return failedLogins;
 //	}
 
+	/**
+	 *  Creates a
+	 */
 	@Override
 	public boolean createUser(String username, String desktopPassword,
 			String webPassword) {
@@ -170,10 +173,10 @@ public class MySQLDatabaseConnector implements DatabaseConnector {
 	              byte[] bSalt = SaltGenerator.generateOneTimePassword();
 
 	              // Digest computation
-	              byte[] bDesktopPasswordHash = hasher.calculateHash(desktopPassword, bSalt);
+	              byte[] bDesktopPasswordHash = Base64.decodeBase64((hasher.calculateHash(desktopPassword, Base64.encodeBase64String(bSalt))));
 	              String desktopPasswordHash = Base64.encodeBase64String(bDesktopPasswordHash);
 
-	              byte[] bWebPasswordHash = hasher.calculateHash(webPassword, bSalt);
+	              byte[] bWebPasswordHash = Base64.decodeBase64((hasher.calculateHash(webPassword,Base64.encodeBase64String(bSalt))));
 	              String webPasswordHash = Base64.encodeBase64String(bWebPasswordHash);
 
 	              //make binary salt to String
