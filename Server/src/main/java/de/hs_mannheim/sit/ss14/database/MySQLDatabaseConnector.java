@@ -159,6 +159,9 @@ public class MySQLDatabaseConnector implements DatabaseConnector {
 //		return failedLogins;
 //	}
 
+	/**
+	 *  Creates a
+	 */
 	@Override
 	public boolean createUser(String username, String desktopPassword,
 			String webPassword) {
