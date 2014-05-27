@@ -4,6 +4,7 @@ import java.io.DataInputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.security.InvalidAlgorithmParameterException;
 import java.security.InvalidKeyException;
 import java.security.KeyFactory;
@@ -40,40 +41,46 @@ public class RSAEncrypter {
 	}
 
 	/**
-	 * Encrypts the given plainText with AES and cancatinates the RSA encrypted AES-key, seperated with ';'
-	 * @param plainText the plain text to encrypt
+	 * Encrypts the given plainText with AES and cancatinates the RSA encrypted
+	 * AES-key, seperated with ';'
+	 * 
+	 * @param plainText
+	 *            the plain text to encrypt
 	 * @return String "RSA(AES-key);AES(plainText)
 	 */
 	public String encrypt(String plainText) {
 		try {
 
-
-			//AES
-			 KeyGenerator keyGen = KeyGenerator.getInstance( "AES" );
-	         keyGen.init( Math.min( 256, Cipher.getMaxAllowedKeyLength( "AES" ) ) );
-	         SecretKey aesKey = keyGen.generateKey();
+			// AES
+			KeyGenerator keyGen = KeyGenerator.getInstance("AES");
+			keyGen.init(Math.min(256, Cipher.getMaxAllowedKeyLength("AES")));
+			SecretKey aesKey = keyGen.generateKey();
 
 			Cipher aesCipher = Cipher.getInstance("AES/CBC/PKCS5Padding");
-			aesCipher.init(Cipher.ENCRYPT_MODE, aesKey, new IvParameterSpec(new byte[16]));
+			aesCipher.init(Cipher.ENCRYPT_MODE, aesKey, new IvParameterSpec(
+					new byte[16]));
 
-			String cypherText = Base64.encodeBase64String(aesCipher.doFinal(Base64.decodeBase64(plainText)));
-			String wrappedKey = Base64.encodeBase64String(cipher.wrap( aesKey ));
+			String cypherText = Base64.encodeBase64String(aesCipher
+					.doFinal(Base64.decodeBase64(plainText)));
+			String wrappedKey = Base64.encodeBase64String(cipher.wrap(aesKey));
 
 			return wrappedKey + ";" + cypherText;
-		} catch (NoSuchAlgorithmException | NoSuchPaddingException | InvalidKeyException | InvalidAlgorithmParameterException | IllegalBlockSizeException | BadPaddingException e) {
+		} catch (NoSuchAlgorithmException | NoSuchPaddingException
+				| InvalidKeyException | InvalidAlgorithmParameterException
+				| IllegalBlockSizeException | BadPaddingException e) {
 			e.printStackTrace();
 			return null;
 		}
 	}
 
-	private static PublicKey getPublicKey() {
+	private PublicKey getPublicKey() {
 		try {
-			File f = new File("public_key");
-			FileInputStream fis = new FileInputStream(f);
-			DataInputStream dis = new DataInputStream(fis);
-			byte[] keyBytes = new byte[(int) f.length()];
-			dis.readFully(keyBytes);
-			dis.close();
+			InputStream f = this.getClass().getClassLoader()
+					.getResourceAsStream("public_key");
+
+			byte[] keyBytes = new byte[(int) 294];
+			f.read(keyBytes);
+			f.close();
 
 			X509EncodedKeySpec spec = new X509EncodedKeySpec(keyBytes);
 			KeyFactory kf = KeyFactory.getInstance("RSA");

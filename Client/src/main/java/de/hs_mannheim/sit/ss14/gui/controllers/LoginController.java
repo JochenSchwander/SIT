@@ -105,7 +105,7 @@ public class LoginController {
 			} catch (Exception e) {
 				loginModel.credentialsMessageTextarea
 						.setText("We are sorry, an error occured.");
-				// e.printStackTrace();
+				e.printStackTrace();
 			}
 		}
 
