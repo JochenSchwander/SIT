@@ -38,7 +38,7 @@ public class OtpController {
 	}
 
 	/**
-	 * request the one-timepassword and salt and shows it to the user
+	 * request the one-time password and salt and shows it to the user
 	 * 
 	 */
 	private void requestOtp() {

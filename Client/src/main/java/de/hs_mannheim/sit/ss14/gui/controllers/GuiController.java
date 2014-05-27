@@ -43,7 +43,7 @@ public class GuiController {
 		LoggedInModel loggedInModel = new LoggedInModel();
 		new LoggedInController(this, loggedInModel);
 		
-		loggedInModel.infoTextarea.setText(recievedMessage);
+		loggedInModel.recieveTextArea.setText(recievedMessage);
 		mainWindow.loggedInView(loggedInModel);
 		
 	}

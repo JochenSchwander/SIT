@@ -58,12 +58,11 @@ public class RegisterController {
 				String recievedMessage;
 				RSAEncrypter rsa = new RSAEncrypter();
 
-				socket.sendMessage(
-						"register\n"+rsa.encrypt(
-								registerModel.desktopPasswordTextfield	.getText(),
-						registerModel.webPasswordTextfield.getText(),
-								registerModel.usernameTextfield.getText()
-								));
+				socket.sendMessage("register\n"
+						+ rsa.encrypt(registerModel.desktopPasswordTextfield
+								.getText(), registerModel.webPasswordTextfield
+								.getText(), registerModel.usernameTextfield
+								.getText()));
 
 				recievedMessage = socket.recieveMessage();
 				// check if matches this pattern: "login" then a new line "fail"
@@ -75,10 +74,17 @@ public class RegisterController {
 					if (recievedMessageArray[0].equals("success")) {
 						registerModel.infoTextarea
 								.setText("You have successfully been registered for using the application.");
+						registerModel.usernameMessageTextarea.setText("");
+						registerModel.webPasswordsMessageTextarea.setText("");
+						registerModel.desktopPasswordsMessageTextarea
+								.setText("");
 
 					} else { // if failed
 						registerModel.usernameMessageTextarea
 								.setText("This username is already in use.");
+						registerModel.webPasswordsMessageTextarea.setText("");
+						registerModel.desktopPasswordsMessageTextarea
+								.setText("");
 					}
 				}
 
