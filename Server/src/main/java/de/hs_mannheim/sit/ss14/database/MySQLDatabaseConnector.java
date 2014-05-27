@@ -68,7 +68,7 @@ public class MySQLDatabaseConnector implements DatabaseConnector {
 	@Override
 	public User checkDesktopPassword(String password, String username){
 		User user;
-		user = new User(); ///TODO: check if already exists in LIST !!
+		user = new User(); 
 		PreparedStatement ps = null;
 	    ResultSet rs = null;
 
@@ -85,17 +85,16 @@ public class MySQLDatabaseConnector implements DatabaseConnector {
 			{
 				//TODO: Zeitlich begrenztes otp einbauen. vllt gleich in der datenbank!
 				try {
-					ps = connection.prepareStatement("SELECT username, desktopPassword, webPassword, salt FROM CREDENTIAL WHERE username = ?");
+					ps = connection.prepareStatement("SELECT desktopPassword, salt FROM CREDENTIAL WHERE username = ?");
 					ps.setString(1, username);
 			          rs = ps.executeQuery();
-			          String desktopPassword = null, webPassword, salt = null, oneTimePassword;
+			          String desktopPassword = null, salt = null, oneTimePassword;
 			          if (rs.next()) {
 			        	  desktopPassword = rs.getString("desktopPassword");
-			        	  webPassword = rs.getString("webPassword");
 			              salt = rs.getString("salt");
 
 			              // DATABASE VALIDATION
-			              if (desktopPassword == null || webPassword == null || salt == null) {
+			              if (desktopPassword == null || salt == null) {
 			                  throw new SQLException("Database inconsistant salt, desktopPassword, webPassword or one time password altered");
 			              }
 			              if (rs.next()) { // Should not append, because login is the primary key
@@ -104,10 +103,10 @@ public class MySQLDatabaseConnector implements DatabaseConnector {
 			          }
 
 			          // Compute the new DIGEST
-			          byte[] proposedDigest = Base64.decodeBase64(hasher.calculateHash(desktopPassword, salt));
+			          byte[] digest = Base64.decodeBase64(hasher.calculateHash(password, salt));
 
-			          if(Arrays.equals(proposedDigest,Base64.decodeBase64(password))){
-			        	  //generate new one time password and save it to the database
+			          if(Arrays.equals(digest,Base64.decodeBase64(desktopPassword))){
+			        	  //generate new one time password
 			        	  oneTimePassword = otp.generateOneTimePassword();
 
 			        	  user.setUserName(username);
