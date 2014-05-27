@@ -69,6 +69,9 @@ public class OtpController {
 		}
 	}
 
+	/**
+	 * waits for the server to tell me if the client has also logged in successfully on the server.
+	 */
 	private void waitForServerResponse() {
 		(new Thread(new Runnable() {
 			@Override
