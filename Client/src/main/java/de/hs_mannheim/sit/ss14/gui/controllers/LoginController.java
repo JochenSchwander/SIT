@@ -97,8 +97,6 @@ public class LoginController {
 					loginModel.infoTextarea
 							.setText("There was a problem communicating with the server.");
 				}
-
-				// requestOtp();
 			} catch (IOException e) {
 				loginModel.credentialsMessageTextarea
 						.setText("The connection to the server could not be established.");
