@@ -20,8 +20,6 @@ public class InfoTab extends JPanel {
 		infoTextarea.setWrapStyleWord(true);
 		infoTextarea.setEditable(false);
 		infoTextarea.setText("SIT Projekt\n\nTeammitglieder:\nKwiotek\nMath\nSchwander\nSeemann");;
-		
-		System.out.println("\007");
 	}
 
 }

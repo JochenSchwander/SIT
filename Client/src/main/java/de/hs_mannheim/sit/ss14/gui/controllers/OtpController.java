@@ -10,10 +10,10 @@ import javax.swing.JTextField;
 import de.hs_mannheim.sit.ss14.gui.models.OtpModel;
 
 public class OtpController {
-	private GuiController guiController;
+	private StartDesktopClient guiController;
 	private OtpModel otpModel;
 
-	OtpController(GuiController guiController, OtpModel otpModel) {
+	OtpController(StartDesktopClient guiController, OtpModel otpModel) {
 		this.guiController = guiController;
 		this.otpModel = otpModel;
 

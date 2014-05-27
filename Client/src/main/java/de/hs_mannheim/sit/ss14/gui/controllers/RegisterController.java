@@ -74,17 +74,12 @@ public class RegisterController {
 					if (recievedMessageArray[0].equals("success")) {
 						registerModel.infoTextarea
 								.setText("You have successfully been registered for using the application.");
-						registerModel.usernameMessageTextarea.setText("");
-						registerModel.webPasswordsMessageTextarea.setText("");
-						registerModel.desktopPasswordsMessageTextarea
-								.setText("");
+						socket.closeConnection();
 
 					} else { // if failed
 						registerModel.usernameMessageTextarea
 								.setText("This username is already in use.");
-						registerModel.webPasswordsMessageTextarea.setText("");
-						registerModel.desktopPasswordsMessageTextarea
-								.setText("");
+						socket.closeConnection();
 					}
 				}
 
@@ -104,6 +99,10 @@ public class RegisterController {
 	 * @return
 	 */
 	private boolean checkInputValidity() {
+		registerModel.usernameMessageTextarea.setText("");
+		registerModel.webPasswordsMessageTextarea.setText("");
+		registerModel.desktopPasswordsMessageTextarea.setText("");
+
 		boolean fieldsValid = true;
 		if (registerModel.usernameTextfield.getText().length() == 0) {
 			registerModel.usernameMessageTextarea
