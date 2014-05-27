@@ -182,6 +182,8 @@ public class Handler implements Runnable {
 
 		userdata = rsaDecrypter.decrypt(userdata);
 
+		System.out.println(userdata);
+
 		String[] userdataArray = userdata.split(";");
 		user = dbcon.checkDesktopPassword(userdataArray[2], userdataArray[1]);
 
