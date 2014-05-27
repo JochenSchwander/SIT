@@ -101,8 +101,12 @@ public class MySQLDatabaseConnector implements DatabaseConnector {
 	@Override
 	public User checkDesktopPassword(String password, String username) {
 		User user;
+<<<<<<< HEAD
 
 		user = new User();
+=======
+		user = new User();
+>>>>>>> FETCH_HEAD
 		PreparedStatement ps = null;
 	    ResultSet rs = null;
 
