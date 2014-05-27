@@ -101,65 +101,65 @@ public class MySQLDatabaseConnector implements DatabaseConnector {
 	@Override
 	public User checkDesktopPassword(String password, String username) {
 		User user;
-		user = new User(); // /TODO: check if already exists in LIST !!
+
+		user = new User();
 		PreparedStatement ps = null;
-		ResultSet rs = null;
+	    ResultSet rs = null;
 
-		// if(getDesktopFailedLoginAttempts() < 3){ //TODO: richtige stelle ?
-		if (password == null || username == null) { // TODO: übedenken
-			user.setUserName("");
-			increaseDesktopFailedLoginAttempts(); // increase failed login attempts in db
-			user.setOneTimeCode("");
-			user.setSalt("");
-			// /TODO: throw new Exception("password or username was 'null'");
-			return null;
-		} else {
-			// TODO: Zeitlich begrenztes otp einbauen. vllt gleich in der datenbank!
-			try {
-				ps = connection.prepareStatement("SELECT username, desktopPassword, webPassword, salt, CURRENT_TIMESTAMP AS timestamp FROM CREDENTIAL WHERE username = ?");
-				ps.setString(1, username);
-				rs = ps.executeQuery();
-				String desktopPassword = null, webPassword, salt = null, oneTimePassword, timestamp = null;
-				if (rs.next()) {
-					desktopPassword = rs.getString("desktopPassword");
-					webPassword = rs.getString("webPassword");
-					salt = rs.getString("salt");
-					timestamp = rs.getString("timestamp");
 
-					// DATABASE VALIDATION
-					if (desktopPassword == null || webPassword == null || salt == null) {
-						throw new SQLException("Database inconsistant salt, desktopPassword, webPassword or one time password altered");
-					}
-					if (rs.next()) { // Should not append, because login is the primary key
-						throw new SQLException("Database inconsistent two CREDENTIALS with the same LOGIN");
-					}
-				}
+//	    if(getDesktopFailedLoginAttempts() < 3){ //TODO: richtige stelle ?
+			if (password==null||username==null){ //TODO: übedenken
+				user.setUserName("");
+				increaseDesktopFailedLoginAttempts(); //increase failed login attempts in db
+				user.setOneTimeCode("");
+				user.setSalt("");
+				///TODO: throw new Exception("password or username was 'null'");
+				return null;
+			} else
+			{
+				//TODO: Zeitlich begrenztes otp einbauen. vllt gleich in der datenbank!
+				try {
+					ps = connection.prepareStatement("SELECT desktopPassword, salt FROM CREDENTIAL WHERE username = ?");
+					ps.setString(1, username);
+			          rs = ps.executeQuery();
+			          String desktopPassword = null, salt = null, oneTimePassword;
+			          if (rs.next()) {
+			        	  desktopPassword = rs.getString("desktopPassword");
+			              salt = rs.getString("salt");
 
-				// Compute the new DIGEST
-				byte[] proposedDigest = Base64.decodeBase64(hasher.calculateHash(desktopPassword, salt));
+			              // DATABASE VALIDATION
+			              if (desktopPassword == null || salt == null) {
+			                  throw new SQLException("Database inconsistant salt, desktopPassword, webPassword or one time password altered");
+			              }
+			              if (rs.next()) { // Should not append, because login is the primary key
+			                  throw new SQLException("Database inconsistent two CREDENTIALS with the same LOGIN");
+			              }
+			          }
 
-				if (Arrays.equals(proposedDigest, Base64.decodeBase64(password))) {
-					// generate new one time password and save it to the database
-					oneTimePassword = otp.generateOneTimePassword();
+			          // Compute the new DIGEST
+			          byte[] digest = Base64.decodeBase64(hasher.calculateHash(password, salt));
 
-					user.setUserName(username);
-					user.setOneTimeCode(oneTimePassword);
-					user.setSalt(salt);
-					user.setOneTimePasswordExpirationDate(timestamp);
+			          if(Arrays.equals(digest,Base64.decodeBase64(desktopPassword))){
+			        	  //generate new one time password
+			        	  oneTimePassword = otp.generateOneTimePassword();
 
-					// resetDesktopFailedLoginAttempts();
-					return user;
-				}
-			} catch (IOException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			} catch (SQLException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			} catch (NoSuchAlgorithmException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			} finally {
+			        	  user.setUserName(username);
+						  user.setOneTimeCode(oneTimePassword);
+						  user.setSalt(salt);
+
+//						  resetDesktopFailedLoginAttempts();
+			        	  return user;
+			          }
+				} catch (IOException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}catch (SQLException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}catch (NoSuchAlgorithmException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				} finally {
 				close(rs);
 				close(ps);
 			}
