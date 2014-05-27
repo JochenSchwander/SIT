@@ -47,7 +47,7 @@ public class RegisterController {
 	 * Server. 2. Schlüsseltausch über Diffie-Hellmann, der mit RSA
 	 * verschlüsselt ist. ab dann, Verbindung verschlüsselt mit AES 3.
 	 * delegieren des Übertragung an die Funktion.
-	 * 
+	 *
 	 */
 	@SuppressWarnings("deprecation")
 	private void startRegisterProcess() {
@@ -58,12 +58,7 @@ public class RegisterController {
 				String recievedMessage;
 				RSAEncrypter rsa = new RSAEncrypter();
 
-				socket.sendMessage(
-						"register\n"+rsa.encrypt(
-								registerModel.desktopPasswordTextfield	.getText(),
-						registerModel.webPasswordTextfield.getText(),
-								registerModel.usernameTextfield.getText()
-								));
+				socket.sendMessage("register\n" + rsa.encrypt(registerModel.usernameTextfield.getText() + ";" + registerModel.desktopPasswordTextfield.getText() + ";" + registerModel.webPasswordTextfield.getText()));
 
 				recievedMessage = socket.recieveMessage();
 				// check if matches this pattern: "login" then a new line "fail"
@@ -94,7 +89,7 @@ public class RegisterController {
 	/**
 	 * prüft ob die Felder leer sind, und die Passwörter übereinstimmen und
 	 * zeigt es dem Nutzer.
-	 * 
+	 *
 	 * @return
 	 */
 	private boolean checkInputValidity() {
