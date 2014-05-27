@@ -57,16 +57,13 @@ public class RegisterController {
 				socket = new ClientSocket();
 				String recievedMessage;
 				RSAEncrypter rsa = new RSAEncrypter();
-				String messageToSend = "register\n"
-						+ rsa.encrypt(registerModel.desktopPasswordTextfield
-								.getText())
-						+ ";"
-						+ rsa.encrypt(registerModel.webPasswordTextfield
-								.getText())
-						+ ";"
-						+ rsa.encrypt(registerModel.usernameTextfield.getText());
 
-				socket.sendMessage(messageToSend);
+				socket.sendMessage(
+						"register\n"+rsa.encrypt(
+								registerModel.desktopPasswordTextfield	.getText(),
+						registerModel.webPasswordTextfield.getText(),
+								registerModel.usernameTextfield.getText()
+								));
 
 				recievedMessage = socket.recieveMessage();
 				// check if matches this pattern: "login" then a new line "fail"
