@@ -53,7 +53,7 @@ public class MySQLDatabaseConnector implements DatabaseConnector {
 			String serverHashedOneTimeWebPassword = null;
 
 			try {
-				ps = connection.prepareStatement("SELECT webPassword, CURRENT_TIMESTAMP AS timestamp FROM CREDENTIAL WHERE username = ?");
+				ps = connection.prepareStatement("SELECT webPassword, SELECT DATE_ADD(CURRENT_TIMESTAMP, INTERVAL 5 MINUTE) AS timestamp FROM CREDENTIAL WHERE username = ?");
 				ps.setString(1, user.getUserName());
 		        rs = ps.executeQuery();
 		          if (rs.next()) {
@@ -72,15 +72,16 @@ public class MySQLDatabaseConnector implements DatabaseConnector {
 
 				String oneTimeCode = user.getOneTimeCode();
 				//db: h(webPW + OTP)
-
-
-					serverHashedOneTimeWebPassword = hasher.calculateHash(hashedWebPassword, oneTimeCode);
+				serverHashedOneTimeWebPassword = hasher.calculateHash(hashedWebPassword, oneTimeCode);
 			} catch (NoSuchAlgorithmException | IOException | SQLException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
+
+			System.out.println("Aktuelle Zeit: " + timestamp + "OTP TimeStamp: " + user.getOneTimePasswordExpirationDate());
 			if (user.getOneTimePasswordExpirationDate().equals(timestamp)){
-				if(Arrays.equals(Base64.decodeBase64(serverHashedOneTimeWebPassword),Base64.decodeBase64(hashedOneTimeWebPassword))){
+				System.out.println("Timestamp war im zulässigen bereich!");
+				if(serverHashedOneTimeWebPassword.equals(hashedOneTimeWebPassword)){
 					return true;
 				}
 			}
