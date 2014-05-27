@@ -20,13 +20,11 @@ import de.hs_mannheim.sit.ss14.gui.models.LoginModel;
 public class LoginController {
 
 	private GuiController guiController;
-	private ClientSocket socket;
 	private LoginModel loginModel;
 
 	LoginController(GuiController guiController, LoginModel loginModel) {
 		this.guiController = guiController;
 		this.loginModel = loginModel;
-		this.socket=guiController.socket;
 
 		initModel();
 
@@ -50,7 +48,7 @@ public class LoginController {
 	 * Für den Loginablauf zuständige Funktion. 1. Verbindungsaufbau zum Server.
 	 * 2. Schlüsseltausch über Diffie-Hellmann, der mit RSA verschlüsselt ist.
 	 * ab dann, Verbindung verschlüsselt mit AES 3. delegieren des
-	 * Onetimepasswort-requests an die Funktion requestOtp();
+	 * Onetimepasswort-requests
 	 * 
 	 */
 	@SuppressWarnings("deprecation")
@@ -61,35 +59,39 @@ public class LoginController {
 					.setText("Fields must not be empty.");
 		} else {
 			try {
-				socket = new ClientSocket();
+				guiController.socket = new ClientSocket();
 				ClientDiffieHellman dh = new ClientDiffieHellman();
 				String recievedMessage;
 
 				// send pk and credentials to client
-				socket.sendMessage("login\n" + dh.calculatePublicKey() + ";"
+				guiController.socket.sendMessage("login\n"
+						+ dh.calculatePublicKey() + ";"
 						+ loginModel.usernameTextfield.getText() + ";"
 						+ loginModel.passwordTextfield.getText());
 
 				// recieve message
-				recievedMessage = socket.recieveMessage();
+				recievedMessage = guiController.socket.recieveMessage();
 				// check if matches this pattern: "login" then a new line "fail"
 				// or "success" and the message
 				if (recievedMessage.equals("login")) {
-					recievedMessage = socket.recieveMessage();
+					recievedMessage = guiController.socket.recieveMessage();
 					String[] recievedMessageArray = recievedMessage.split(";");
 
 					if (recievedMessageArray[0].equals("success")) {
 						// receive servers pk and generate shared secret and use
 						// it to encrypt the connection
-						socket.encryptConnectionWithKey(dh.calculateSharedSecret(recievedMessageArray[1]));
-						requestOtp();
+						guiController.socket
+								.encryptConnectionWithKey(dh
+										.calculateSharedSecret(recievedMessageArray[1]));
+						guiController.displayOtpView();
 
-					} else { //if failed
+					} else { // if failed
 						loginModel.infoTextarea
 								.setText(recievedMessageArray[1]);
 					}
 				} else {
-					throw new Exception("Communication with server failed.");
+					loginModel.infoTextarea
+							.setText("There was a problem communicating with the server.");
 				}
 
 				// requestOtp();
@@ -99,44 +101,9 @@ public class LoginController {
 			} catch (Exception e) {
 				loginModel.credentialsMessageTextarea
 						.setText("We are sorry, an error occured.");
-				e.printStackTrace();
+				// e.printStackTrace();
 			}
 		}
 
-		// guiController.startView.displayLoggedInView();
-
-		// loginModel.credentialsMessageTextarea.setText("Username: "
-		// + loginModel.usernameTextfield.getText() + "\nPasswort: "
-		// + loginModel.passwordTextfield.getText());
-		//
-		// requestOtp();}
 	}
-
-	/**
-	 * request the onetimepassword and salt and shows it to the user
-	 * 
-	 * @param loginModel
-	 * @throws IOException
-	 */
-	private void requestOtp() throws IOException, Exception {
-		socket.sendMessage("requestotp");
-
-		if (socket.recieveMessage().equals("requestotp")) {
-			String recievedMessage = socket.recieveMessage();
-			String[] recievedMessageArray = recievedMessage.split(";");
-			
-			// Ausgabe des empfangenen OTPs
-
-			loginModel.infoTextarea
-					.setText("Your OTP:\n"
-							+ recievedMessageArray[0]+"\nand Salt:\n"+recievedMessageArray[1]);
-			
-			guiController.startView.loginTab.displayOtp(loginModel);
-
-		} else {
-			throw new Exception("Communication with server failed.");
-		}
-
-	}
-
 }

@@ -6,6 +6,7 @@ import javax.swing.*;
 import javax.swing.border.*;
 import javax.swing.text.AbstractDocument;
 
+import de.hs_mannheim.sit.ss14.auxiliaries.DocumentSizeFilter;
 import de.hs_mannheim.sit.ss14.gui.models.LoginModel;
 
 /**
@@ -16,16 +17,13 @@ import de.hs_mannheim.sit.ss14.gui.models.LoginModel;
  * @author DS
  * 
  */
+@SuppressWarnings("serial")
 public class LoginTab extends JPanel {
-
-	private JButton btnLogin;
-	private static final long serialVersionUID = 1L;;
-	private LoginModel loginModel;
 
 	LoginTab(LoginModel loginModel) {
 
 		// this element settings
-		setLayout(new GridLayout(2, 1));
+		setLayout(new GridLayout(3, 1));
 
 		// upper row
 		JPanel upperPanel = new JPanel();
@@ -62,7 +60,6 @@ public class LoginTab extends JPanel {
 
 		JTextField usernameTextfield = loginModel.usernameTextfield;
 		usernamePanel.add(usernameTextfield);
-		usernameTextfield.setFont(new Font("Tahoma", Font.PLAIN, 16));
 		((AbstractDocument) usernameTextfield.getDocument())
 				.setDocumentFilter(new DocumentSizeFilter(100, "[A-Za-z0-9]+"));
 
@@ -78,43 +75,52 @@ public class LoginTab extends JPanel {
 		passwordPanel.add(passwordTextfield);
 		((AbstractDocument) passwordTextfield.getDocument())
 				.setDocumentFilter(new DocumentSizeFilter(100, ".+"));
-		passwordTextfield.setFont(new Font("Tahoma", Font.PLAIN, 16));
 		passwordTextfield.addActionListener(loginModel.submitLoginAL);
 
 		// lower row right side panel
 		JPanel lowerRightSplittedPanel = new JPanel();
 		lowerSplittedPanel.add(lowerRightSplittedPanel);
-		lowerRightSplittedPanel.setLayout(new GridLayout(2, 1, 0, 0));
-
-		// lower row right side upper panel
-		JPanel credentialsMessagePanel = new JPanel();
-		lowerRightSplittedPanel.add(credentialsMessagePanel);
-		credentialsMessagePanel.setLayout(new GridLayout(1, 0, 0, 0));
-		credentialsMessagePanel.setBorder(new EmptyBorder(15, 10, 15, 10));
-
+		lowerRightSplittedPanel.setLayout(new GridLayout(1, 1, 0, 0));
+		lowerRightSplittedPanel.setBorder(new EmptyBorder(15, 10, 15, 10));
+		
 		JTextArea credentialsMessageTextarea = loginModel.credentialsMessageTextarea;
 		credentialsMessageTextarea.setEditable(false);
 		credentialsMessageTextarea.setLineWrap(true);
 		credentialsMessageTextarea.setWrapStyleWord(true);
 		credentialsMessageTextarea.setBackground(SystemColor.control);
-		credentialsMessagePanel.add(credentialsMessageTextarea);
+		lowerRightSplittedPanel.add(credentialsMessageTextarea);
 
-		// lower row right side lower panel
-		JPanel LoginButtonPanel = new JPanel();
-		lowerRightSplittedPanel.add(LoginButtonPanel);
-		LoginButtonPanel.setBorder(new EmptyBorder(15, 10, 15, 10));
-		LoginButtonPanel.setLayout(new GridLayout(1, 0, 0, 0));
+		
+		// some empty panels for styling reasons
+		JPanel lowestPanel = new JPanel();
+		add(lowestPanel);
+		lowestPanel.setLayout(new GridLayout(3, 3, 0, 0));
 
-		btnLogin = new JButton("Login");
+		JPanel panel = new JPanel();
+		lowestPanel.add(panel);
+		
+				// lower row right side lower panel
+				JPanel LoginButtonPanel = new JPanel();
+				lowestPanel.add(LoginButtonPanel);
+		LoginButtonPanel.setLayout(new GridLayout(0, 1, 0, 0));
+
+		JButton btnLogin = new JButton("Login");
 		LoginButtonPanel.add(btnLogin);
 		btnLogin.addActionListener(loginModel.submitLoginAL);
-	}
 
-	public void displayOtp(LoginModel loginModel) {
-		
-		loginModel.usernameTextfield.setEnabled(false);
-		loginModel.passwordTextfield.setEnabled(false);
-		btnLogin.setEnabled(false);
+		JPanel panel_1 = new JPanel();
+		lowestPanel.add(panel_1);
 
+		JPanel panel_2 = new JPanel();
+		lowestPanel.add(panel_2);
+
+		JPanel panel_3 = new JPanel();
+		lowestPanel.add(panel_3);
+
+		JPanel panel_4 = new JPanel();
+		lowestPanel.add(panel_4);
+
+		JPanel panel_5 = new JPanel();
+		lowestPanel.add(panel_5);
 	}
 }
