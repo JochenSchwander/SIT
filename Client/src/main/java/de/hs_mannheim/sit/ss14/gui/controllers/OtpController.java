@@ -46,7 +46,6 @@ public class OtpController {
 	 */
 	private void requestOtp() {
 		try {
-			// socket = new ClientSocket();
 			guiController.socket.sendMessage("requestotp");
 
 			String recievedMessage = guiController.socket.recieveMessage();
@@ -74,13 +73,10 @@ public class OtpController {
 	}
 
 	private void waitForServerResponse() {
-		guiController.displayLoggedInView("depp");
 		(new Thread(new Runnable() {
 			@Override
 			public void run() {
 				try {
-					guiController.socket.sendMessage("weblogin");
-
 					String recievedMessage = guiController.socket
 							.recieveMessage();
 					if (recievedMessage.equals("weblogin")) {

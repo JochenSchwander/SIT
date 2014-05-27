@@ -88,7 +88,7 @@ public class RegisterTab extends JPanel {
 
 		JPanel desktopPasswordTextfieldPanel = new JPanel();
 		desktopPasswordTextfieldPanel.setBorder(new TitledBorder(
-				new EmptyBorder(10, 10, 0, 10), "Desktoppasswort",
+				new EmptyBorder(10, 10, 0, 10), "Desktoppassword",
 				TitledBorder.LEADING, TitledBorder.TOP, null, null));
 		GridBagConstraints gbc_desktopPasswordTextfieldPanel = new GridBagConstraints();
 		gbc_desktopPasswordTextfieldPanel.fill = GridBagConstraints.BOTH;
@@ -106,7 +106,7 @@ public class RegisterTab extends JPanel {
 
 		JPanel repeatDesktopPasswordTextfieldPanel = new JPanel();
 		repeatDesktopPasswordTextfieldPanel.setBorder(new TitledBorder(
-				new EmptyBorder(0, 10, 10, 10), "Desktoppasswort wiederholen",
+				new EmptyBorder(0, 10, 10, 10), "Repeat desktoppassword",
 				TitledBorder.LEADING, TitledBorder.TOP, null, null));
 		GridBagConstraints gbc_repeatDesktopPasswordTextfieldPanel = new GridBagConstraints();
 		gbc_repeatDesktopPasswordTextfieldPanel.fill = GridBagConstraints.BOTH;
@@ -124,7 +124,7 @@ public class RegisterTab extends JPanel {
 
 		JPanel webPasswordTextfieldPanel = new JPanel();
 		webPasswordTextfieldPanel.setBorder(new TitledBorder(new EmptyBorder(
-				10, 10, 0, 10), "Webpasswort", TitledBorder.LEADING,
+				10, 10, 0, 10), "Webpassword", TitledBorder.LEADING,
 				TitledBorder.TOP, null, null));
 		GridBagConstraints gbc_webPasswordTextfieldPanel = new GridBagConstraints();
 		gbc_webPasswordTextfieldPanel.fill = GridBagConstraints.BOTH;
@@ -141,7 +141,7 @@ public class RegisterTab extends JPanel {
 
 		JPanel repeatWebPasswordTextfieldPanel = new JPanel();
 		repeatWebPasswordTextfieldPanel.setBorder(new TitledBorder(
-				new EmptyBorder(0, 10, 10, 10), "Webpasswort wiederholen",
+				new EmptyBorder(0, 10, 10, 10), "Repeat webpassword",
 				TitledBorder.LEADING, TitledBorder.TOP, null, null));
 		GridBagConstraints gbc_repeatWebPasswordTextfieldPanel = new GridBagConstraints();
 		gbc_repeatWebPasswordTextfieldPanel.fill = GridBagConstraints.BOTH;

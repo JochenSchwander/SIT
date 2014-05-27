@@ -2,11 +2,13 @@ package de.hs_mannheim.sit.ss14.gui.controllers;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.IOException;
 
 import javax.swing.JPasswordField;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
 
+import de.hs_mannheim.sit.ss14.auxiliaries.ClientDiffieHellman;
 import de.hs_mannheim.sit.ss14.auxiliaries.ClientSocket;
 import de.hs_mannheim.sit.ss14.gui.models.LoginModel;
 import de.hs_mannheim.sit.ss14.gui.models.RegisterModel;
@@ -49,12 +51,38 @@ public class RegisterController {
 	 * 
 	 */
 	private void startRegisterProcess() {
-		registerModel.usernameMessageTextarea.setText("");
-		registerModel.desktopPasswordsMessageTextarea.setText("");
-		registerModel.webPasswordsMessageTextarea.setText("");
-		registerModel.infoTextarea.setText("Hier können sie sich für die Benutzung der Anwendung registrieren.");
-		
+
 		if (checkInputValidity()) {
+			try {
+				socket = new ClientSocket();
+				String recievedMessage;
+
+				socket.sendMessage("register\n"
+						+ registerModel.desktopPasswordTextfield.getText()
+						+ ";" + registerModel.webPasswordTextfield.getText()
+						+ ";" + registerModel.usernameTextfield.getText());
+
+				recievedMessage = socket.recieveMessage();
+				// check if matches this pattern: "login" then a new line "fail"
+				// or "success" and the message
+				if (recievedMessage.equals("register")) {
+					recievedMessage = socket.recieveMessage();
+					String[] recievedMessageArray = recievedMessage.split(";");
+
+					if (recievedMessageArray[0].equals("success")) {
+						registerModel.infoTextarea
+						.setText("You have successfully been registered for using the application.");
+
+					} else { // if failed
+						registerModel.usernameMessageTextarea
+								.setText("This username is already in use.");
+					}
+				}
+
+			} catch (IOException e) {
+				registerModel.infoTextarea
+						.setText("The connection to the server could not be established.");
+			}
 
 		}
 
@@ -66,35 +94,35 @@ public class RegisterController {
 	 * 
 	 * @return
 	 */
-	private boolean checkInputValidity() {	
+	private boolean checkInputValidity() {
 		boolean fieldsValid = true;
 		if (registerModel.usernameTextfield.getText().length() == 0) {
 			registerModel.usernameMessageTextarea
-					.setText("Sie müssen einen Benutzernamen eingeben.");
+					.setText("You have to enter a username.");
 			fieldsValid = false;
 		}
 		if (registerModel.desktopPasswordTextfield.getPassword().length == 0
 				|| registerModel.repeatDesktopPasswordTextfield.getPassword().length == 0) {
 			registerModel.desktopPasswordsMessageTextarea
-					.setText("Die Passwortfelder dürfen nicht leer sein.");
+					.setText("Passwordfields can not be empty.");
 			fieldsValid = false;
 		} else if (!arePasswordsEqual(
 				registerModel.desktopPasswordTextfield.getPassword(),
 				registerModel.repeatDesktopPasswordTextfield.getPassword())) {
 			registerModel.desktopPasswordsMessageTextarea
-					.setText("Die Passwörter stimmen nicht überein.");
+					.setText("The entered passwords have to match.");
 			fieldsValid = false;
 		}
 		if (registerModel.webPasswordTextfield.getPassword().length == 0
 				|| registerModel.repeatWebPasswordTextfield.getPassword().length == 0) {
 			registerModel.webPasswordsMessageTextarea
-					.setText("Die Passwortfelder dürfen nicht leer sein.");
+					.setText("Passwordfields can not be empty.");
 			fieldsValid = false;
 		} else if (!arePasswordsEqual(
 				registerModel.webPasswordTextfield.getPassword(),
 				registerModel.repeatWebPasswordTextfield.getPassword())) {
 			registerModel.webPasswordsMessageTextarea
-					.setText("Die Passwörter stimmen nicht überein.");
+					.setText("The entered passwords have to match.");
 			fieldsValid = false;
 		}
 		return fieldsValid;

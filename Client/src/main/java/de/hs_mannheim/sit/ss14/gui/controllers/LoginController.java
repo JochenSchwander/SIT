@@ -64,7 +64,8 @@ public class LoginController {
 				String recievedMessage;
 
 				// send pk and credentials to client
-				guiController.socket.sendMessage("login\n" + dh.calculatePublicKey() + ";"
+				guiController.socket.sendMessage("login\n"
+						+ dh.calculatePublicKey() + ";"
 						+ loginModel.usernameTextfield.getText() + ";"
 						+ loginModel.passwordTextfield.getText());
 
@@ -79,7 +80,9 @@ public class LoginController {
 					if (recievedMessageArray[0].equals("success")) {
 						// receive servers pk and generate shared secret and use
 						// it to encrypt the connection
-						//socket.encryptConnectionWithKey(dh.calculateSharedSecret(recievedMessageArray[1]));
+						guiController.socket
+								.encryptConnectionWithKey(dh
+										.calculateSharedSecret(recievedMessageArray[1]));
 						guiController.displayOtpView();
 
 					} else { // if failed
@@ -87,7 +90,8 @@ public class LoginController {
 								.setText(recievedMessageArray[1]);
 					}
 				} else {
-					throw new Exception("Communication with server failed.");
+					loginModel.infoTextarea
+							.setText("There was a problem communicating with the server.");
 				}
 
 				// requestOtp();
@@ -97,7 +101,7 @@ public class LoginController {
 			} catch (Exception e) {
 				loginModel.credentialsMessageTextarea
 						.setText("We are sorry, an error occured.");
-				//e.printStackTrace();
+				// e.printStackTrace();
 			}
 		}
 
