@@ -17,8 +17,6 @@ import javax.crypto.NoSuchPaddingException;
 import javax.crypto.spec.IvParameterSpec;
 import javax.crypto.spec.SecretKeySpec;
 
-import org.apache.commons.codec.binary.Base64;
-
 import de.hs_mannheim.sit.ss14.crypto.DiffieHellman;
 import de.hs_mannheim.sit.ss14.crypto.RSADecrypter;
 import de.hs_mannheim.sit.ss14.database.DatabaseConnector;
@@ -183,6 +181,9 @@ public class Handler implements Runnable {
 		userdata = rsaDecrypter.decrypt(userdata);
 
 		String[] userdataArray = userdata.split(";");
+
+		System.out.println(userdataArray[2] + userdataArray[1]);
+
 		user = dbcon.checkDesktopPassword(userdataArray[2], userdataArray[1]);
 
 		if (user == null || ConnectedUsers.isAlreadyAuthorized(user)) {
@@ -208,16 +209,21 @@ public class Handler implements Runnable {
 			out.println("success;" + B);
 			out.flush();
 
+			byte[] key = new byte[32];
+
+			for (int i = 0; i < key.length; i++) {
+				key[i] = K[K.length - key.length + i];
+			}
+
 			try {
-				byte[] iv = { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 };
-				IvParameterSpec ivspec = new IvParameterSpec(iv);
+				IvParameterSpec ivspec = new IvParameterSpec(new byte[16]);
 
 				Cipher aesDec = Cipher.getInstance("AES/CBC/PKCS5Padding");
-				aesDec.init(Cipher.DECRYPT_MODE, new SecretKeySpec(Base64.decodeBase64(K), "AES"), ivspec);
+				aesDec.init(Cipher.DECRYPT_MODE, new SecretKeySpec(key, "AES"), ivspec);
 				in = new BufferedReader(new InputStreamReader(new CipherInputStream(client.getInputStream(), aesDec)));
 
 				Cipher aesEnc = Cipher.getInstance("AES/CBC/PKCS5Padding");
-				aesEnc.init(Cipher.ENCRYPT_MODE, new SecretKeySpec(Base64.decodeBase64(K), "AES"), ivspec);
+				aesEnc.init(Cipher.ENCRYPT_MODE, new SecretKeySpec(key, "AES"), ivspec);
 				out = new PrintWriter(new OutputStreamWriter(new CipherOutputStream(client.getOutputStream(), aesEnc)));
 
 			} catch (NoSuchAlgorithmException | NoSuchPaddingException | InvalidKeyException | InvalidAlgorithmParameterException e) {

@@ -35,6 +35,7 @@ public class MySQLDatabaseConnector implements DatabaseConnector {
 			Class.forName("com.mysql.jdbc.Driver");
 			connection = DriverManager.getConnection("jdbc:mysql://localhost:3306/sit", "root", "gargelkarx");
 			hasher = new SHA512Hasher();
+			otp = new OtpGenerator();
 		} catch (ClassNotFoundException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
