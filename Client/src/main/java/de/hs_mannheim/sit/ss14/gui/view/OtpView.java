@@ -90,7 +90,15 @@ public class OtpView extends JPanel{
 		JPanel lowerPanel = new JPanel();
 		add(lowerPanel);
 		lowerPanel.setLayout(new GridLayout(3, 3, 0, 0));
+			
+		for(int i=0;i<8;i++){
+		JPanel panel = new JPanel();
+		lowerPanel.add(panel);
+		}
 		
+		JButton resetButton = new JButton("Reset");
+		lowerPanel.add(resetButton);
+		resetButton.addActionListener(otpModel.resetAL);
 	}
 
 }

@@ -56,21 +56,8 @@ public class MainWindow extends JFrame {
 
 	public void loggedInView(LoggedInModel loggedInModel) {
 		getContentPane().removeAll();
-		getContentPane().setLayout(new GridLayout(2, 1));
-
-		JPanel greenPanel = new JPanel();
-		greenPanel.setLayout(new GridLayout(1, 0, 0, 0));
-		greenPanel.setBackground(Color.green);
-		getContentPane().add(greenPanel);
-		
-		JPanel messagePanel = new JPanel();
-		greenPanel.setLayout(new GridLayout(1, 0, 0, 0));
-		getContentPane().add(messagePanel);
-		
-		JTextArea infoTextarea=loggedInModel.infoTextarea;
-		messagePanel.add(infoTextarea);
-		
-		
+		getContentPane().setLayout(new GridLayout(1, 1));
+		add(new LoggedInView(loggedInModel));
 		setVisible(true);
 	}
 

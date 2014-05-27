@@ -39,9 +39,10 @@ public class RSAEncrypter {
 	 *
 	 * @param plainText
 	 *            the plain text to encrypt
-	 * @return String "RSA(AES-key);AES(plainText)
+	 * @return "RSA(AES-key);AES(strings[0]);AES(strings[1]);AES(strings[2])"
 	 */
-	public String encrypt(String plainText) {
+	public String encrypt(String... strings) {
+		String result;
 		try {
 
 			// AES
@@ -52,10 +53,19 @@ public class RSAEncrypter {
 			Cipher aesCipher = Cipher.getInstance("AES/CBC/PKCS5Padding");
 			aesCipher.init(Cipher.ENCRYPT_MODE, aesKey, new IvParameterSpec(new byte[16]));
 
-			String cypherText = Base64.encodeBase64String(aesCipher.doFinal(Base64.decodeBase64(plainText)));
+			String[] cypherTexts = new String[3];
+			for (int i = 0; i < strings.length; i++) {
+				cypherTexts[i] = Base64.encodeBase64String(aesCipher.doFinal(Base64.decodeBase64(strings[i])));
+			}
+
 			String wrappedKey = Base64.encodeBase64String(cipher.wrap(aesKey));
 
-			return wrappedKey + ";" + cypherText;
+			result = wrappedKey;
+			for (int i = 0; i < cypherTexts.length; i++) {
+				result += ";" + cypherTexts[i];
+			}
+
+			return result;
 		} catch (NoSuchAlgorithmException | NoSuchPaddingException | InvalidKeyException | InvalidAlgorithmParameterException | IllegalBlockSizeException | BadPaddingException e) {
 			e.printStackTrace();
 			return null;
@@ -66,7 +76,7 @@ public class RSAEncrypter {
 		try {
 			InputStream f = this.getClass().getClassLoader().getResourceAsStream("public_key");
 
-			byte[] keyBytes = new byte[(int) 294];
+			byte[] keyBytes = new byte[294];
 			f.read(keyBytes);
 			f.close();
 
