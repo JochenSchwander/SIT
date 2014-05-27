@@ -4,12 +4,9 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.IOException;
 
-import javax.swing.JPasswordField;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
-import javax.swing.SwingUtilities;
 
-import de.hs_mannheim.sit.ss14.auxiliaries.ClientSocket;
 import de.hs_mannheim.sit.ss14.gui.models.OtpModel;
 
 public class OtpController {

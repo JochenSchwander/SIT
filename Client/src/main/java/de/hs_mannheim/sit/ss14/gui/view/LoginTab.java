@@ -17,9 +17,8 @@ import de.hs_mannheim.sit.ss14.gui.models.LoginModel;
  * @author DS
  * 
  */
+@SuppressWarnings("serial")
 public class LoginTab extends JPanel {
-
-	private LoginModel loginModel;
 
 	LoginTab(LoginModel loginModel) {
 

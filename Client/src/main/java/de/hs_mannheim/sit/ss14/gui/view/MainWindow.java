@@ -1,8 +1,6 @@
 package de.hs_mannheim.sit.ss14.gui.view;
 
-import javax.print.attribute.standard.JobMessageFromOperator;
 import javax.swing.*;
-import javax.swing.border.EmptyBorder;
 
 import de.hs_mannheim.sit.ss14.gui.models.*;
 

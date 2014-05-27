@@ -23,17 +23,17 @@ public class GuiController {
 		mainWindow = new MainWindow();
 		
 		LoginModel loginModel = new LoginModel();
-		LoginController loginController = new LoginController(this, loginModel);
+		new LoginController(this, loginModel);
 
 		RegisterModel registerModel = new RegisterModel();
-		RegisterController registerController = new RegisterController(registerModel);
+		new RegisterController(registerModel);
 		
 		mainWindow.startView(loginModel, registerModel);
 	}
 
 	public void displayOtpView() {
 		OtpModel otpModel = new OtpModel();
-		OtpController otpController = new OtpController(this, otpModel);
+		new OtpController(this, otpModel);
 		
 		mainWindow.otpView(otpModel);
 		
@@ -41,7 +41,7 @@ public class GuiController {
 	
 	public void displayLoggedInView(String recievedMessage) {
 		LoggedInModel loggedInModel = new LoggedInModel();
-		LoggedInController loginController = new LoggedInController(this, loggedInModel);
+		new LoggedInController(this, loggedInModel);
 		
 		loggedInModel.infoTextarea.setText(recievedMessage);
 		mainWindow.loggedInView(loggedInModel);

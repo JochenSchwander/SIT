@@ -7,11 +7,7 @@ import javax.swing.border.*;
 import javax.swing.text.AbstractDocument;
 
 import de.hs_mannheim.sit.ss14.auxiliaries.DocumentSizeFilter;
-import de.hs_mannheim.sit.ss14.gui.controllers.RegisterController;
 import de.hs_mannheim.sit.ss14.gui.models.RegisterModel;
-
-import java.awt.event.ActionListener;
-import java.awt.event.ActionEvent;
 
 public class RegisterTab extends JPanel {
 

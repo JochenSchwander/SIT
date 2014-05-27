@@ -1,6 +1,5 @@
 package de.hs_mannheim.sit.ss14.gui.view;
 
-import java.awt.Font;
 import java.awt.GridLayout;
 import java.awt.SystemColor;
 import java.awt.event.ActionEvent;
@@ -12,6 +11,7 @@ import javax.swing.border.EmptyBorder;
 import de.hs_mannheim.sit.ss14.gui.models.OtpModel;
 
 
+@SuppressWarnings("serial")
 public class OtpView extends JPanel{
 	
 	OtpView(OtpModel otpModel){
