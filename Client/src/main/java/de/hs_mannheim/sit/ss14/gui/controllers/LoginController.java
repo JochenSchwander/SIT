@@ -65,13 +65,13 @@ public class LoginController {
 				String recievedMessage;
 
 				// send pk and credentials to client
-				String messageToSend = "login\n" + dh.calculatePublicKey()
+				String messageToSend =dh.calculatePublicKey()
 						+ ";" + loginModel.usernameTextfield.getText() + ";"
 						+ loginModel.passwordTextfield.getText();
 				RSAEncrypter rsa=new RSAEncrypter();
 				
 
-				guiController.socket.sendMessage(rsa.encrypt(messageToSend));
+				guiController.socket.sendMessage("login\n"+rsa.encrypt(messageToSend));
 
 				// recieve message
 				recievedMessage = guiController.socket.recieveMessage();
