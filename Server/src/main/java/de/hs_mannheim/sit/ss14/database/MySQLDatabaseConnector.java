@@ -59,6 +59,7 @@ public class MySQLDatabaseConnector implements DatabaseConnector {
 		          if (rs.next()) {
 		        	  hashedWebPassword = rs.getString("webPassword");
 		              timestamp = rs.getString("timestamp");
+		              System.out.println("5min-timestamp: " + timestamp);
 
 		              // DATABASE VALIDATION
 		              if (hashedWebPassword == null || timestamp == null) {
