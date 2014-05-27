@@ -54,7 +54,7 @@ public class MySQLDatabaseConnector implements DatabaseConnector {
 			String serverHashedOneTimeWebPassword = null;
 
 			try {
-				ps = connection.prepareStatement("SELECT webPassword, SELECT DATE_ADD(CURRENT_TIMESTAMP, INTERVAL 5 MINUTE) AS timestamp FROM CREDENTIAL WHERE username = ?");
+				ps = connection.prepareStatement("SELECT webPassword, DATE_ADD(CURRENT_TIMESTAMP, INTERVAL 5 MINUTE) AS timestamp FROM CREDENTIAL WHERE username = ?");
 				ps.setString(1, user.getUserName());
 		        rs = ps.executeQuery();
 		          if (rs.next()) {
