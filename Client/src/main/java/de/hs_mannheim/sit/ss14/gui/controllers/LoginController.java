@@ -21,10 +21,10 @@ import de.hs_mannheim.sit.ss14.gui.models.LoginModel;
  */
 public class LoginController {
 
-	private GuiController guiController;
+	private StartDesktopClient guiController;
 	private LoginModel loginModel;
 
-	LoginController(GuiController guiController, LoginModel loginModel) {
+	LoginController(StartDesktopClient guiController, LoginModel loginModel) {
 		this.guiController = guiController;
 		this.loginModel = loginModel;
 

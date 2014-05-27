@@ -10,12 +10,12 @@ import de.hs_mannheim.sit.ss14.gui.view.*;
  * @author DS
  * 
  */
-public class GuiController {
+public class StartDesktopClient {
 	public MainWindow mainWindow;
 	public ClientSocket socket;
 	
 
-	GuiController() {
+	StartDesktopClient() {
 		startView();
 	}
 
@@ -43,12 +43,12 @@ public class GuiController {
 		LoggedInModel loggedInModel = new LoggedInModel();
 		new LoggedInController(this, loggedInModel);
 		
-		loggedInModel.infoTextarea.setText(recievedMessage);
+		loggedInModel.recieveTextArea.setText(recievedMessage);
 		mainWindow.loggedInView(loggedInModel);
 		
 	}
 
 	public static void main(String args[]) {
-		new GuiController();
+		new StartDesktopClient();
 	}
 }
