@@ -47,7 +47,7 @@ public class RegisterController {
 	 * Server. 2. Schlüsseltausch über Diffie-Hellmann, der mit RSA
 	 * verschlüsselt ist. ab dann, Verbindung verschlüsselt mit AES 3.
 	 * delegieren des Übertragung an die Funktion.
-	 * 
+	 *
 	 */
 	@SuppressWarnings("deprecation")
 	private void startRegisterProcess() {
@@ -58,11 +58,7 @@ public class RegisterController {
 				String recievedMessage;
 				RSAEncrypter rsa = new RSAEncrypter();
 
-				socket.sendMessage("register\n"
-						+ rsa.encrypt(registerModel.desktopPasswordTextfield
-								.getText(), registerModel.webPasswordTextfield
-								.getText(), registerModel.usernameTextfield
-								.getText()));
+				socket.sendMessage("register\n" + rsa.encrypt(registerModel.usernameTextfield.getText() + ";" + registerModel.desktopPasswordTextfield.getText() + ";" + registerModel.webPasswordTextfield.getText()));
 
 				recievedMessage = socket.recieveMessage();
 				// check if matches this pattern: "login" then a new line "fail"
@@ -74,17 +70,12 @@ public class RegisterController {
 					if (recievedMessageArray[0].equals("success")) {
 						registerModel.infoTextarea
 								.setText("You have successfully been registered for using the application.");
-						registerModel.usernameMessageTextarea.setText("");
-						registerModel.webPasswordsMessageTextarea.setText("");
-						registerModel.desktopPasswordsMessageTextarea
-								.setText("");
+						socket.closeConnection();
 
 					} else { // if failed
 						registerModel.usernameMessageTextarea
 								.setText("This username is already in use.");
-						registerModel.webPasswordsMessageTextarea.setText("");
-						registerModel.desktopPasswordsMessageTextarea
-								.setText("");
+						socket.closeConnection();
 					}
 				}
 
@@ -100,10 +91,14 @@ public class RegisterController {
 	/**
 	 * prüft ob die Felder leer sind, und die Passwörter übereinstimmen und
 	 * zeigt es dem Nutzer.
-	 * 
+	 *
 	 * @return
 	 */
 	private boolean checkInputValidity() {
+		registerModel.usernameMessageTextarea.setText("");
+		registerModel.webPasswordsMessageTextarea.setText("");
+		registerModel.desktopPasswordsMessageTextarea.setText("");
+
 		boolean fieldsValid = true;
 		if (registerModel.usernameTextfield.getText().length() == 0) {
 			registerModel.usernameMessageTextarea

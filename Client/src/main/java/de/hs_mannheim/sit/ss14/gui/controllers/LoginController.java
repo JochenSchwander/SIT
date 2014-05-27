@@ -8,21 +8,23 @@ import javax.swing.JPasswordField;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
 
-import de.hs_mannheim.sit.ss14.auxiliaries.*;
+import de.hs_mannheim.sit.ss14.auxiliaries.ClientDiffieHellman;
+import de.hs_mannheim.sit.ss14.auxiliaries.ClientSocket;
+import de.hs_mannheim.sit.ss14.auxiliaries.RSAEncrypter;
 import de.hs_mannheim.sit.ss14.gui.models.LoginModel;
 
 /**
  * Controller for then LoginTab and the whole loginprocess.
- * 
+ *
  * @author DS
- * 
+ *
  */
 public class LoginController {
 
-	private GuiController guiController;
+	private StartDesktopClient guiController;
 	private LoginModel loginModel;
 
-	LoginController(GuiController guiController, LoginModel loginModel) {
+	LoginController(StartDesktopClient guiController, LoginModel loginModel) {
 		this.guiController = guiController;
 		this.loginModel = loginModel;
 
@@ -49,7 +51,7 @@ public class LoginController {
 	 * 2. Schlüsseltausch über Diffie-Hellmann, der mit RSA verschlüsselt ist.
 	 * ab dann, Verbindung verschlüsselt mit AES 3. delegieren des
 	 * Onetimepasswort-requests
-	 * 
+	 *
 	 */
 	@SuppressWarnings("deprecation")
 	private void startLoginProcess() {
@@ -67,7 +69,7 @@ public class LoginController {
 				// send pk and credentials to client
 				RSAEncrypter rsa = new RSAEncrypter();
 
-				guiController.socket.sendMessage("login\n"+rsa.encrypt(dh.calculatePublicKey(), loginModel.usernameTextfield.getText(),loginModel.passwordTextfield.getText()));
+				guiController.socket.sendMessage("login\n"+rsa.encrypt(dh.calculatePublicKey() +  ";" + loginModel.usernameTextfield.getText() + ";" + loginModel.passwordTextfield.getText()));
 
 				// recieve message
 				recievedMessage = guiController.socket.recieveMessage();

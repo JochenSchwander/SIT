@@ -11,10 +11,10 @@ import de.hs_mannheim.sit.ss14.gui.models.LoggedInModel;
 
 public class LoggedInController {
 
-	private GuiController guiController;
+	private StartDesktopClient guiController;
 	private LoggedInModel loggedInModel;
 
-	public LoggedInController(GuiController guiController,
+	public LoggedInController(StartDesktopClient guiController,
 			LoggedInModel loggedInModel) {
 		this.guiController = guiController;
 		this.loggedInModel = loggedInModel;

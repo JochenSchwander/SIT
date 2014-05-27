@@ -2,6 +2,7 @@ package de.hs_mannheim.sit.ss14.crypto;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.UnsupportedEncodingException;
 import java.security.InvalidAlgorithmParameterException;
 import java.security.InvalidKeyException;
 import java.security.Key;
@@ -10,8 +11,6 @@ import java.security.NoSuchAlgorithmException;
 import java.security.PrivateKey;
 import java.security.spec.InvalidKeySpecException;
 import java.security.spec.PKCS8EncodedKeySpec;
-import java.util.LinkedList;
-import java.util.List;
 
 import javax.crypto.BadPaddingException;
 import javax.crypto.Cipher;
@@ -48,7 +47,7 @@ public class RSADecrypter {
 	 * @param string the string to decrypt
 	 * @return decrypted string
 	 */
-	public List<String> decrypt(final String string) {
+	public String decrypt(final String string) {
 		try {
 			String[] strings = string.split(";");
 			byte[] wrappedKey = Base64.decodeBase64(strings[0]);
@@ -57,13 +56,8 @@ public class RSADecrypter {
 			Cipher aesCipher = Cipher.getInstance("AES/CBC/PKCS5Padding");
 			aesCipher.init(Cipher.DECRYPT_MODE, symKey, new IvParameterSpec(new byte[16]));
 
-			List<String> output = new LinkedList<String>();
-			for (int i = 1; i < strings.length; i++) {
-				output.add(0, Base64.encodeBase64String(aesCipher.doFinal(Base64.decodeBase64(strings[i]))));
-			}
-
-			return output;
-		} catch (InvalidKeyException | NoSuchAlgorithmException | NoSuchPaddingException | IllegalBlockSizeException | BadPaddingException | InvalidAlgorithmParameterException e) {
+			return new String(aesCipher.doFinal(Base64.decodeBase64(strings[1])), "UTF-8");
+		} catch (InvalidKeyException | NoSuchAlgorithmException | NoSuchPaddingException | IllegalBlockSizeException | BadPaddingException | InvalidAlgorithmParameterException | UnsupportedEncodingException e) {
 			e.printStackTrace();
 			return null;
 		}

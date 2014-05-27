@@ -2,6 +2,7 @@ package de.hs_mannheim.sit.ss14.auxiliaries;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.UnsupportedEncodingException;
 import java.security.InvalidAlgorithmParameterException;
 import java.security.InvalidKeyException;
 import java.security.KeyFactory;
@@ -41,8 +42,7 @@ public class RSAEncrypter {
 	 *            the plain text to encrypt
 	 * @return "RSA(AES-key);AES(strings[0]);AES(strings[1]);AES(strings[2])"
 	 */
-	public String encrypt(String... strings) {
-		String result;
+	public String encrypt(String plainText) {
 		try {
 
 			// AES
@@ -53,20 +53,12 @@ public class RSAEncrypter {
 			Cipher aesCipher = Cipher.getInstance("AES/CBC/PKCS5Padding");
 			aesCipher.init(Cipher.ENCRYPT_MODE, aesKey, new IvParameterSpec(new byte[16]));
 
-			String[] cypherTexts = new String[3];
-			for (int i = 0; i < strings.length; i++) {
-				cypherTexts[i] = Base64.encodeBase64String(aesCipher.doFinal(Base64.decodeBase64(strings[i])));
-			}
+			String cypherText = Base64.encodeBase64String(aesCipher.doFinal(plainText.getBytes("UTF-8")));
 
 			String wrappedKey = Base64.encodeBase64String(cipher.wrap(aesKey));
 
-			result = wrappedKey;
-			for (int i = 0; i < cypherTexts.length; i++) {
-				result += ";" + cypherTexts[i];
-			}
-
-			return result;
-		} catch (NoSuchAlgorithmException | NoSuchPaddingException | InvalidKeyException | InvalidAlgorithmParameterException | IllegalBlockSizeException | BadPaddingException e) {
+			return wrappedKey + ";" + cypherText;
+		} catch (NoSuchAlgorithmException | NoSuchPaddingException | InvalidKeyException | InvalidAlgorithmParameterException | IllegalBlockSizeException | BadPaddingException | UnsupportedEncodingException e) {
 			e.printStackTrace();
 			return null;
 		}

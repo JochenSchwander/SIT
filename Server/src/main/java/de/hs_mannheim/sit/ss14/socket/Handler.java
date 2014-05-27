@@ -9,7 +9,6 @@ import java.net.Socket;
 import java.security.InvalidAlgorithmParameterException;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
-import java.util.List;
 
 import javax.crypto.Cipher;
 import javax.crypto.CipherInputStream;
@@ -159,9 +158,10 @@ public class Handler implements Runnable {
 	private void register() throws IOException {
 		String userdata = in.readLine();
 
-		List<String> userdataList = rsaDecrypter.decrypt(userdata);
+		userdata = rsaDecrypter.decrypt(userdata);
 
-		if (dbcon.createUser(userdataList.get(0), userdataList.get(1), userdataList.get(2))) {
+		String[] userdataArray = userdata.split(";");
+		if (dbcon.createUser(userdataArray[0], userdataArray[1], userdataArray[2])) {
 			out.println("register");
 			out.println("success");
 		} else {
@@ -180,9 +180,10 @@ public class Handler implements Runnable {
 	private void login() throws IOException {
 		String userdata = in.readLine();
 
-		List<String> userdataList = rsaDecrypter.decrypt(userdata);
+		userdata = rsaDecrypter.decrypt(userdata);
 
-		user = dbcon.checkDesktopPassword(userdataList.get(2), userdataList.get(1));
+		String[] userdataArray = userdata.split(";");
+		user = dbcon.checkDesktopPassword(userdataArray[2], userdataArray[1]);
 
 		if (user == null || ConnectedUsers.isAlreadyAuthorized(user)) {
 			out.println("login");
@@ -194,12 +195,14 @@ public class Handler implements Runnable {
 			String B = "";
 			byte[] K = null;
 			try {
-				B = dh.calculatePublicKey(userdataList.get(0));
+				B = dh.calculatePublicKey(userdataArray[0]);
 				K = dh.calculateSharedSecret();
 			} catch (Exception e) {
 				// TODO was machen?
 				e.printStackTrace();
 			}
+
+			ConnectedUsers.addPendingUser(user);
 
 			out.println("login");
 			out.println("success;" + B);
