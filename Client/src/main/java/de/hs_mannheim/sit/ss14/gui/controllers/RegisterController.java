@@ -9,6 +9,7 @@ import javax.swing.JTextArea;
 import javax.swing.JTextField;
 
 import de.hs_mannheim.sit.ss14.auxiliaries.ClientSocket;
+import de.hs_mannheim.sit.ss14.auxiliaries.RSAEncrypter;
 import de.hs_mannheim.sit.ss14.gui.models.RegisterModel;
 
 public class RegisterController {
@@ -55,11 +56,13 @@ public class RegisterController {
 			try {
 				socket = new ClientSocket();
 				String recievedMessage;
-
-				socket.sendMessage("register\n"
+				RSAEncrypter rsa = new RSAEncrypter();
+				String messageToSend = "register\n"
 						+ registerModel.desktopPasswordTextfield.getText()
 						+ ";" + registerModel.webPasswordTextfield.getText()
-						+ ";" + registerModel.usernameTextfield.getText());
+						+ ";" + registerModel.usernameTextfield.getText();
+
+				socket.sendMessage(rsa.encrypt(messageToSend));
 
 				recievedMessage = socket.recieveMessage();
 				// check if matches this pattern: "login" then a new line "fail"
@@ -70,7 +73,7 @@ public class RegisterController {
 
 					if (recievedMessageArray[0].equals("success")) {
 						registerModel.infoTextarea
-						.setText("You have successfully been registered for using the application.");
+								.setText("You have successfully been registered for using the application.");
 
 					} else { // if failed
 						registerModel.usernameMessageTextarea

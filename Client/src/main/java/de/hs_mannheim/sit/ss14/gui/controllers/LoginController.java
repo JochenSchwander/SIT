@@ -61,13 +61,17 @@ public class LoginController {
 			try {
 				guiController.socket = new ClientSocket();
 				ClientDiffieHellman dh = new ClientDiffieHellman();
+
 				String recievedMessage;
 
 				// send pk and credentials to client
-				guiController.socket.sendMessage("login\n"
-						+ dh.calculatePublicKey() + ";"
-						+ loginModel.usernameTextfield.getText() + ";"
-						+ loginModel.passwordTextfield.getText());
+				String messageToSend = "login\n" + dh.calculatePublicKey()
+						+ ";" + loginModel.usernameTextfield.getText() + ";"
+						+ loginModel.passwordTextfield.getText();
+				RSAEncrypter rsa=new RSAEncrypter();
+				
+
+				guiController.socket.sendMessage(rsa.encrypt(messageToSend));
 
 				// recieve message
 				recievedMessage = guiController.socket.recieveMessage();
