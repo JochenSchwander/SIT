@@ -14,6 +14,8 @@ import java.util.Arrays;
 
 import org.apache.commons.codec.binary.Base64;
 
+import com.mysql.jdbc.exceptions.MySQLIntegrityConstraintViolationException;
+
 import de.hs_mannheim.sit.ss14.hash.Hasher;
 import de.hs_mannheim.sit.ss14.hash.SHA512Hasher;
 import de.hs_mannheim.sit.ss14.randomgenerator.OtpGenerator;
@@ -192,11 +194,11 @@ public class MySQLDatabaseConnector implements DatabaseConnector {
 	          } else {
 	              return false;
 	          }
-	      } catch (NoSuchAlgorithmException e){
-	    	  e.printStackTrace();
-	      } catch (IOException e){
-	    	  e.printStackTrace();
-	      } catch (SQLException e){
+
+	      } catch (MySQLIntegrityConstraintViolationException userAlreadyExists){
+	    	  System.out.println("User already exists in database.");
+	    	  return false;
+	      } catch (SQLException | IOException | NoSuchAlgorithmException e){
 	    	  e.printStackTrace();
 	      } finally {
 	          close(ps);
