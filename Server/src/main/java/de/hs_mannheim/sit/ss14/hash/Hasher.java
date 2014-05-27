@@ -23,6 +23,4 @@ public interface Hasher {
 	 * @throws IOException
 	 */
 	String calculateHash(String password, String salt) throws NoSuchAlgorithmException, UnsupportedEncodingException, IOException;
-
-	byte[] calculateHash(String desktopPassword, byte[] bSalt) throws NoSuchAlgorithmException, UnsupportedEncodingException, IOException;
 }

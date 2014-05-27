@@ -30,6 +30,4 @@ public class SHA512Hasher implements Hasher {
 		}
 		return Base64.encodeBase64String(input);
 	}
-
-
 }
