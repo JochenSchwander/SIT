@@ -1,5 +1,7 @@
 package de.hs_mannheim.sit.ss14.sync;
 
+import java.util.Date;
+
 import de.hs_mannheim.sit.ss14.socket.Handler;
 
 /**
@@ -20,7 +22,7 @@ public class User {
 
 	private Handler handler;
 
-	private String oneTimePasswordExpirationDate;
+	private Date oneTimePasswordExpirationDate;
 
 	public String getUserName() {
 		return userName;
@@ -62,11 +64,11 @@ public class User {
 		this.handler = handler;
 	}
 
-	public void setOneTimePasswordExpirationDate(String oneTimePasswordExpirationDate) {
+	public void setOneTimePasswordExpirationDate(Date oneTimePasswordExpirationDate) {
 		this.oneTimePasswordExpirationDate = oneTimePasswordExpirationDate;
 	}
 
-	public String getOneTimePasswordExpirationDate() {
+	public Date getOneTimePasswordExpirationDate() {
 		return oneTimePasswordExpirationDate;
 	}
 
