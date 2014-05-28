@@ -12,6 +12,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.Arrays;
+import java.util.Date;
 
 import org.apache.commons.codec.binary.Base64;
 
@@ -50,8 +51,9 @@ public class MySQLDatabaseConnector implements DatabaseConnector {
 		if (user!=null||hashedOneTimeWebPassword!=null){ //TODO: übedenken
 			PreparedStatement ps = null;
 		    ResultSet rs = null;
-			String hashedWebPassword = null, timestamp = null;
+			String hashedWebPassword = null;
 			String serverHashedOneTimeWebPassword = null;
+			Date timestamp = null; 
 
 			try {
 				ps = connection.prepareStatement("SELECT webPassword, DATE_ADD(CURRENT_TIMESTAMP, INTERVAL 5 MINUTE) AS timestamp FROM CREDENTIAL WHERE username = ?");
@@ -59,7 +61,7 @@ public class MySQLDatabaseConnector implements DatabaseConnector {
 		        rs = ps.executeQuery();
 		          if (rs.next()) {
 		        	  hashedWebPassword = rs.getString("webPassword");
-		              timestamp = rs.getString("timestamp");
+		        	  timestamp = new Date(System.currentTimeMillis()+5*60*1000); //rs.getString("timestamp");
 		              System.out.println("5min-timestamp: " + timestamp);
 
 		              // DATABASE VALIDATION
@@ -81,7 +83,7 @@ public class MySQLDatabaseConnector implements DatabaseConnector {
 			}
 
 			System.out.println("Aktuelle Zeit: " + timestamp + "OTP TimeStamp: " + user.getOneTimePasswordExpirationDate());
-			if (user.getOneTimePasswordExpirationDate().equals(timestamp)){
+			if (timestamp.after(user.getOneTimePasswordExpirationDate())){
 				System.out.println("Timestamp war im zulässigen bereich!");
 				if(serverHashedOneTimeWebPassword.equals(hashedOneTimeWebPassword)){
 					return true;

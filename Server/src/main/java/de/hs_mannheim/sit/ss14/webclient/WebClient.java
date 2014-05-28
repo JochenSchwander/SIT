@@ -1,7 +1,9 @@
 package de.hs_mannheim.sit.ss14.webclient;
 
 import java.io.IOException;
+import java.util.Date;
 import java.sql.SQLException;
+import java.sql.Timestamp;
 
 import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
@@ -57,7 +59,15 @@ public class WebClient extends HttpServlet {
 		String hash = request.getParameter("hashOutput");
 		String username = request.getParameter("username");
 		
-		User user = ConnectedUsers.getPendingUser(username);
+		//User user = ConnectedUsers.getPendingUser(username);
+		//Date dt = new Date(System.currentTimeMillis()+5*60*1000);
+		User user = new User();
+		user.setOneTimeCode("123");
+		user.setUserName("marcel");
+		user.setOneTimePasswordExpirationDate(new Date(System.currentTimeMillis()));
+		
+		
+		//ConnectedUsers.addPendingUser(user); 
 		
 		//check if the user exist
 		if(user == null){
@@ -70,13 +80,13 @@ public class WebClient extends HttpServlet {
 		if(dbCon.checkWebPassword(user, hash)){ //authenticate the user if the credentials are correct
 			RequestDispatcher view = request.getRequestDispatcher("Success.html");
 			view.forward(request, response);
-			ConnectedUsers.authorizeUser(username);
+			//ConnectedUsers.authorizeUser(username);
 		}else if(user.getFailedLoginAttempts() >= 3){ //if the user already failed to login for 3 times remove him from pending users
 	        RequestDispatcher view = request.getRequestDispatcher("Suspended.html");
 		    view.forward(request, response);
 	        ConnectedUsers.removePendingUser(username);
 		}else { //redirect to the Weblogin and increase the failed login attempts
-			RequestDispatcher view = request.getRequestDispatcher("WebLogin.html");
+			RequestDispatcher view = request.getRequestDispatcher("LoginFailed.html");
 	        view.forward(request, response);
 	        user.increaseFailedLoginAttempts();
 		}
