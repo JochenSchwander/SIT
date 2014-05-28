@@ -215,6 +215,7 @@ public class Handler implements Runnable {
 				key[i] = K[K.length - key.length + i];
 			}
 
+			if (false)
 			try {
 				IvParameterSpec ivspec = new IvParameterSpec(new byte[16]);
 

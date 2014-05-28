@@ -53,7 +53,7 @@ public class MySQLDatabaseConnector implements DatabaseConnector {
 		    ResultSet rs = null;
 			String hashedWebPassword = null;
 			String serverHashedOneTimeWebPassword = null;
-			Date timestamp = null; 
+			Date timestamp = null;
 
 			try {
 				ps = connection.prepareStatement("SELECT webPassword, DATE_ADD(CURRENT_TIMESTAMP, INTERVAL 5 MINUTE) AS timestamp FROM CREDENTIAL WHERE username = ?");
@@ -61,8 +61,7 @@ public class MySQLDatabaseConnector implements DatabaseConnector {
 		        rs = ps.executeQuery();
 		          if (rs.next()) {
 		        	  hashedWebPassword = rs.getString("webPassword");
-		        	  timestamp = new Date(System.currentTimeMillis()+5*60*1000); //rs.getString("timestamp");
-		              System.out.println("5min-timestamp: " + timestamp);
+		        	  timestamp = new Date(System.currentTimeMillis()); //rs.getString("timestamp");
 
 		              // DATABASE VALIDATION
 		              if (hashedWebPassword == null || timestamp == null) {
@@ -83,8 +82,7 @@ public class MySQLDatabaseConnector implements DatabaseConnector {
 			}
 
 			System.out.println("Aktuelle Zeit: " + timestamp + "OTP TimeStamp: " + user.getOneTimePasswordExpirationDate());
-			if (timestamp.after(user.getOneTimePasswordExpirationDate())){
-				System.out.println("Timestamp war im zulässigen bereich!");
+			if (timestamp.before(user.getOneTimePasswordExpirationDate())){
 				if(serverHashedOneTimeWebPassword.equals(hashedOneTimeWebPassword)){
 					return true;
 				}
@@ -149,6 +147,7 @@ public class MySQLDatabaseConnector implements DatabaseConnector {
 			        	  user.setUserName(username);
 						  user.setOneTimeCode(oneTimePassword);
 						  user.setSalt(salt);
+						  user.setOneTimePasswordExpirationDate(new Date(System.currentTimeMillis() + 5 * 60 * 1000));
 
 //						  resetDesktopFailedLoginAttempts();
 			        	  return user;
@@ -227,7 +226,6 @@ public class MySQLDatabaseConnector implements DatabaseConnector {
 			}
 
 		} catch (MySQLIntegrityConstraintViolationException userAlreadyExists) {
-			System.out.println("User already exists in database.");
 			return false;
 		} catch (SQLException | IOException | NoSuchAlgorithmException e) {
 			e.printStackTrace();

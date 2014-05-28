@@ -82,9 +82,7 @@ public class LoginController {
 					if (recievedMessageArray[0].equals("success")) {
 						// receive servers pk and generate shared secret and use
 						// it to encrypt the connection
-						guiController.socket
-								.encryptConnectionWithKey(dh
-										.calculateSharedSecret(recievedMessageArray[1]));
+//						guiController.socket.encryptConnectionWithKey(dh.calculateSharedSecret(recievedMessageArray[1]));
 						guiController.displayOtpView();
 
 					} else { // if failed
