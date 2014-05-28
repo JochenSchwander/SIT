@@ -182,8 +182,6 @@ public class Handler implements Runnable {
 
 		String[] userdataArray = userdata.split(";");
 
-		System.out.println(userdataArray[2] + userdataArray[1]);
-
 		user = dbcon.checkDesktopPassword(userdataArray[2], userdataArray[1]);
 
 		if (user == null || ConnectedUsers.isAlreadyAuthorized(user)) {
@@ -209,6 +207,8 @@ public class Handler implements Runnable {
 			out.println("success;" + B);
 			out.flush();
 
+			status = Status.PENDING;
+
 			byte[] key = new byte[32];
 
 			for (int i = 0; i < key.length; i++) {
@@ -226,7 +226,7 @@ public class Handler implements Runnable {
 				aesEnc.init(Cipher.ENCRYPT_MODE, new SecretKeySpec(key, "AES"), ivspec);
 				out = new PrintWriter(new OutputStreamWriter(new CipherOutputStream(client.getOutputStream(), aesEnc)));
 
-			} catch (NoSuchAlgorithmException | NoSuchPaddingException | InvalidKeyException | InvalidAlgorithmParameterException e) {
+			} catch (NoSuchAlgorithmException | NoSuchPaddingException | IOException | InvalidKeyException | InvalidAlgorithmParameterException e) {
 				// TODO was machen?
 				e.printStackTrace();
 			}
