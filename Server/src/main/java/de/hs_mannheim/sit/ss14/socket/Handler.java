@@ -190,6 +190,8 @@ public class Handler implements Runnable {
 			out.flush();
 			closeSocketConnection();
 		} else {
+			user.setHandler(this);
+
 			DiffieHellman dh = new DiffieHellman();
 			String B = "";
 			byte[] K = null;

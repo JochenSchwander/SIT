@@ -53,7 +53,6 @@ public class MySQLDatabaseConnector implements DatabaseConnector {
 		    ResultSet rs = null;
 			String hashedWebPassword = null;
 			String serverHashedOneTimeWebPassword = null;
-			Date timestamp = null;
 
 			try {
 				ps = connection.prepareStatement("SELECT webPassword, DATE_ADD(CURRENT_TIMESTAMP, INTERVAL 5 MINUTE) AS timestamp FROM CREDENTIAL WHERE username = ?");
@@ -61,10 +60,9 @@ public class MySQLDatabaseConnector implements DatabaseConnector {
 		        rs = ps.executeQuery();
 		          if (rs.next()) {
 		        	  hashedWebPassword = rs.getString("webPassword");
-		        	  timestamp = new Date(System.currentTimeMillis()); //rs.getString("timestamp");
 
 		              // DATABASE VALIDATION
-		              if (hashedWebPassword == null || timestamp == null) {
+		              if (hashedWebPassword == null) {
 		                  throw new SQLException("Database inconsistant webPassword, timestamp altered");
 		              }
 		              if (rs.next()) { // Should not append, because login is the primary key
@@ -81,8 +79,7 @@ public class MySQLDatabaseConnector implements DatabaseConnector {
 				e.printStackTrace();
 			}
 
-			System.out.println("Aktuelle Zeit: " + timestamp + "OTP TimeStamp: " + user.getOneTimePasswordExpirationDate());
-			if (timestamp.before(user.getOneTimePasswordExpirationDate())){
+			if (new Date(System.currentTimeMillis()).before(user.getOneTimePasswordExpirationDate())){
 				if(serverHashedOneTimeWebPassword.equals(hashedOneTimeWebPassword)){
 					return true;
 				}
