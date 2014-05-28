@@ -47,8 +47,7 @@ public class ClientSocket {
 	 *
 	 * @param key
 	 */
-	public void encryptConnectionWithKey(byte[] K) throws IOException,
-			Exception {
+	public void encryptConnectionWithKey(byte[] K) throws IOException, Exception {
 
 		byte[] key = new byte[32];
 
@@ -56,16 +55,18 @@ public class ClientSocket {
 			key[i] = K[K.length - key.length + i];
 		}
 
-		IvParameterSpec ivspec = new IvParameterSpec(new byte[16]);
-
 		Cipher aesDec = Cipher.getInstance("AES/CBC/PKCS5Padding");
-		aesDec.init(Cipher.DECRYPT_MODE, new SecretKeySpec(key, "AES"), ivspec);
-		in = new BufferedReader(new InputStreamReader(new CipherInputStream(clientSocket.getInputStream(), aesDec)));
-
 		Cipher aesEnc = Cipher.getInstance("AES/CBC/PKCS5Padding");
+
+		IvParameterSpec ivspec = new IvParameterSpec(new byte[aesDec.getBlockSize()]);
+
+		aesDec.init(Cipher.DECRYPT_MODE, new SecretKeySpec(key, "AES"), ivspec);
 		aesEnc.init(Cipher.ENCRYPT_MODE, new SecretKeySpec(key, "AES"), ivspec);
+
+		in = new BufferedReader(new InputStreamReader(new CipherInputStream(clientSocket.getInputStream(), aesDec)));
 		out = new PrintWriter(new OutputStreamWriter(new CipherOutputStream(clientSocket.getOutputStream(), aesEnc)));
 
+		Thread.sleep(4000);
 	}
 
 	public void sendMessage(String sendString) throws IOException {
