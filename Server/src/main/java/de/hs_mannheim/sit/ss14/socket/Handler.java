@@ -195,8 +195,8 @@ public class Handler implements Runnable {
 				String B = dh.calculatePublicKey(userdataArray[0]);
 				byte[] K = dh.calculateSharedSecret();
 
-				Cipher aesDec = Cipher.getInstance("AES/CBC/PKCS5Padding");
-				Cipher aesEnc = Cipher.getInstance("AES/CBC/PKCS5Padding");
+				Cipher aesDec = Cipher.getInstance("AES/CFB8/NoPadding");
+				Cipher aesEnc = Cipher.getInstance("AES/CFB8/NoPadding");
 
 				byte[] key = new byte[32];
 				for (int i = 0; i < key.length; i++) {

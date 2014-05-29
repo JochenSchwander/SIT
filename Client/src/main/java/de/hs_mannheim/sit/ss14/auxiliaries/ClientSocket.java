@@ -55,8 +55,8 @@ public class ClientSocket {
 			key[i] = K[K.length - key.length + i];
 		}
 
-		Cipher aesDec = Cipher.getInstance("AES/CBC/PKCS5Padding");
-		Cipher aesEnc = Cipher.getInstance("AES/CBC/PKCS5Padding");
+		Cipher aesDec = Cipher.getInstance("AES/CFB8/NoPadding");
+		Cipher aesEnc = Cipher.getInstance("AES/CFB8/NoPadding");
 
 		IvParameterSpec ivspec = new IvParameterSpec(new byte[aesDec.getBlockSize()]);
 
