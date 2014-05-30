@@ -12,6 +12,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.Arrays;
+import java.util.Date;
 
 import org.apache.commons.codec.binary.Base64;
 
@@ -50,20 +51,18 @@ public class MySQLDatabaseConnector implements DatabaseConnector {
 		if (user!=null||hashedOneTimeWebPassword!=null){ //TODO: übedenken
 			PreparedStatement ps = null;
 		    ResultSet rs = null;
-			String hashedWebPassword = null, timestamp = null;
+			String hashedWebPassword = null;
 			String serverHashedOneTimeWebPassword = null;
 
 			try {
-				ps = connection.prepareStatement("SELECT webPassword, SELECT DATE_ADD(CURRENT_TIMESTAMP, INTERVAL 5 MINUTE) AS timestamp FROM CREDENTIAL WHERE username = ?");
+				ps = connection.prepareStatement("SELECT webPassword, DATE_ADD(CURRENT_TIMESTAMP, INTERVAL 5 MINUTE) AS timestamp FROM CREDENTIAL WHERE username = ?");
 				ps.setString(1, user.getUserName());
 		        rs = ps.executeQuery();
 		          if (rs.next()) {
 		        	  hashedWebPassword = rs.getString("webPassword");
-		              timestamp = rs.getString("timestamp");
-		              System.out.println("5min-timestamp: " + timestamp);
 
 		              // DATABASE VALIDATION
-		              if (hashedWebPassword == null || timestamp == null) {
+		              if (hashedWebPassword == null) {
 		                  throw new SQLException("Database inconsistant webPassword, timestamp altered");
 		              }
 		              if (rs.next()) { // Should not append, because login is the primary key
@@ -80,9 +79,7 @@ public class MySQLDatabaseConnector implements DatabaseConnector {
 				e.printStackTrace();
 			}
 
-			System.out.println("Aktuelle Zeit: " + timestamp + "OTP TimeStamp: " + user.getOneTimePasswordExpirationDate());
-			if (user.getOneTimePasswordExpirationDate().equals(timestamp)){
-				System.out.println("Timestamp war im zulässigen bereich!");
+			if (new Date(System.currentTimeMillis()).before(user.getOneTimePasswordExpirationDate())){
 				if(serverHashedOneTimeWebPassword.equals(hashedOneTimeWebPassword)){
 					return true;
 				}
@@ -147,6 +144,7 @@ public class MySQLDatabaseConnector implements DatabaseConnector {
 			        	  user.setUserName(username);
 						  user.setOneTimeCode(oneTimePassword);
 						  user.setSalt(salt);
+						  user.setOneTimePasswordExpirationDate(new Date(System.currentTimeMillis() + 5 * 60 * 1000));
 
 //						  resetDesktopFailedLoginAttempts();
 			        	  return user;
@@ -225,7 +223,6 @@ public class MySQLDatabaseConnector implements DatabaseConnector {
 			}
 
 		} catch (MySQLIntegrityConstraintViolationException userAlreadyExists) {
-			System.out.println("User already exists in database.");
 			return false;
 		} catch (SQLException | IOException | NoSuchAlgorithmException e) {
 			e.printStackTrace();

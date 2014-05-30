@@ -6,14 +6,10 @@ import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
 import java.net.Socket;
-import java.security.InvalidAlgorithmParameterException;
-import java.security.InvalidKeyException;
-import java.security.NoSuchAlgorithmException;
 
 import javax.crypto.Cipher;
 import javax.crypto.CipherInputStream;
 import javax.crypto.CipherOutputStream;
-import javax.crypto.NoSuchPaddingException;
 import javax.crypto.spec.IvParameterSpec;
 import javax.crypto.spec.SecretKeySpec;
 
@@ -182,8 +178,6 @@ public class Handler implements Runnable {
 
 		String[] userdataArray = userdata.split(";");
 
-		System.out.println(userdataArray[2] + userdataArray[1]);
-
 		user = dbcon.checkDesktopPassword(userdataArray[2], userdataArray[1]);
 
 		if (user == null || ConnectedUsers.isAlreadyAuthorized(user)) {
@@ -192,41 +186,35 @@ public class Handler implements Runnable {
 			out.flush();
 			closeSocketConnection();
 		} else {
-			DiffieHellman dh = new DiffieHellman();
-			String B = "";
-			byte[] K = null;
 			try {
-				B = dh.calculatePublicKey(userdataArray[0]);
-				K = dh.calculateSharedSecret();
-			} catch (Exception e) {
-				// TODO was machen?
-				e.printStackTrace();
-			}
+				user.setHandler(this);
+				ConnectedUsers.addPendingUser(user);
+				status = Status.PENDING;
 
-			ConnectedUsers.addPendingUser(user);
+				DiffieHellman dh = new DiffieHellman();
+				String B = dh.calculatePublicKey(userdataArray[0]);
+				byte[] K = dh.calculateSharedSecret();
 
-			out.println("login");
-			out.println("success;" + B);
-			out.flush();
+				Cipher aesDec = Cipher.getInstance("AES/CFB8/NoPadding");
+				Cipher aesEnc = Cipher.getInstance("AES/CFB8/NoPadding");
 
-			byte[] key = new byte[32];
+				byte[] key = new byte[32];
+				for (int i = 0; i < key.length; i++) {
+					key[i] = K[K.length - key.length + i];
+				}
+				IvParameterSpec ivspec = new IvParameterSpec(new byte[aesDec.getBlockSize()]);
 
-			for (int i = 0; i < key.length; i++) {
-				key[i] = K[K.length - key.length + i];
-			}
-
-			try {
-				IvParameterSpec ivspec = new IvParameterSpec(new byte[16]);
-
-				Cipher aesDec = Cipher.getInstance("AES/CBC/PKCS5Padding");
 				aesDec.init(Cipher.DECRYPT_MODE, new SecretKeySpec(key, "AES"), ivspec);
-				in = new BufferedReader(new InputStreamReader(new CipherInputStream(client.getInputStream(), aesDec)));
-
-				Cipher aesEnc = Cipher.getInstance("AES/CBC/PKCS5Padding");
 				aesEnc.init(Cipher.ENCRYPT_MODE, new SecretKeySpec(key, "AES"), ivspec);
+
+				out.println("login");
+				out.println("success;" + B);
+				out.flush();
+
+				in = new BufferedReader(new InputStreamReader(new CipherInputStream(client.getInputStream(), aesDec)));
 				out = new PrintWriter(new OutputStreamWriter(new CipherOutputStream(client.getOutputStream(), aesEnc)));
 
-			} catch (NoSuchAlgorithmException | NoSuchPaddingException | InvalidKeyException | InvalidAlgorithmParameterException e) {
+			} catch (Exception e) {
 				// TODO was machen?
 				e.printStackTrace();
 			}

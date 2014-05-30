@@ -21,7 +21,7 @@ import de.hs_mannheim.sit.ss14.sync.User;
 public class WebClient extends HttpServlet {
 	private static final long serialVersionUID = 1L;
 	private static DatabaseConnector dbCon;
-	
+
 	static {
 		dbCon = new MySQLDatabaseConnector();
 		try {
@@ -30,19 +30,19 @@ public class WebClient extends HttpServlet {
 			e.printStackTrace();
 		}
 	}
-       
+
     /**
      * @see HttpServlet#HttpServlet()
      */
     public WebClient() {
         super();
-        // TODO Auto-generated constructor stub
     }
 
 	/**
 	 * Delivers the login form to the client.
 	 * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse response)
 	 */
+	@Override
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         RequestDispatcher view = request.getRequestDispatcher("WebLogin.html");
         view.forward(request, response);
@@ -52,21 +52,22 @@ public class WebClient extends HttpServlet {
 	 * Handles post data and authenticates the user or redirect him.
 	 * @see HttpServlet#doPost(HttpServletRequest request, HttpServletResponse response)
 	 */
+	@Override
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		//Get Hash and username from post parameters
 		String hash = request.getParameter("hashOutput");
 		String username = request.getParameter("username");
-		
+
 		User user = ConnectedUsers.getPendingUser(username);
-		
+
 		//check if the user exist
 		if(user == null){
 			RequestDispatcher view = request.getRequestDispatcher("LoginFailed.html");
 			view.forward(request, response);
 			return;
 		}
-		
-		
+
+
 		if(dbCon.checkWebPassword(user, hash)){ //authenticate the user if the credentials are correct
 			RequestDispatcher view = request.getRequestDispatcher("Success.html");
 			view.forward(request, response);
@@ -76,7 +77,7 @@ public class WebClient extends HttpServlet {
 		    view.forward(request, response);
 	        ConnectedUsers.removePendingUser(username);
 		}else { //redirect to the Weblogin and increase the failed login attempts
-			RequestDispatcher view = request.getRequestDispatcher("WebLogin.html");
+			RequestDispatcher view = request.getRequestDispatcher("LoginFailed.html");
 	        view.forward(request, response);
 	        user.increaseFailedLoginAttempts();
 		}
