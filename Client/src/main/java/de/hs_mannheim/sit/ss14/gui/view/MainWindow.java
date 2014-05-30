@@ -20,7 +20,8 @@ public class MainWindow extends JFrame {
 	 * Starts the main window and sets the basic layout of the desktop client
 	 */
 	public void startView(LoginModel loginModel, RegisterModel registerModel) {
-		setSize(647, 400);
+		//setSize(647, 400);
+		setMinimumSize(new Dimension(647, 400));
 		setTitle("SIT Projekt");
 		setLocationRelativeTo(null);
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
