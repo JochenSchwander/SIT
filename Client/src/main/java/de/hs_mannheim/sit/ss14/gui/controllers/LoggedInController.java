@@ -32,7 +32,7 @@ public class LoggedInController {
 			public void actionPerformed(ActionEvent e) {
 				try {
 					guiController.socket
-							.sendMessage(loggedInModel.toSendTextField
+							.sendMessage("echo\n"+loggedInModel.toSendTextField
 									.getText());
 				} catch (IOException e1) {
 					loggedInModel.recieveTextArea
