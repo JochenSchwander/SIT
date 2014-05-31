@@ -40,9 +40,9 @@ public class LoginController {
 		loginModel.submitLoginAL = new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-//				startLoginProcess();
-				guiController
-				.displayLoggedInView("You are in the safety zone");
+				startLoginProcess();
+			//	guiController
+			//	.displayLoggedInView("You are in the safety zone");
 			}
 		};
 
