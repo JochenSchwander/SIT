@@ -96,3 +96,8 @@ jdk 1.7 suchen
 
 
 
+
+
+
+
+WICHTIG::: PUB KEY für jeden user unterschiedlich ??

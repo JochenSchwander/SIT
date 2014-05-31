@@ -23,12 +23,12 @@ import org.apache.commons.codec.binary.Base64;
 
 public class RSAEncrypter {
 
-	Cipher cipher;
+	Cipher rsaCipher;
 
 	public RSAEncrypter() {
 		try {
-			cipher = Cipher.getInstance("RSA");
-			cipher.init(Cipher.WRAP_MODE, getPublicKey());
+			rsaCipher = Cipher.getInstance("RSA");
+			rsaCipher.init(Cipher.WRAP_MODE, getPublicKey());
 		} catch (NoSuchAlgorithmException | NoSuchPaddingException | InvalidKeyException e) {
 			e.printStackTrace();
 		}
@@ -55,7 +55,7 @@ public class RSAEncrypter {
 
 			String cypherText = Base64.encodeBase64String(aesCipher.doFinal(plainText.getBytes("UTF-8")));
 
-			String wrappedKey = Base64.encodeBase64String(cipher.wrap(aesKey));
+			String wrappedKey = Base64.encodeBase64String(rsaCipher.wrap(aesKey));
 
 			return wrappedKey + ";" + cypherText;
 		} catch (NoSuchAlgorithmException | NoSuchPaddingException | InvalidKeyException | InvalidAlgorithmParameterException | IllegalBlockSizeException | BadPaddingException | UnsupportedEncodingException e) {
