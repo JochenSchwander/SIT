@@ -1,11 +1,17 @@
 package de.hs_mannheim.sit.ss14.gui.view;
 
-import javax.swing.*;
-
-import de.hs_mannheim.sit.ss14.gui.models.*;
-
-import java.awt.*;
+import java.awt.Dimension;
+import java.awt.GridLayout;
 import java.awt.event.KeyEvent;
+
+import javax.swing.JFrame;
+import javax.swing.JTabbedPane;
+import javax.swing.UIManager;
+
+import de.hs_mannheim.sit.ss14.gui.models.LoggedInModel;
+import de.hs_mannheim.sit.ss14.gui.models.LoginModel;
+import de.hs_mannheim.sit.ss14.gui.models.OtpModel;
+import de.hs_mannheim.sit.ss14.gui.models.RegisterModel;
 
 public class MainWindow extends JFrame {
 	public MainWindow() {
@@ -21,7 +27,7 @@ public class MainWindow extends JFrame {
 	 */
 	public void startView(LoginModel loginModel, RegisterModel registerModel) {
 		//setSize(647, 400);
-		setMinimumSize(new Dimension(647, 400));
+		setMinimumSize(new Dimension(800, 600));
 		setTitle("SIT Projekt");
 		setLocationRelativeTo(null);
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -62,7 +68,7 @@ public class MainWindow extends JFrame {
 		setVisible(true);
 	}
 
-	
+
 	public void otpView(OtpModel otpModel) {
 		getContentPane().removeAll();
 		getContentPane().setLayout(new GridLayout(1, 1));

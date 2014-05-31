@@ -40,16 +40,18 @@ public class LoginController {
 		loginModel.submitLoginAL = new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				startLoginProcess();
+//				startLoginProcess();
+				guiController
+				.displayLoggedInView("You are in the safety zone");
 			}
 		};
 
 	}
 
 	/**
-	 * Für den Loginablauf zuständige Funktion. 1. Verbindungsaufbau zum Server.
-	 * 2. Schlüsseltausch über Diffie-Hellmann, der mit RSA verschlüsselt ist.
-	 * ab dann, Verbindung verschlüsselt mit AES 3. delegieren des
+	 * Fï¿½r den Loginablauf zustï¿½ndige Funktion. 1. Verbindungsaufbau zum Server.
+	 * 2. Schlï¿½sseltausch ï¿½ber Diffie-Hellmann, der mit RSA verschlï¿½sselt ist.
+	 * ab dann, Verbindung verschlï¿½sselt mit AES 3. delegieren des
 	 * Onetimepasswort-requests
 	 *
 	 */
