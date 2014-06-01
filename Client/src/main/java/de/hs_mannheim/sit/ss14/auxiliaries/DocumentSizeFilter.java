@@ -4,6 +4,7 @@ import javax.swing.text.*;
 import java.awt.*;
 
 /**
+ * with this class it is possible to limit the characters entered in a textfield and filter special characters
  * 
  * @author André Uhres
  * @url http://www.java-forum.org/bilder-gui-damit-zusammenhaengt/7213-jtextfield-dokumentarten.html#post587501

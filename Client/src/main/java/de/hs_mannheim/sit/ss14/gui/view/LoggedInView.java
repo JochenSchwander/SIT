@@ -4,7 +4,6 @@ import javax.swing.JButton;
 import javax.swing.JPanel;
 
 import de.hs_mannheim.sit.ss14.gui.models.LoggedInModel;
-import de.hs_mannheim.sit.ss14.gui.models.LoginModel;
 
 import java.awt.GridLayout;
 
@@ -17,6 +16,7 @@ import javax.swing.SwingConstants;
 import javax.swing.JTextField;
 import javax.swing.JTextArea;
 
+@SuppressWarnings("serial")
 public class LoggedInView extends JPanel {
 
 	LoggedInView(LoggedInModel loggedInModel) {

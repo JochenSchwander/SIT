@@ -9,9 +9,9 @@ import javax.swing.text.AbstractDocument;
 import de.hs_mannheim.sit.ss14.auxiliaries.DocumentSizeFilter;
 import de.hs_mannheim.sit.ss14.gui.models.RegisterModel;
 
+@SuppressWarnings("serial")
 public class RegisterTab extends JPanel {
 
-	private static final long serialVersionUID = 1L;
 
 	RegisterTab(RegisterModel registerModel) {
 		GridBagLayout gridBagLayout = new GridBagLayout();

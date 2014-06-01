@@ -9,14 +9,6 @@ import javax.swing.text.AbstractDocument;
 import de.hs_mannheim.sit.ss14.auxiliaries.DocumentSizeFilter;
 import de.hs_mannheim.sit.ss14.gui.models.LoginModel;
 
-/**
- * Beim Erstellen durch ViewStart wird die Ansicht für das erste
- * Sicherheitskriterium gezeigt, und mit showOtp() wird dann das OTP angezeigt,
- * welches im Web eingegeben werden muss.
- * 
- * @author DS
- * 
- */
 @SuppressWarnings("serial")
 public class LoginTab extends JPanel {
 

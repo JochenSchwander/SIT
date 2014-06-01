@@ -9,11 +9,19 @@ import javax.swing.JTextField;
 
 import de.hs_mannheim.sit.ss14.gui.models.OtpModel;
 
+/**
+ * this controller shows the one-time password and the salt to the user and
+ * waits for a response from the server that the user is successfully logged in
+ * and then redirects to the LoggedInContoller
+ * 
+ * @author DS
+ * 
+ */
 public class OtpController {
-	private StartDesktopClient guiController;
+	private GuiController guiController;
 	private OtpModel otpModel;
 
-	OtpController(StartDesktopClient guiController, OtpModel otpModel) {
+	OtpController(GuiController guiController, OtpModel otpModel) {
 		this.guiController = guiController;
 		this.otpModel = otpModel;
 
@@ -50,7 +58,7 @@ public class OtpController {
 				recievedMessage = guiController.socket.recieveMessage();
 				String[] recievedMessageArray = recievedMessage.split(";");
 
-				// Ausgabe des empfangenen OTPs
+				// display the recieved otp and salt
 
 				otpModel.otpTextField.setText(recievedMessageArray[0]);
 				otpModel.saltTextField.setText(recievedMessageArray[1]);
@@ -70,7 +78,8 @@ public class OtpController {
 	}
 
 	/**
-	 * waits for the server to tell me if the client has also logged in successfully on the server.
+	 * waits for the server to tell the client if the weblogin has also been successful.
+	 * implemented in a thread so that the gui does not freeze meanwhile.
 	 */
 	private void waitForServerResponse() {
 		(new Thread(new Runnable() {

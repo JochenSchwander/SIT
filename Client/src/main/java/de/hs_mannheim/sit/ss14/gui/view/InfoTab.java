@@ -5,9 +5,8 @@ import java.awt.*;
 import javax.swing.*;
 import javax.swing.border.*;
 
+@SuppressWarnings("serial")
 public class InfoTab extends JPanel {
-
-	private static final long serialVersionUID = 1L;
 
 	InfoTab() {
 		setBorder(new EmptyBorder(10, 10, 10, 10));

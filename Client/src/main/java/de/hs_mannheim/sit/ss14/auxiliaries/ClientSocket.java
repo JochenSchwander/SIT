@@ -14,10 +14,10 @@ import javax.crypto.spec.IvParameterSpec;
 import javax.crypto.spec.SecretKeySpec;
 
 /**
- * Stellt Funktionen für die Server-Client-Verbindung bereit.
- *
+ * This class functions as the connection-layer between server and client
+ * 
  * @author DS
- *
+ * 
  */
 public class ClientSocket {
 
@@ -28,9 +28,8 @@ public class ClientSocket {
 	private PrintWriter out;
 
 	/**
-	 * Beim Instanziierung der Klasse wird automatisch eine Verbindung zum
-	 * Server hergestellt.
-	 *
+	 * At instantiation this class automatically connects to the server
+	 * 
 	 * @throws IOException
 	 */
 	public ClientSocket() throws IOException {
@@ -42,12 +41,13 @@ public class ClientSocket {
 	}
 
 	/**
-	 * sobald diese Methode aufgerufen wurden, wird die Verbindung mit dem
-	 * Schlüssel aus dem Parameter verschlüsselt.
-	 *
+	 * as soon as this function is successfully called the connection is AES
+	 * encrypted
+	 * 
 	 * @param key
 	 */
-	public void encryptConnectionWithKey(byte[] K) throws IOException, Exception {
+	public void encryptConnectionWithKey(byte[] K) throws IOException,
+			Exception {
 
 		byte[] key = new byte[32];
 
@@ -58,13 +58,16 @@ public class ClientSocket {
 		Cipher aesDec = Cipher.getInstance("AES/CFB8/NoPadding");
 		Cipher aesEnc = Cipher.getInstance("AES/CFB8/NoPadding");
 
-		IvParameterSpec ivspec = new IvParameterSpec(new byte[aesDec.getBlockSize()]);
+		IvParameterSpec ivspec = new IvParameterSpec(
+				new byte[aesDec.getBlockSize()]);
 
 		aesDec.init(Cipher.DECRYPT_MODE, new SecretKeySpec(key, "AES"), ivspec);
 		aesEnc.init(Cipher.ENCRYPT_MODE, new SecretKeySpec(key, "AES"), ivspec);
 
-		in = new BufferedReader(new InputStreamReader(new CipherInputStream(clientSocket.getInputStream(), aesDec)));
-		out = new PrintWriter(new OutputStreamWriter(new CipherOutputStream(clientSocket.getOutputStream(), aesEnc)));
+		in = new BufferedReader(new InputStreamReader(new CipherInputStream(
+				clientSocket.getInputStream(), aesDec)));
+		out = new PrintWriter(new OutputStreamWriter(new CipherOutputStream(
+				clientSocket.getOutputStream(), aesEnc)));
 
 		Thread.sleep(4000);
 	}

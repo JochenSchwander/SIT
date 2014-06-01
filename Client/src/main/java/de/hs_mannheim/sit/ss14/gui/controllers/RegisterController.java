@@ -12,6 +12,12 @@ import de.hs_mannheim.sit.ss14.auxiliaries.ClientSocket;
 import de.hs_mannheim.sit.ss14.auxiliaries.RSAEncrypter;
 import de.hs_mannheim.sit.ss14.gui.models.RegisterModel;
 
+/**
+ * Controller for then RegisternTab and the whole register process.
+ * 
+ * @author DS
+ * 
+ */
 public class RegisterController {
 
 	private RegisterModel registerModel;
@@ -43,11 +49,9 @@ public class RegisterController {
 	}
 
 	/**
-	 * Für den Registrierablauf zuständige Funktion. 1.Verbindungsaufbau zum
-	 * Server. 2. Schlüsseltausch über Diffie-Hellmann, der mit RSA
-	 * verschlüsselt ist. ab dann, Verbindung verschlüsselt mit AES 3.
-	 * delegieren des Übertragung an die Funktion.
-	 *
+	 * Starts the register process: 1. establish connection to server 2. sends
+	 * the users register form to the server, encrypted with RSA 3. shows if the
+	 * user could successfully be registered.
 	 */
 	@SuppressWarnings("deprecation")
 	private void startRegisterProcess() {
@@ -58,7 +62,12 @@ public class RegisterController {
 				String recievedMessage;
 				RSAEncrypter rsa = new RSAEncrypter();
 
-				socket.sendMessage("register\n" + rsa.encrypt(registerModel.usernameTextfield.getText() + ";" + registerModel.desktopPasswordTextfield.getText() + ";" + registerModel.webPasswordTextfield.getText()));
+				socket.sendMessage("register\n"
+						+ rsa.encrypt(registerModel.usernameTextfield.getText()
+								+ ";"
+								+ registerModel.desktopPasswordTextfield
+										.getText() + ";"
+								+ registerModel.webPasswordTextfield.getText()));
 
 				recievedMessage = socket.recieveMessage();
 				// check if matches this pattern: "login" then a new line "fail"
@@ -89,9 +98,8 @@ public class RegisterController {
 	}
 
 	/**
-	 * prüft ob die Felder leer sind, und die Passwörter übereinstimmen und
-	 * zeigt es dem Nutzer.
-	 *
+	 * checks if fields are empty and the corresponding passwords match each other
+	 * 
 	 * @return
 	 */
 	private boolean checkInputValidity() {

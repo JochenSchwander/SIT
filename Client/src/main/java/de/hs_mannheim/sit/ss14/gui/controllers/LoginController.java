@@ -14,17 +14,17 @@ import de.hs_mannheim.sit.ss14.auxiliaries.RSAEncrypter;
 import de.hs_mannheim.sit.ss14.gui.models.LoginModel;
 
 /**
- * Controller for then LoginTab and the whole loginprocess.
+ * Controller for then LoginTab and the whole login process.
  *
  * @author DS
  *
  */
 public class LoginController {
 
-	private StartDesktopClient guiController;
+	private GuiController guiController;
 	private LoginModel loginModel;
 
-	LoginController(StartDesktopClient guiController, LoginModel loginModel) {
+	LoginController(GuiController guiController, LoginModel loginModel) {
 		this.guiController = guiController;
 		this.loginModel = loginModel;
 
@@ -41,19 +41,16 @@ public class LoginController {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				startLoginProcess();
-			//	guiController
-			//	.displayLoggedInView("You are in the safety zone");
 			}
 		};
 
 	}
 
 	/**
-	 * F�r den Loginablauf zust�ndige Funktion. 1. Verbindungsaufbau zum Server.
-	 * 2. Schl�sseltausch �ber Diffie-Hellmann, der mit RSA verschl�sselt ist.
-	 * ab dann, Verbindung verschl�sselt mit AES 3. delegieren des
-	 * Onetimepasswort-requests
-	 *
+	 * Starts the login process:
+	 * 1. establish connection to server
+	 * 2. diffie-hellman key exchange, already encrypted with RSA to avoid man-in-the-middle
+	 * 3. deligate Onetimepasswort-requests to the guiController that starts the OtpController
 	 */
 	@SuppressWarnings("deprecation")
 	private void startLoginProcess() {
