@@ -9,11 +9,11 @@ import javax.swing.JTextField;
 public class LoginModel {
 
 	public JTextField usernameTextfield;
+	
 	public JPasswordField passwordTextfield;
+	
 	public JTextArea credentialsMessageTextarea;
 	public JTextArea infoTextarea;
+	
 	public ActionListener submitLoginAL;
-
-	public LoginModel() {
-	}
 }
