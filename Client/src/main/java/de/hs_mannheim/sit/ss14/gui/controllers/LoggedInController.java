@@ -10,10 +10,10 @@ import javax.swing.JTextField;
 import de.hs_mannheim.sit.ss14.gui.models.LoggedInModel;
 
 /**
- * This controller controlls the actions of the view when the user has
+ * This controller controls the actions of the view when the user has
  * successfully logged in.
  *
- * Functionality of the program is to send and recieve messages to the server, or in the future every other functionality.
+ * Functionality of the program is to send and receive messages to the server, or in the future every other functionality.
  * @author DS
  *
  */
