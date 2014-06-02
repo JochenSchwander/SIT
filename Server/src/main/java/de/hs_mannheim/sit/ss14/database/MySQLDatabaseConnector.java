@@ -100,6 +100,7 @@ public class MySQLDatabaseConnector implements DatabaseConnector {
 			//whitelist
 			Matcher matcher = whitelist.matcher(username);
 			if (!matcher.matches()) {
+				System.out.println("inappropriate characters in username");
 				return null;
 			}
 
@@ -192,7 +193,15 @@ public class MySQLDatabaseConnector implements DatabaseConnector {
 	 */
 	@Override
 	public boolean createUser(String username, String desktopPassword, String webPassword) {
+		//whitelist
+		Matcher matcher = whitelist.matcher(username);
+		if (!matcher.matches()) {
+			System.out.println("unappropriate characters in username");
+			return false;
+		}
+
 		PreparedStatement ps = null;
+
 		try {
 			if (username != null && desktopPassword != null && webPassword != null && username.length() <= 100) {
 
