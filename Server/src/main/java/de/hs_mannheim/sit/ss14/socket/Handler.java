@@ -74,7 +74,7 @@ public class Handler implements Runnable {
 				handleCommand(command);
 			}
 		} catch (IOException e) {
-			e.printStackTrace();
+			// socket closed
 		} finally {
 			if (user != null) {
 				if (status == Status.AUTHORIZED) {
