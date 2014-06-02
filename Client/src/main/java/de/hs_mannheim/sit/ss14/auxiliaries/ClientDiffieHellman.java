@@ -1,10 +1,15 @@
 package de.hs_mannheim.sit.ss14.auxiliaries;
 
 import java.security.AlgorithmParameterGenerator;
+import java.security.InvalidAlgorithmParameterException;
+import java.security.InvalidKeyException;
 import java.security.KeyFactory;
 import java.security.KeyPair;
 import java.security.KeyPairGenerator;
+import java.security.NoSuchAlgorithmException;
 import java.security.PublicKey;
+import java.security.spec.InvalidKeySpecException;
+import java.security.spec.InvalidParameterSpecException;
 import java.security.spec.X509EncodedKeySpec;
 
 import javax.crypto.KeyAgreement;
@@ -60,9 +65,13 @@ public class ClientDiffieHellman {
 	 * @param clientPubKeyEncString
 	 *            client public key
 	 * @return server public key
+	 * @throws NoSuchAlgorithmException 
+	 * @throws InvalidParameterSpecException 
+	 * @throws InvalidAlgorithmParameterException 
+	 * @throws InvalidKeyException 
 	 * @throws Exception
 	 */
-	public String calculatePublicKey() throws Exception {
+	public String calculatePublicKey() throws NoSuchAlgorithmException, InvalidParameterSpecException, InvalidAlgorithmParameterException, InvalidKeyException {
 		DHParameterSpec dhSkipParamSpec;
 
 		// Some central authority creates new DH parameters
@@ -95,10 +104,13 @@ public class ClientDiffieHellman {
 	 * Calculates the shared secret between client and server.
 	 *
 	 * @return shared secret
+	 * @throws NoSuchAlgorithmException 
+	 * @throws IllegalStateException 
+	 * @throws InvalidKeyException 
+	 * @throws InvalidKeySpecException 
 	 * @throws Exception
 	 */
-	public byte[] calculateSharedSecret(String serverPubKeyEncString)
-			throws Exception {
+	public byte[] calculateSharedSecret(String serverPubKeyEncString) throws NoSuchAlgorithmException, InvalidKeyException, IllegalStateException, InvalidKeySpecException {
 		byte[] serverPubKeyEnc = Base64.decodeBase64(serverPubKeyEncString);
 		/*
 		 * Client uses Server's public key for the first (and only) phase of her

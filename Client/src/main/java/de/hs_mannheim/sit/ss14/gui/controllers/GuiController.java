@@ -16,10 +16,13 @@ public class GuiController {
 	
 
 	public GuiController() {
-		startView();
+		startMainWindow();
 	}
 
-	public void startView() {
+	/**
+	 * creates the window for the first time
+	 */
+	private void startMainWindow() {
 		mainWindow = new MainWindow();
 		
 		LoginModel loginModel = new LoginModel();
@@ -31,6 +34,23 @@ public class GuiController {
 		mainWindow.startView(loginModel, registerModel);
 	}
 
+	/**
+	 * basically the same as startMainWindow but the old window is resettet to start.
+	 */
+	public void startView() {
+		
+		LoginModel loginModel = new LoginModel();
+		new LoginController(this, loginModel);
+
+		RegisterModel registerModel = new RegisterModel();
+		new RegisterController(registerModel);
+		
+		mainWindow.startView(loginModel, registerModel);
+	}
+	
+	/**
+	 * initializes the view where the one-time password is shown
+	 */
 	public void displayOtpView() {
 		OtpModel otpModel = new OtpModel();
 		new OtpController(this, otpModel);
@@ -39,6 +59,9 @@ public class GuiController {
 		
 	}
 	
+	/**
+	 * initializes the view where the user is logged in, an can use the functionality of the program
+	 */
 	public void displayLoggedInView(String recievedMessage) {
 		LoggedInModel loggedInModel = new LoggedInModel();
 		new LoggedInController(this, loggedInModel);

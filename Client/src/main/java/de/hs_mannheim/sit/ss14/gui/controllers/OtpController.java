@@ -4,6 +4,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.IOException;
 
+import javax.swing.JOptionPane;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
 
@@ -98,9 +99,9 @@ public class OtpController {
 							guiController
 									.displayLoggedInView(recievedMessageArray[1]);
 
-						} else { // if failed
-							otpModel.infoTextarea
-									.setText(recievedMessageArray[1]);
+						} else { // if failed: display popup and go back to start.
+							JOptionPane.showMessageDialog(null,recievedMessageArray[1]);
+							guiController.startView();
 						}
 
 					} else {

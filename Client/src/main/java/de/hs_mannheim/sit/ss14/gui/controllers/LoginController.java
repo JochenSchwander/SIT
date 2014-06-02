@@ -3,7 +3,14 @@ package de.hs_mannheim.sit.ss14.gui.controllers;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.IOException;
+import java.security.InvalidAlgorithmParameterException;
+import java.security.InvalidKeyException;
+import java.security.NoSuchAlgorithmException;
+import java.security.spec.InvalidKeySpecException;
+import java.security.spec.InvalidParameterSpecException;
 
+import javax.crypto.NoSuchPaddingException;
+import javax.swing.JOptionPane;
 import javax.swing.JPasswordField;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
@@ -15,9 +22,9 @@ import de.hs_mannheim.sit.ss14.gui.models.LoginModel;
 
 /**
  * Controller for then LoginTab and the whole login process.
- *
+ * 
  * @author DS
- *
+ * 
  */
 public class LoginController {
 
@@ -47,10 +54,10 @@ public class LoginController {
 	}
 
 	/**
-	 * Starts the login process:
-	 * 1. establish connection to server
-	 * 2. diffie-hellman key exchange, already encrypted with RSA to avoid man-in-the-middle
-	 * 3. deligate Onetimepasswort-requests to the guiController that starts the OtpController
+	 * Starts the login process: 1. establish connection to server 2.
+	 * diffie-hellman key exchange, already encrypted with RSA to avoid
+	 * man-in-the-middle 3. deligate Onetimepasswort-requests to the
+	 * guiController that starts the OtpController
 	 */
 	@SuppressWarnings("deprecation")
 	private void startLoginProcess() {
@@ -68,7 +75,10 @@ public class LoginController {
 				// send pk and credentials to client
 				RSAEncrypter rsa = new RSAEncrypter();
 
-				guiController.socket.sendMessage("login\n"+rsa.encrypt(dh.calculatePublicKey() +  ";" + loginModel.usernameTextfield.getText() + ";" + loginModel.passwordTextfield.getText()));
+				guiController.socket.sendMessage("login\n"
+						+ rsa.encrypt(dh.calculatePublicKey() + ";"
+								+ loginModel.usernameTextfield.getText() + ";"
+								+ loginModel.passwordTextfield.getText()));
 
 				// recieve message
 				recievedMessage = guiController.socket.recieveMessage();
@@ -81,7 +91,9 @@ public class LoginController {
 					if (recievedMessageArray[0].equals("success")) {
 						// receive servers pk and generate shared secret and use
 						// it to encrypt the connection
-						guiController.socket.encryptConnectionWithKey(dh.calculateSharedSecret(recievedMessageArray[1]));
+						guiController.socket
+								.encryptConnectionWithKey(dh
+										.calculateSharedSecret(recievedMessageArray[1]));
 						guiController.displayOtpView();
 
 					} else { // if failed
@@ -95,12 +107,16 @@ public class LoginController {
 			} catch (IOException e) {
 				loginModel.credentialsMessageTextarea
 						.setText("The connection to the server could not be established.");
-			} catch (Exception e) {
+			} catch (InvalidKeyException | NoSuchAlgorithmException
+					| InvalidParameterSpecException
+					| InvalidAlgorithmParameterException | InterruptedException
+					| NoSuchPaddingException | InvalidKeySpecException
+					| IllegalStateException e) {
 				loginModel.credentialsMessageTextarea
 						.setText("We are sorry, an error occured.");
 				e.printStackTrace();
+
 			}
 		}
-
 	}
 }

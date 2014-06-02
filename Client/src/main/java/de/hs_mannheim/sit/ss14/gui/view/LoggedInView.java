@@ -36,6 +36,8 @@ public class LoggedInView extends JPanel {
 
 		JTextArea recieveTextArea = loggedInModel.recieveTextArea;
 		inputPanel.add(recieveTextArea);
+		recieveTextArea.setLineWrap(true);
+		recieveTextArea.setWrapStyleWord(true);
 
 		JPanel outputPanel = new JPanel();
 		outputPanel.setBorder(new EmptyBorder(10, 10, 10, 10));
