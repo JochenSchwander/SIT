@@ -12,7 +12,7 @@ public class Main {
 		dbCon.connect();
 		//dbCon.deleteTableStructure();
 		//dbCon.createTableStructure();
-		//dbCon.createUser("'; DROP TABLE CREDENTIALS;", "wasIstMartin", "marinIstEinBob");
+		dbCon.createUser("horst2", "admin", "web");
 		//dbCon.deleteUser("phil");
 		//dbCon.resetDesktopFailedLoginAttempts("phil");
 

@@ -32,15 +32,18 @@ public class MySQLDatabaseConnector implements DatabaseConnector {
 
 	public MySQLDatabaseConnector() {
 		whitelist = Pattern.compile("[a-zA-Z0-9]*");
+		hasher = new SHA512Hasher();
+		otp = new OtpGenerator();
 	}
 
 	@Override
+	/**
+	 * Create a conntection to the Database to a fixed user.
+	 */
 	public void connect() {
 		try {
 			Class.forName("com.mysql.jdbc.Driver");
 			connection = DriverManager.getConnection("jdbc:mysql://localhost:3306/sit", "root", "gargelkarx");
-			hasher = new SHA512Hasher();
-			otp = new OtpGenerator();
 		} catch (ClassNotFoundException e) {
 			e.printStackTrace();
 		} catch (SQLException e) {
@@ -49,6 +52,12 @@ public class MySQLDatabaseConnector implements DatabaseConnector {
 	}
 
 	@Override
+	/**
+	 * Checks the validity of the web Password for the User with the username 'username'
+	 * @param username the username of the user
+	 * @param hashedOneTimeWebPassword = h ( h ( Web-Passwort + Salt ) + OTP)
+	 * @return true if the web password is correct, false if it is not correct or the OTP is older than 5 minutes
+	 */
 	public boolean checkWebPassword(User user, String hashedOneTimeWebPassword) {
 		if (user != null || hashedOneTimeWebPassword != null) {
 			PreparedStatement ps = null;
@@ -57,9 +66,10 @@ public class MySQLDatabaseConnector implements DatabaseConnector {
 			String serverHashedOneTimeWebPassword = null;
 
 			try {
-				ps = connection.prepareStatement("SELECT webPassword, DATE_ADD(CURRENT_TIMESTAMP, INTERVAL 5 MINUTE) AS timestamp FROM CREDENTIAL WHERE username = ?");
+				ps = connection.prepareStatement("SELECT webPassword FROM CREDENTIAL WHERE username = ?");
 				ps.setString(1, user.getUserName());
 				rs = ps.executeQuery();
+				//read from db
 				if (rs.next()) {
 					hashedWebPassword = rs.getString("webPassword");
 
@@ -71,16 +81,19 @@ public class MySQLDatabaseConnector implements DatabaseConnector {
 						throw new SQLException("Database inconsistent two CREDENTIALS with the same LOGIN");
 					}
 				}
-
+				//generate new oneTimeCode
 				String oneTimeCode = user.getOneTimeCode();
-				// db: h(webPW + OTP)
+				//h(hashedWebPassword + oneTimeCode)
 				serverHashedOneTimeWebPassword = hasher.calculateHash(hashedWebPassword, oneTimeCode);
 			} catch (NoSuchAlgorithmException | IOException | SQLException e) {
 				e.printStackTrace();
 			}
 
+			//check if the oneTimeCode is not older than 5 minutes
 			if (new Date(System.currentTimeMillis()).before(user.getOneTimePasswordExpirationDate())) {
+				//compare user pw and database pw for user
 				if (serverHashedOneTimeWebPassword.equals(hashedOneTimeWebPassword)) {
+					//web passwort erfolgreich validiert
 					return true;
 				}
 			}
@@ -89,6 +102,12 @@ public class MySQLDatabaseConnector implements DatabaseConnector {
 	}
 
 	@Override
+	/**
+	 * Checks the validity of the desktop Password for the User with the username 'username'
+	 * @param username the username of the user
+	 * @param password the desktop password of the user
+	 * @return User if the password was correct for 'username' &&  desktopFailedLoginAttempts < 3, null if the password is not correct or the the username doesnt match the whitelist or desktopFailedLoginAttempts > 3
+	 */
 	public User checkDesktopPassword(String password, String username) {
 		User user = new User();
 		PreparedStatement ps = null;
@@ -128,18 +147,19 @@ public class MySQLDatabaseConnector implements DatabaseConnector {
 				// Compute the new DIGEST
 				byte[] digest = Base64.decodeBase64(hasher.calculateHash(password, salt));
 
-				if (Arrays.equals(digest, Base64.decodeBase64(desktopPassword)) && desktopFailedLoginAttempts < 3) {
+				if (Arrays.equals(digest, Base64.decodeBase64(desktopPassword)) && desktopFailedLoginAttempts < 3) { //password correct? && not too many login tries ?
 					// generate new one time password
 					oneTimePassword = otp.generateOneTimePassword();
 
+					//fill the user object
 					user.setUserName(username);
 					user.setOneTimeCode(oneTimePassword);
 					user.setSalt(salt);
 					user.setOneTimePasswordExpirationDate(new Date(System.currentTimeMillis() + 5 * 60 * 1000));
-
+					// set resetDesktopFailedLoginAttempts to 0 because password was correct
 					resetDesktopFailedLoginAttempts(username);
 					return user;
-				} else if (desktopFailedLoginAttempts < 3) {
+				} else if (desktopFailedLoginAttempts < 3) { //protection against brute force
 					increaseDesktopFailedLoginAttempts(username);
 				}
 			} catch (IOException e) {
@@ -156,7 +176,11 @@ public class MySQLDatabaseConnector implements DatabaseConnector {
 		return null;
 	}
 
-	public void resetDesktopFailedLoginAttempts(String username) {
+	/**
+	 *	Sets the failed login attempts for the User with "username" to 0 in the Database.
+	 * @param username The username of the user to reset the failed login attempts
+	 */
+	private void resetDesktopFailedLoginAttempts(String username) {
 		PreparedStatement ps = null;
 		// increase desktopFailedLoginAttempts by 1
 		try {
@@ -164,7 +188,6 @@ public class MySQLDatabaseConnector implements DatabaseConnector {
 			ps.setString(1, username);
 			ps.executeUpdate();
 		} catch (SQLException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 	}
@@ -183,13 +206,16 @@ public class MySQLDatabaseConnector implements DatabaseConnector {
 			ps.setString(1, username);
 			ps.executeUpdate();
 		} catch (SQLException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 	}
 
 	/**
-	 * Creates a
+	 * Creates new User in the Database if he doesn't already exists.
+	 * @param username the username of the user
+	 * @param desktopPassword the desktop password of the user
+	 * @param webPassword the web password of the user
+	 * @return true if the User was successfully created, false if the username is already in user or username doesnt mathces the whitelist
 	 */
 	@Override
 	public boolean createUser(String username, String desktopPassword, String webPassword) {
@@ -218,6 +244,7 @@ public class MySQLDatabaseConnector implements DatabaseConnector {
 				// make binary salt to String
 				String salt = Base64.encodeBase64String(bSalt);
 
+				//create the user in the database // if the user already exists see 'MySQLIntegrityConstraintViolationException'
 				ps = connection.prepareStatement("INSERT INTO CREDENTIAL (username, desktopPassword, webPassword, salt) VALUES (?,?,?,?)"); // desktopFailedLoginAttempts standard 0
 				ps.setString(1, username);
 				ps.setString(2, desktopPasswordHash);
@@ -228,7 +255,8 @@ public class MySQLDatabaseConnector implements DatabaseConnector {
 			} else {
 				return false;
 			}
-		} catch (MySQLIntegrityConstraintViolationException userAlreadyExists) {
+		} catch (MySQLIntegrityConstraintViolationException userAlreadyExists) {//username already exists
+			System.out.println("the username "+username+" already exists in the database");
 			return false;
 		} catch (SQLException | IOException | NoSuchAlgorithmException e) {
 			e.printStackTrace();
@@ -239,6 +267,10 @@ public class MySQLDatabaseConnector implements DatabaseConnector {
 	}
 
 	@Override
+	/**
+	 * Deletes the User with the username 'username' in the Database.
+	 * @param username the username of the user to delete
+	 */
 	public void deleteUser(String username) {
 		Statement st = null;
 		try {
@@ -259,6 +291,9 @@ public class MySQLDatabaseConnector implements DatabaseConnector {
 	}
 
 	@Override
+	/**
+	 * Creates a default table structure in a database called CREDENTIAL
+	 */
 	public void createTableStructure() {
 		Statement st = null;
 		try {
@@ -276,6 +311,9 @@ public class MySQLDatabaseConnector implements DatabaseConnector {
 	}
 
 	@Override
+	/**
+	 * Deletes the default table structure in a database called CREDENTIAL
+	 */
 	public void deleteTableStructure() {
 		Statement st = null;
 		try {
@@ -293,8 +331,7 @@ public class MySQLDatabaseConnector implements DatabaseConnector {
 	/**
 	 * Closes the current statement
 	 *
-	 * @param ps
-	 *            Statement
+	 * @param ps Statement
 	 */
 	public void close(Statement ps) {
 		if (ps != null) {
@@ -308,8 +345,7 @@ public class MySQLDatabaseConnector implements DatabaseConnector {
 	/**
 	 * Closes the current resultset
 	 *
-	 * @param ps
-	 *            Statement
+	 * @param ps Statement
 	 */
 	public void close(ResultSet rs) {
 		if (rs != null) {
