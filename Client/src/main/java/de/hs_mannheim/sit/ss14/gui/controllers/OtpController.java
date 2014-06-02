@@ -100,8 +100,8 @@ public class OtpController {
 									.displayLoggedInView(recievedMessageArray[1]);
 
 						} else { // if failed: display popup and go back to start.
-							JOptionPane.showMessageDialog(null,recievedMessageArray[1]);
 							guiController.startView();
+							JOptionPane.showMessageDialog(null,recievedMessageArray[1]);
 						}
 
 					} else {
