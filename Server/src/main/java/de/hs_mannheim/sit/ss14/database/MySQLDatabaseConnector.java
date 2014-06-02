@@ -88,20 +88,19 @@ public class MySQLDatabaseConnector implements DatabaseConnector {
 		ResultSet rs = null;
 
 		if (password == null || username == null) {
-			user.setUserName("");
-			increaseDesktopFailedLoginAttempts(); // increase failed login attempts in db
-			user.setOneTimeCode("");
-			user.setSalt("");
 			return null;
 		} else {
 			try {
-				ps = connection.prepareStatement("SELECT desktopPassword, salt FROM CREDENTIAL WHERE username = ?");
+				ps = connection.prepareStatement("SELECT desktopPassword, salt, desktopFailedLoginAttempts FROM CREDENTIAL WHERE username = ?");
 				ps.setString(1, username);
 				rs = ps.executeQuery();
 				String desktopPassword = null, salt = null, oneTimePassword;
+				int desktopFailedLoginAttempts = 0;
+
 				if (rs.next()) {
 					desktopPassword = rs.getString("desktopPassword");
 					salt = rs.getString("salt");
+					desktopFailedLoginAttempts = rs.getInt("desktopFailedLoginAttempts");
 
 					// DATABASE VALIDATION
 					if (desktopPassword == null || salt == null) {
@@ -115,7 +114,7 @@ public class MySQLDatabaseConnector implements DatabaseConnector {
 				// Compute the new DIGEST
 				byte[] digest = Base64.decodeBase64(hasher.calculateHash(password, salt));
 
-				if (Arrays.equals(digest, Base64.decodeBase64(desktopPassword))) {
+				if (Arrays.equals(digest, Base64.decodeBase64(desktopPassword)) && desktopFailedLoginAttempts < 3) {
 					// generate new one time password
 					oneTimePassword = otp.generateOneTimePassword();
 
@@ -124,8 +123,10 @@ public class MySQLDatabaseConnector implements DatabaseConnector {
 					user.setSalt(salt);
 					user.setOneTimePasswordExpirationDate(new Date(System.currentTimeMillis() + 5 * 60 * 1000));
 
-					// resetDesktopFailedLoginAttempts();
+					resetDesktopFailedLoginAttempts(username);
 					return user;
+				} else if (desktopFailedLoginAttempts < 3) {
+					increaseDesktopFailedLoginAttempts(username);
 				}
 			} catch (IOException e) {
 				e.printStackTrace();
@@ -141,12 +142,37 @@ public class MySQLDatabaseConnector implements DatabaseConnector {
 		return null;
 	}
 
-
-
-	private void increaseDesktopFailedLoginAttempts() {
-		// TODO Auto-generated method stub
+	public void resetDesktopFailedLoginAttempts(String username) {
+		PreparedStatement ps = null;
+		// increase desktopFailedLoginAttempts by 1
+		try {
+			ps = connection.prepareStatement("UPDATE CREDENTIAL SET `desktopFailedLoginAttempts` = 0 WHERE username = ?;");
+			ps.setString(1, username);
+			ps.executeUpdate();
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	}
 
+	/**
+	 * Increases the failed login attempts by one for the desktop client in the database
+	 *
+	 * @param username
+	 *            the username of the user which failed login attempts will be increased
+	 */
+	private void increaseDesktopFailedLoginAttempts(String username) {
+		PreparedStatement ps = null;
+		// increase desktopFailedLoginAttempts by 1
+		try {
+			ps = connection.prepareStatement("UPDATE CREDENTIAL SET `desktopFailedLoginAttempts` = `desktopFailedLoginAttempts` + 1 WHERE username = ?;");
+			ps.setString(1, username);
+			ps.executeUpdate();
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
 
 	/**
 	 * Creates a
@@ -215,7 +241,7 @@ public class MySQLDatabaseConnector implements DatabaseConnector {
 		Statement st = null;
 		try {
 			st = connection.createStatement();
-			st.execute("CREATE TABLE CREDENTIAL (username VARCHAR(100) PRIMARY KEY, desktopPassword VARCHAR(256) NOT NULL, webPassword VARCHAR(256) NOT NULL, salt VARCHAR(256) NOT NULL, desktopFailedLoginAttempts INTEGER(8))");
+			st.execute("CREATE TABLE CREDENTIAL (username VARCHAR(100) PRIMARY KEY, desktopPassword VARCHAR(256) NOT NULL, webPassword VARCHAR(256) NOT NULL, salt VARCHAR(256) NOT NULL, desktopFailedLoginAttempts INTEGER(8) DEFAULT 0)");
 			System.out.println("Anlegen der CREDENTIAL Tabelle erfolgreich!");
 
 		} catch (SQLException e) {

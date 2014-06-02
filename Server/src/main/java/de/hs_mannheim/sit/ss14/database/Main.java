@@ -14,6 +14,7 @@ public class Main {
 		//dbCon.createTableStructure();
 		//dbCon.createUser("phil", "wasIstMartin", "marinIstEinBob");
 		//dbCon.deleteUser("phil");
+		//dbCon.resetDesktopFailedLoginAttempts("phil");
 
 	}
 
