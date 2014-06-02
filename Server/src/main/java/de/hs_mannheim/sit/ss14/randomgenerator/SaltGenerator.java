@@ -16,11 +16,9 @@ public class SaltGenerator{
 			byte[] bSalt = new byte[8];
 	        random.nextBytes(bSalt);
 
-			return bSalt; ///TODO: siehe unten bestimmte zeichen auswählen !
-			//return new BigInteger(40, random).toString(32);
+			return bSalt;
 
 		} catch (NoSuchAlgorithmException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		return null;

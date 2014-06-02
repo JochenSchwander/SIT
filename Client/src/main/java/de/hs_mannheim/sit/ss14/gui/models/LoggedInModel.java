@@ -6,11 +6,10 @@ import javax.swing.JTextArea;
 import javax.swing.JTextField;
 
 public class LoggedInModel {
-	
+
 	public JTextArea recieveTextArea;
-	
+
 	public JTextField toSendTextField;
-	
+
 	public ActionListener sendAL;
-	public ActionListener logoutAL;
 }

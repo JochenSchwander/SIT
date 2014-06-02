@@ -12,10 +12,10 @@ import de.hs_mannheim.sit.ss14.gui.models.LoggedInModel;
 /**
  * This controller controlls the actions of the view when the user has
  * successfully logged in.
- * 
+ *
  * Functionality of the program is to send and recieve messages to the server, or in the future every other functionality.
  * @author DS
- * 
+ *
  */
 public class LoggedInController {
 
@@ -35,7 +35,7 @@ public class LoggedInController {
 	private void initModel() {
 		loggedInModel.recieveTextArea = new JTextArea();
 		loggedInModel.toSendTextField = new JTextField();
-		
+
 		//send message to server
 		loggedInModel.sendAL = new ActionListener() {
 			@Override
@@ -43,26 +43,16 @@ public class LoggedInController {
 				try {
 					guiController.socket.sendMessage("echo\n"
 							+ loggedInModel.toSendTextField.getText());
+					waitForServerResponse();
 				} catch (IOException e1) {
 					loggedInModel.recieveTextArea
 							.setText("The connection to the server was lost.");
 				}
 			}
 		};
-		//logout from server and return to beginning of the program
-		loggedInModel.logoutAL = new ActionListener() {
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				try {
-					guiController.socket.sendMessage("logout");
-				} catch (IOException e1) {
-				}
-				guiController.startView();
-			}
-		};
 
 	}
-	
+
 	/**
 	 * in this function a new thread is started that waits for a response from the server so that the view is not blocked while waiting.
 	 * The answer is written to the recieveTextArea;

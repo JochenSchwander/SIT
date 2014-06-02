@@ -50,6 +50,8 @@ import org.apache.commons.codec.binary.Base64;
  */
 public class ClientDiffieHellman {
 
+
+	//TODO nicht mehr expection werfen sondern spezifische!
 	private KeyAgreement clientKeyAgree;
 
 	/**

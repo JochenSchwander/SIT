@@ -36,7 +36,6 @@ public class NetworkService implements Runnable {
 		try {
 			dbcon.connect();
 		} catch (ClassNotFoundException | SQLException e) {
-			//TODO was machen?
 			e.printStackTrace();
 		}
 	}
@@ -57,9 +56,7 @@ public class NetworkService implements Runnable {
 				if (!serverSocket.isClosed()) {
 					serverSocket.close();
 				}
-			} catch (IOException e) {
-				e.printStackTrace();
-			} catch (InterruptedException e) {
+			} catch (IOException | InterruptedException e) {
 				e.printStackTrace();
 			}
 		}

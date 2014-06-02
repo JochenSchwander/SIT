@@ -16,9 +16,9 @@ import de.hs_mannheim.sit.ss14.gui.models.RegisterModel;
 /**
  * This class acts as a frame for all the other views that are displayed in this
  * window.
- * 
+ *
  * @author DS
- * 
+ *
  */
 public class MainWindow extends JFrame {
 
@@ -46,7 +46,6 @@ public class MainWindow extends JFrame {
 		try {
 			UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
 		} catch (Exception e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 
@@ -75,7 +74,7 @@ public class MainWindow extends JFrame {
 
 	/**
 	 * as part of the login process the one-time password has to be displayed
-	 * 
+	 *
 	 * @param otpModel
 	 */
 	public void otpView(OtpModel otpModel) {
@@ -88,7 +87,7 @@ public class MainWindow extends JFrame {
 	/**
 	 * replaces the loginTab with the loggedInView after the user successfully
 	 * authenticated himself
-	 * 
+	 *
 	 * @param loggedInModel
 	 */
 	public void loggedInView(LoggedInModel loggedInModel) {

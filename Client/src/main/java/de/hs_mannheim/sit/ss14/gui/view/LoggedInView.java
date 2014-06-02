@@ -1,20 +1,17 @@
 package de.hs_mannheim.sit.ss14.gui.view;
 
-import javax.swing.JButton;
-import javax.swing.JPanel;
-
-import de.hs_mannheim.sit.ss14.gui.models.LoggedInModel;
-
+import java.awt.Font;
 import java.awt.GridLayout;
 
+import javax.swing.JButton;
 import javax.swing.JLabel;
-
-import java.awt.Font;
-
-import javax.swing.border.EmptyBorder;
-import javax.swing.SwingConstants;
-import javax.swing.JTextField;
+import javax.swing.JPanel;
 import javax.swing.JTextArea;
+import javax.swing.JTextField;
+import javax.swing.SwingConstants;
+import javax.swing.border.EmptyBorder;
+
+import de.hs_mannheim.sit.ss14.gui.models.LoggedInModel;
 
 @SuppressWarnings("serial")
 public class LoggedInView extends JPanel {
@@ -58,9 +55,6 @@ public class LoggedInView extends JPanel {
 			JPanel panel = new JPanel();
 			buttonPanel.add(panel);
 		}
-
-		JButton logoutButton = new JButton("Logout");
-		buttonPanel.add(logoutButton);
 
 		JButton resetButton = new JButton("Send");
 		buttonPanel.add(resetButton);

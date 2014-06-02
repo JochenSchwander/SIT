@@ -1,9 +1,13 @@
 package de.hs_mannheim.sit.ss14.crypto;
 
+import java.security.InvalidAlgorithmParameterException;
+import java.security.InvalidKeyException;
 import java.security.KeyFactory;
 import java.security.KeyPair;
 import java.security.KeyPairGenerator;
+import java.security.NoSuchAlgorithmException;
 import java.security.PublicKey;
+import java.security.spec.InvalidKeySpecException;
 import java.security.spec.X509EncodedKeySpec;
 
 import javax.crypto.KeyAgreement;
@@ -57,9 +61,13 @@ public class DiffieHellman {
 	 *
 	 * @param clientPubKeyEncString client public key
 	 * @return server public key
+	 * @throws InvalidKeySpecException
+	 * @throws NoSuchAlgorithmException
+	 * @throws InvalidAlgorithmParameterException
+	 * @throws InvalidKeyException
 	 * @throws Exception
 	 */
-	public String calculatePublicKey(final String clientPubKeyEncString) throws Exception {
+	public String calculatePublicKey(final String clientPubKeyEncString) throws InvalidKeySpecException, NoSuchAlgorithmException, InvalidAlgorithmParameterException, InvalidKeyException {
 		byte[]clientPubKeyEnc  = Base64.decodeBase64(clientPubKeyEncString);
 		/*
 		 * Let's turn over to Server. Server has received Client's public key in
@@ -95,9 +103,11 @@ public class DiffieHellman {
 	 * Calculates the shared secret between client and server.
 	 *
 	 * @return shared secret
+	 * @throws IllegalStateException
+	 * @throws InvalidKeyException
 	 * @throws Exception
 	 */
-	public byte[] calculateSharedSecret() throws Exception {
+	public byte[] calculateSharedSecret() throws InvalidKeyException, IllegalStateException {
 		/*
 		 * Server uses Client's public key for the first (and only) phase of his
 		 * version of the DH protocol.

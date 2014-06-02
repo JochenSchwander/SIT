@@ -6,10 +6,15 @@ import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
 import java.net.Socket;
+import java.security.InvalidAlgorithmParameterException;
+import java.security.InvalidKeyException;
+import java.security.NoSuchAlgorithmException;
+import java.security.spec.InvalidKeySpecException;
 
 import javax.crypto.Cipher;
 import javax.crypto.CipherInputStream;
 import javax.crypto.CipherOutputStream;
+import javax.crypto.NoSuchPaddingException;
 import javax.crypto.spec.IvParameterSpec;
 import javax.crypto.spec.SecretKeySpec;
 
@@ -116,6 +121,7 @@ public class Handler implements Runnable {
 		case AUTHORIZED:
 			switch (command) {
 			case "echo":
+				out.println("echo");
 				out.println("Echo: " + in.readLine());
 				out.flush();
 				break;
@@ -214,8 +220,7 @@ public class Handler implements Runnable {
 				in = new BufferedReader(new InputStreamReader(new CipherInputStream(client.getInputStream(), aesDec)));
 				out = new PrintWriter(new OutputStreamWriter(new CipherOutputStream(client.getOutputStream(), aesEnc)));
 
-			} catch (Exception e) {
-				// TODO was machen?
+			} catch (NoSuchAlgorithmException | NoSuchPaddingException | InvalidKeyException | InvalidAlgorithmParameterException | InvalidKeySpecException e) {
 				e.printStackTrace();
 			}
 		}
