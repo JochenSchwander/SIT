@@ -72,14 +72,14 @@ public class WebClient extends HttpServlet {
 			RequestDispatcher view = request.getRequestDispatcher("Success.html");
 			view.forward(request, response);
 			ConnectedUsers.authorizeUser(username);
-		}else if(user.getFailedLoginAttempts() >= 3){ //if the user already failed to login for 3 times remove him from pending users
-	        RequestDispatcher view = request.getRequestDispatcher("Suspended.html");
-		    view.forward(request, response);
-	        ConnectedUsers.removePendingUser(username);
 		}else { //redirect to the Weblogin and increase the failed login attempts
 			RequestDispatcher view = request.getRequestDispatcher("LoginFailed.html");
 	        view.forward(request, response);
 	        user.increaseFailedLoginAttempts();
+	        if(user.getFailedLoginAttempts() >= 3){ //if the user already failed to login for 3 times remove him from pending users
+			    view.forward(request, response);
+		        ConnectedUsers.removePendingUser(username);
+	        }
 		}
 	}
 
