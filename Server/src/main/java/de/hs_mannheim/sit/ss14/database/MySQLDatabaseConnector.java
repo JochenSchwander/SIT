@@ -10,6 +10,8 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.Arrays;
 import java.util.Date;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import org.apache.commons.codec.binary.Base64;
 
@@ -26,6 +28,11 @@ public class MySQLDatabaseConnector implements DatabaseConnector {
 	private Connection connection;
 	private Hasher hasher;
 	private OtpGenerator otp;
+	private Pattern whitelist;
+
+	public MySQLDatabaseConnector() {
+		whitelist = Pattern.compile("[a-zA-Z0-9]*");
+	}
 
 	@Override
 	public void connect() {
@@ -88,12 +95,14 @@ public class MySQLDatabaseConnector implements DatabaseConnector {
 		ResultSet rs = null;
 
 		if (password == null || username == null) {
-			user.setUserName("");
-			increaseDesktopFailedLoginAttempts(); // increase failed login attempts in db
-			user.setOneTimeCode("");
-			user.setSalt("");
 			return null;
 		} else {
+			//whitelist
+			Matcher matcher = whitelist.matcher(username);
+			if (!matcher.matches()) {
+				return null;
+			}
+
 			try {
 				ps = connection.prepareStatement("SELECT desktopPassword, salt FROM CREDENTIAL WHERE username = ?");
 				ps.setString(1, username);
