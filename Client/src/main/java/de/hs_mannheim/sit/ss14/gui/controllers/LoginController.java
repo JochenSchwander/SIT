@@ -10,7 +10,6 @@ import java.security.spec.InvalidKeySpecException;
 import java.security.spec.InvalidParameterSpecException;
 
 import javax.crypto.NoSuchPaddingException;
-import javax.swing.JOptionPane;
 import javax.swing.JPasswordField;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
@@ -22,9 +21,9 @@ import de.hs_mannheim.sit.ss14.gui.models.LoginModel;
 
 /**
  * Controller for then LoginTab and the whole login process.
- * 
+ *
  * @author DS
- * 
+ *
  */
 public class LoginController {
 
