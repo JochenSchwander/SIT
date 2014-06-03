@@ -11,8 +11,8 @@ public class Main {
 		MySQLDatabaseConnector dbCon = new MySQLDatabaseConnector();
 		dbCon.connect();
 		//dbCon.deleteTableStructure();
-		//dbCon.createTableStructure();
-		dbCon.createUser("horst2", "admin", "web");
+		dbCon.createTableStructure();
+		//dbCon.createUser("horst2", "admin", "web");
 		//dbCon.deleteUser("phil");
 		//dbCon.resetDesktopFailedLoginAttempts("phil");
 
