@@ -66,7 +66,7 @@ public class LoginTab extends JPanel {
 		JTextField passwordTextfield = loginModel.passwordTextfield;
 		passwordPanel.add(passwordTextfield);
 		((AbstractDocument) passwordTextfield.getDocument())
-				.setDocumentFilter(new DocumentSizeFilter(100, "[A-Za-z0-9]+"));
+				.setDocumentFilter(new DocumentSizeFilter(100, ".+"));
 		passwordTextfield.addActionListener(loginModel.submitLoginAL);
 
 		// lower row right side panel

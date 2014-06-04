@@ -98,7 +98,7 @@ public class RegisterTab extends JPanel {
 		desktopPasswordTextfield.setToolTipText("");
 		desktopPasswordTextfieldPanel.add(desktopPasswordTextfield);
 		((AbstractDocument) desktopPasswordTextfield.getDocument())
-		.setDocumentFilter(new DocumentSizeFilter(100, "[A-Za-z0-9]+"));
+		.setDocumentFilter(new DocumentSizeFilter(100, ".+"));
 
 		JPanel repeatDesktopPasswordTextfieldPanel = new JPanel();
 		repeatDesktopPasswordTextfieldPanel.setBorder(new TitledBorder(
@@ -116,7 +116,7 @@ public class RegisterTab extends JPanel {
 		JPasswordField repeatDesktopPasswordTextfield = registerModel.repeatDesktopPasswordTextfield;
 		repeatDesktopPasswordTextfieldPanel.add(repeatDesktopPasswordTextfield);
 		((AbstractDocument) repeatDesktopPasswordTextfield.getDocument())
-		.setDocumentFilter(new DocumentSizeFilter(100, "[A-Za-z0-9]+"));
+		.setDocumentFilter(new DocumentSizeFilter(100, ".+"));
 
 		JPanel webPasswordTextfieldPanel = new JPanel();
 		webPasswordTextfieldPanel.setBorder(new TitledBorder(new EmptyBorder(
@@ -133,7 +133,7 @@ public class RegisterTab extends JPanel {
 		JPasswordField webPasswordTextfield = registerModel.webPasswordTextfield;
 		webPasswordTextfieldPanel.add(webPasswordTextfield);
 		((AbstractDocument) webPasswordTextfield.getDocument())
-		.setDocumentFilter(new DocumentSizeFilter(100, "[A-Za-z0-9]+"));
+		.setDocumentFilter(new DocumentSizeFilter(100, ".+"));
 
 		JPanel repeatWebPasswordTextfieldPanel = new JPanel();
 		repeatWebPasswordTextfieldPanel.setBorder(new TitledBorder(
@@ -150,7 +150,7 @@ public class RegisterTab extends JPanel {
 		JPasswordField repeatWebPasswordTextfield = registerModel.repeatWebPasswordTextfield;
 		repeatWebPasswordTextfieldPanel.add(repeatWebPasswordTextfield);
 		((AbstractDocument) repeatWebPasswordTextfield.getDocument())
-		.setDocumentFilter(new DocumentSizeFilter(100, "[A-Za-z0-9]+"));
+		.setDocumentFilter(new DocumentSizeFilter(100, ".+"));
 		repeatWebPasswordTextfield
 				.addActionListener(registerModel.submitRegisterAL);
 
