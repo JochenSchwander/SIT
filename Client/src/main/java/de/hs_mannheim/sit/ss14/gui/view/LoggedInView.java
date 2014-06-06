@@ -2,7 +2,12 @@ package de.hs_mannheim.sit.ss14.gui.view;
 
 import java.awt.Font;
 import java.awt.GridLayout;
+import java.awt.image.BufferedImage;
+import java.io.File;
+import java.io.IOException;
 
+import javax.imageio.ImageIO;
+import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
@@ -16,18 +21,31 @@ import de.hs_mannheim.sit.ss14.gui.models.LoggedInModel;
 @SuppressWarnings("serial")
 public class LoggedInView extends JPanel {
 
+
 	LoggedInView(LoggedInModel loggedInModel) {
+		BufferedImage myPicture;
+		JLabel picLabel = null;
+		try {
+			myPicture = ImageIO.read(new File("/Users/phil/java-workspace/SIT/Client/src/main/resources/logged_in.png"));
+
+		picLabel = new JLabel(new ImageIcon(myPicture));
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+
 		setLayout(new GridLayout(4, 0, 0, 0));
 
 		JPanel welcomePanel = new JPanel();
 		welcomePanel.setBorder(new EmptyBorder(10, 10, 10, 10));
 		add(welcomePanel);
-		welcomePanel.setLayout(new GridLayout(0, 1, 0, 0));
+		welcomePanel.setLayout(new GridLayout(1, 1, 0, 0));
 
 		JLabel welcomeLabel = new JLabel("Welcome to the SIT Application");
 		welcomeLabel.setHorizontalAlignment(SwingConstants.CENTER);
 		welcomeLabel.setFont(new Font("Tahoma", Font.PLAIN, 20));
 		welcomePanel.add(welcomeLabel);
+		welcomePanel.add(picLabel);
 
 		JPanel inputPanel = new JPanel();
 		inputPanel.setBorder(new EmptyBorder(10, 10, 10, 10));

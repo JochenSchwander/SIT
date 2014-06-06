@@ -1,9 +1,20 @@
 package de.hs_mannheim.sit.ss14.gui.view;
 
-import java.awt.*;
+import java.awt.GridLayout;
+import java.awt.SystemColor;
+import java.awt.image.BufferedImage;
+import java.io.File;
+import java.io.IOException;
 
-import javax.swing.*;
-import javax.swing.border.*;
+import javax.imageio.ImageIO;
+import javax.swing.ImageIcon;
+import javax.swing.JButton;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
+import javax.swing.JTextArea;
+import javax.swing.JTextField;
+import javax.swing.border.EmptyBorder;
+import javax.swing.border.TitledBorder;
 import javax.swing.text.AbstractDocument;
 
 import de.hs_mannheim.sit.ss14.auxiliaries.DocumentSizeFilter;
@@ -13,6 +24,17 @@ import de.hs_mannheim.sit.ss14.gui.models.LoginModel;
 public class LoginTab extends JPanel {
 
 	LoginTab(LoginModel loginModel) {
+
+		BufferedImage myPicture;
+		JLabel picLabel = null;
+		try {
+			myPicture = ImageIO.read(new File("/Users/phil/java-workspace/SIT/Client/src/main/resources/1402002939_lock.png"));
+
+		picLabel = new JLabel(new ImageIcon(myPicture));
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 
 		// this element settings
 		setLayout(new GridLayout(3, 1));
@@ -24,6 +46,7 @@ public class LoginTab extends JPanel {
 		upperPanel.setBorder(new EmptyBorder(15, 10, 15, 10));
 
 		JTextArea infoTextarea = loginModel.infoTextarea;
+		upperPanel.add(picLabel);
 		upperPanel.add(loginModel.infoTextarea);
 		infoTextarea
 				.setText("Welcome to the login area. \n\nPlease login with your credentials.");
@@ -74,7 +97,7 @@ public class LoginTab extends JPanel {
 		lowerSplittedPanel.add(lowerRightSplittedPanel);
 		lowerRightSplittedPanel.setLayout(new GridLayout(1, 1, 0, 0));
 		lowerRightSplittedPanel.setBorder(new EmptyBorder(15, 10, 15, 10));
-		
+
 		JTextArea credentialsMessageTextarea = loginModel.credentialsMessageTextarea;
 		credentialsMessageTextarea.setEditable(false);
 		credentialsMessageTextarea.setLineWrap(true);
@@ -82,7 +105,7 @@ public class LoginTab extends JPanel {
 		credentialsMessageTextarea.setBackground(SystemColor.control);
 		lowerRightSplittedPanel.add(credentialsMessageTextarea);
 
-		
+
 		// some empty panels for styling reasons
 		JPanel lowestPanel = new JPanel();
 		add(lowestPanel);
@@ -90,7 +113,7 @@ public class LoginTab extends JPanel {
 
 		JPanel panel = new JPanel();
 		lowestPanel.add(panel);
-		
+
 				// lower row right side lower panel
 				JPanel LoginButtonPanel = new JPanel();
 				lowestPanel.add(LoginButtonPanel);

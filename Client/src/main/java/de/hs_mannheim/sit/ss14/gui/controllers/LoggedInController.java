@@ -70,7 +70,7 @@ public class LoggedInController {
 
 					} else {
 						loggedInModel.recieveTextArea
-								.setText("Communication with server failed.");
+								.setText("");
 					}
 				} catch (IOException e) {
 					loggedInModel.recieveTextArea

@@ -19,9 +19,9 @@ import javax.crypto.spec.SecretKeySpec;
 
 /**
  * This class functions as the connection-layer between server and client
- * 
+ *
  * @author DS
- * 
+ *
  */
 public class ClientSocket {
 
@@ -33,7 +33,7 @@ public class ClientSocket {
 
 	/**
 	 * At instantiation this class automatically connects to the server
-	 * 
+	 *
 	 * @throws IOException
 	 */
 	public ClientSocket() throws IOException {
@@ -47,13 +47,13 @@ public class ClientSocket {
 	/**
 	 * as soon as this function is successfully called the connection is AES
 	 * encrypted
-	 * 
+	 *
 	 * @param key
-	 * @throws NoSuchPaddingException 
-	 * @throws NoSuchAlgorithmException 
-	 * @throws InvalidAlgorithmParameterException 
-	 * @throws InvalidKeyException 
-	 * @throws InterruptedException 
+	 * @throws NoSuchPaddingException
+	 * @throws NoSuchAlgorithmException
+	 * @throws InvalidAlgorithmParameterException
+	 * @throws InvalidKeyException
+	 * @throws InterruptedException
 	 */
 	public void encryptConnectionWithKey(byte[] K) throws IOException, NoSuchAlgorithmException, NoSuchPaddingException, InvalidKeyException, InvalidAlgorithmParameterException, InterruptedException {
 
